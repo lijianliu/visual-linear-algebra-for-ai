@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>torch.mean(dim=k) Visualizer (rank≤3)</title>
+<style>
+  :root{
+    --text:#e5e7eb;
+    --muted:#94a3b8;
+    --border:rgba(148,163,184,.18);
+    --border2:rgba(148,163,184,.28);
+
+    --out-focus-bg: rgba(229,231,235,.18);
+    --in-focus-bg: rgba(229,231,235,.14);
+
+    --c0:#f87171;  --c1:#fb923c;  --c2:#fbbf24;  --c3:#a3e635;
+    --c4:#34d399;  --c5:#2dd4bf;  --c6:#22d3ee;  --c7:#60a5fa;
+    --c8:#818cf8;  --c9:#a78bfa;  --c10:#f472b6; --c11:#fb7185;
+  }
+
+  html, body{width:100%;}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(180deg,#070a14,#0b1020 55%,#070a14);
+    color:var(--text);
+  }
+  .wrap{
+    width:100%;
+    max-width:none;
+    margin:16px 0;
+    padding:0 10px 26px;
+    box-sizing:border-box;
+  }
+
+  h1{font-size:18px;font-weight:850;margin:0 0 8px;}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 12px;line-height:1.45;}
+
+  .card{
+    background:rgba(18,26,47,.9);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px;
+    margin-bottom:12px;
+  }
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .badge{
+    display:inline-flex;gap:8px;align-items:center;
+    padding:6px 10px;border-radius:999px;
+    border:1px solid var(--border);
+    background:rgba(9,12,24,.40);
+    font-size:12px;font-weight:850;color:#cbd5e1;
+  }
+  .hintPill{
+    display:inline-flex;gap:8px;align-items:center;
+    padding:6px 10px;border-radius:999px;
+    border:1px solid rgba(147,197,253,.25);
+    background:rgba(59,130,246,.08);
+    font-size:12px;font-weight:850;color:#cfe3ff;
+  }
+  input, select, button{
+    background:rgba(9,12,24,.55);
+    color:var(--text);
+    border:1px solid var(--border2);
+    border-radius:10px;
+    padding:7px 10px;
+    font-weight:850;
+    outline:none;
+  }
+  button{cursor:pointer;}
+  button:hover, select:hover{border-color:#93c5fd;}
+
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:12px;
+    align-items:start;
+  }
+  @media(max-width:980px){.grid{grid-template-columns:1fr;}}
+
+  /* Critical for preventing overlap: grid items must be allowed to shrink */
+  .tensorPanel, .exprPanel { min-width:0; }
+
+  .tensorPanel{
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:10px;
+    background:rgba(9,12,24,.45);
+    overflow:hidden; /* CRITICAL: prevent child content from spilling into the other column */
+  }
+  .panelTitle{
+    display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+    margin-bottom:8px;
+  }
+  .panelTitle .name{font-size:13px;font-weight:950;color:#dbeafe;}
+  .panelTitle .shape{font-size:12px;font-weight:850;color:var(--muted);font-family:ui-monospace,monospace;}
+
+  .matrix{display:grid;gap:6px;min-width:0;}
+
+  .axisCell{
+    border:1px solid rgba(148,163,184,.16);
+    border-radius:10px;
+    background:rgba(9,12,24,.35);
+    padding:6px 6px;
+    font-size:11px;
+    font-weight:850;
+    color:rgba(203,213,225,.75);
+    text-align:center;
+    font-family:ui-monospace,monospace;
+    box-sizing:border-box;
+    user-select:none;
+    min-width:0;
+  }
+
+  .cell{
+    position:relative;
+    border:1px solid var(--border2);
+    border-radius:12px;
+    padding:10px 8px 8px;
+    background:rgba(9,12,24,.55);
+    text-align:center;
+    user-select:none;
+    box-sizing:border-box;
+    min-width:0;
+    transition: background 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  }
+  .cell .ij{
+    position:absolute;top:6px;left:8px;
+    font-size:11px;color:rgba(203,213,225,.65);
+    font-family:ui-monospace,monospace;
+    pointer-events:none;
+  }
+  .cell .v{font-size:14px;font-weight:950;font-family:ui-monospace,monospace;}
+
+  .cell.outCell{ padding-top:34px; }
+  .cell.outCell .ij{ top:8px; }
+
+  /* Input cell highlight (rank<=2 only) */
+  .cell.x.focusIn{
+    border-color: rgba(229,231,235,.7);
+    box-shadow: 0 0 0 3px rgba(229,231,235,.14);
+    background: var(--in-focus-bg);
+  }
+
+  .cell.rank3{ padding-top:26px; overflow:hidden; }
+
+  .bars{
+    margin-top:6px;
+    height:76px;
+    display:grid;
+    align-items:end;
+    column-gap:5px;
+    justify-items:center;
+    overflow:hidden;
+    min-width:0;
+  }
+  .barWrap{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    gap:3px;
+    border-radius:8px;
+    padding:2px 0 0;
+    transition: background 120ms ease;
+    min-width:0;
+  }
+  .barWrap:hover{ background: rgba(229,231,235,.08); }
+  .barVal{
+    font-size:10px;
+    color:rgba(203,213,225,.75);
+    font-family:ui-monospace,monospace;
+    line-height:1;
+    height:13px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    white-space:nowrap;
+    pointer-events:none;
+  }
+  .bar{
+    width:100%;
+    max-width:10px;
+    min-width:5px;
+    border-radius:6px 6px 3px 3px;
+    background:rgba(203,213,225,.55);
+    border:1px solid rgba(148,163,184,.18);
+    box-sizing:border-box;
+    transition: filter 120ms ease, box-shadow 120ms ease, border-color 120ms ease, transform 120ms ease, opacity 120ms ease;
+    opacity:1;
+  }
+  .bar.colored{ background: var(--barColor); }
+  .bar.on{
+    filter: brightness(2.05) saturate(1.85);
+    border-color: rgba(255,255,255,.9);
+    box-shadow:
+      0 0 0 2px rgba(255,255,255,.24),
+      0 0 18px rgba(147,197,253,.75),
+      0 0 30px rgba(244,114,182,.40);
+    transform: translateY(-2px) scaleX(1.10);
+    opacity:1;
+  }
+  .bar.dim{ opacity:.14; filter:saturate(.65) brightness(.75); }
+
+  .cell.y.focus{
+    border-color: rgba(229,231,235,.75);
+    box-shadow: 0 0 0 3px rgba(229,231,235,.16);
+    background: var(--out-focus-bg);
+    z-index: 2;
+  }
+
+  .exprPanel{
+    grid-column: 1 / -1;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:10px;
+    background:rgba(9,12,24,.45);
+    order:-1;
+  }
+  .exprPanel .titleRow{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .exprPanel .title{font-weight:950;color:#e0f2fe;}
+  .exprPanel .hint{
+    color:var(--muted);
+    margin-bottom:8px;
+    height:18px;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+  }
+  .exprPanel .math{
+    padding:10px;
+    border-radius:12px;
+    border:1px solid rgba(148,163,184,.16);
+    background: rgba(3, 7, 18, .40);
+    height:118px;
+    overflow:auto;
+    white-space:nowrap;
+    font-family:ui-monospace,monospace;
+    box-sizing:border-box;
+  }
+
+  /* Horizontal scroll helpers (for BOTH input and output) */
+  .scrollX{
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding-bottom:6px;
+  }
+  .scrollInner{
+    width:max-content;
+    min-width:100%;
+  }
+
+  /* Output: fixed row labels + horizontally scrollable columns */
+  .yRowLabels{
+    display:grid;
+    gap:6px;
+    align-items:center;
+    min-width:0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>torch.mean(dim=k) — rank ≤ 3</h1>
+  <p class="sub">
+  This interactive demo helps you visualize how
+  <a href="https://docs.pytorch.org/docs/stable/generated/torch.mean.html" target="_blank" style="background-color: #fff6cc; padding: 0 4px; border-radius: 3px;" rel="noopener noreferrer"><code>torch.mean()</code></a>
+  computes the mean value of all elements in the input tensor. You can enter rank-1, rank-2 or rank-3 tensors and hover over input or output elements
+  to see which input values are averaged together to produce each output value.
+  </p>
+
+  <div class="card">
+    <div class="controls">
+      <span class="badge">Shape (rank 1–3)
+        <input id="shapeInput" value="3,4,8" size="10"/>
+      </span>
+      <span class="badge">Reduce dim
+        <select id="dimSelect"></select>
+      </span>
+      <button id="applyBtn">Apply shape</button>
+      <button id="regenBtn">Regenerate values</button>
+      <span id="lockPill" class="hintPill" style="display:none;">Locked (click anywhere to unlock)</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="exprPanel">
+      <div class="titleRow">
+        <div class="title">Expression</div>
+        <span id="lockPillTop" class="hintPill" style="display:none;">Locked (click anywhere to unlock)</span>
+      </div>
+      <div id="exprHint" class="hint">Hover a cell in input or output.</div>
+      <div id="mathBox" class="math">(expression will appear here)</div>
+    </div>
+
+    <div class="tensorPanel">
+      <div class="panelTitle">
+        <div class="name">Input tensor x</div>
+        <div class="shape" id="xShape">shape = …</div>
+      </div>
+
+      <!-- NEW: input scroll container (prevents rank=3 overlap) -->
+      <div class="scrollX" id="xScroll">
+        <div class="scrollInner">
+          <div id="xGrid" class="matrix"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tensorPanel">
+      <div class="panelTitle">
+        <div class="name" id="yTitle">Output tensor y = mean(x, dim=…)</div>
+        <div class="shape" id="yShape">shape = …</div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:auto 1fr; gap:6px; min-width:0;">
+        <div id="yRowLabels" class="yRowLabels"></div>
+
+        <div class="scrollX" id="yScroll">
+          <div class="scrollInner">
+            <div id="yColLabels" class="matrix"></div>
+            <div id="yGrid" class="matrix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Helpers */
+const clampInt = (x, lo, hi) => Math.max(lo, Math.min(hi, x|0));
+const prod = arr => arr.reduce((a,b)=>a*b,1);
+
+function fmtInput(v){ return String(v); }
+function fmtOut(v){ return Number(v).toFixed(2); }
+
+function parseShape(){
+  const raw = document.getElementById("shapeInput").value.trim();
+  const parts = raw.split(",").map(s=>s.trim()).filter(Boolean);
+
+  const shape = parts.map(x=>clampInt(parseInt(x,10), 1, 80)).filter(Number.isFinite);
+  if (shape.length < 1) return [4];
+  if (shape.length > 3) return shape.slice(0,3);
+  return shape;
+}
+function indexToCoords(idx, shape){
+  const c = new Array(shape.length);
+  for (let k=shape.length-1;k>=0;k--){
+    c[k] = idx % shape[k];
+    idx = Math.floor(idx / shape[k]);
+  }
+  return c;
+}
+function coordsToIndex(coords, shape){
+  let idx = 0;
+  for (let k=0;k<shape.length;k++) idx = idx*shape[k] + coords[k];
+  return idx;
+}
+function formatCoords(c){ return `[${c.join(",")}]`; }
+function makeData(shape){
+  const total = prod(shape);
+  return Array.from({length: total}, ()=>Math.floor(Math.random()*9)+1);
+}
+function barColorForIndex(k){
+  const palette = [
+    "var(--c0)","var(--c1)","var(--c2)","var(--c3)","var(--c4)","var(--c5)",
+    "var(--c6)","var(--c7)","var(--c8)","var(--c9)","var(--c10)","var(--c11)"
+  ];
+  return palette[k % palette.length];
+}
+
+/* State */
+let shape = parseShape();
+let data = makeData(shape);
+let dimMode = 0; // null -> dim=None
+
+let groups = new Map();   // outKey -> list of inCoords arrays
+let xCellMap = new Map(); // rank3 outer: "x:i,j" -> element
+let xLeafMap = new Map(); // rank<=2: "x:i,j" or "x:j"
+let yCellMap = new Map(); // outKey -> element
+
+const mathBox = document.getElementById("mathBox");
+const exprHint = document.getElementById("exprHint");
+const yTitle = document.getElementById("yTitle");
+const lockPill = document.getElementById("lockPill");
+const lockPillTop = document.getElementById("lockPillTop");
+
+/* Lock state */
+let isLocked = false;
+let lastInteraction = null;
+
+function setLocked(v){
+  isLocked = v;
+  lockPill.style.display = v ? "inline-flex" : "none";
+  lockPillTop.style.display = v ? "inline-flex" : "none";
+}
+
+/* dim helpers */
+function dimLabel(){ return dimMode === null ? "None" : String(dimMode); }
+function effectiveOutShape(){ return dimMode === null ? [] : shape.filter((_,k)=>k!==dimMode); }
+
+/* Mean grouping */
+function buildGroups(){
+  groups.clear();
+  if (dimMode === null){
+    const total = prod(shape);
+    const all = [];
+    for (let flat=0; flat<total; flat++) all.push(indexToCoords(flat, shape));
+    groups.set("scalar", all);
+    return;
+  }
+  const total = prod(shape);
+  for (let flat=0; flat<total; flat++){
+    const c = indexToCoords(flat, shape);
+    const outC = c.filter((_,k)=>k!==dimMode);
+    const outKey = outC.length ? outC.join(",") : "scalar";
+    if (!groups.has(outKey)) groups.set(outKey, []);
+    groups.get(outKey).push(c);
+  }
+}
+function denomForOutKey(){ return (dimMode === null) ? prod(shape) : shape[dimMode]; }
+function meanForOutKey(outKey){
+  const coordsList = groups.get(outKey) || [];
+  const denom = denomForOutKey();
+  let s=0;
+  for (const c of coordsList) s += data[coordsToIndex(c, shape)];
+  return s/denom;
+}
+
+/* Global bar dimming */
+function dimAllBars(){
+  document.querySelectorAll(".bar").forEach(b=>{
+    b.classList.add("dim");
+    b.classList.remove("on");
+  });
+}
+function undimAllBars(){
+  document.querySelectorAll(".bar").forEach(b=>{
+    b.classList.remove("dim","on");
+  });
+}
+
+/* Reset */
+function clearAll(){
+  document.querySelectorAll(".cell.y").forEach(el=>el.classList.remove("focus"));
+  document.querySelectorAll(".cell.x").forEach(el=>el.classList.remove("focusIn"));
+  undimAllBars();
+  exprHint.textContent = "Hover a cell in input or output.";
+  mathBox.textContent = "(expression will appear here)";
+  mathBox.scrollTop = 0;
+  mathBox.scrollLeft = 0;
+}
+
+/* Rank<=2 input box highlighting */
+function highlightInputBoxesForOutKey(outKey){
+  const coordsList = groups.get(outKey) || [];
+  for (const c of coordsList){
+    let key = "x:";
+    if (shape.length === 1) key = `x:${c[0]}`;
+    else if (shape.length === 2) key = `x:${c[0]},${c[1]}`;
+    else continue;
+    const el = xLeafMap.get(key);
+    if (el) el.classList.add("focusIn");
+  }
+}
+
+/* Rank3 bar emphasis */
+function emphasizeBarsInCell(cellEl, selectedSet){
+  if (!cellEl || !cellEl.__bars) return;
+  for (const k of selectedSet){
+    const b = cellEl.__bars[k];
+    if (b){ b.classList.remove("dim"); b.classList.add("on"); }
+  }
+}
+
+/* Expression */
+function exprForOutKey(outKey){
+  const coordsList = groups.get(outKey) || [];
+  const denom = denomForOutKey();
+  const values = coordsList.map(c => data[coordsToIndex(c, shape)]);
+  const sum = values.reduce((a,b)=>a+b,0);
+  const mean = sum / denom;
+
+  const yIdx = (outKey==="scalar") ? "" : formatCoords(outKey.split(",").map(Number));
+  const termPart = coordsList.map((c, i)=>`x${formatCoords(c)}=${values[i]}`).join(" + ");
+  const valsPart = values.join("+");
+  return `y${yIdx} = (${termPart}) / ${denom} = (${valsPart})/${denom}=${sum}/${denom}=${fmtOut(mean)}`;
+}
+
+function focusOutput(outKey){
+  const yEl = yCellMap.get(outKey);
+  if (yEl) yEl.classList.add("focus");
+}
+
+/* Hover output */
+function onHoverOutput(outKey, outEl){
+  clearAll();
+  outEl.classList.add("focus");
+
+  if (shape.length === 3){
+    dimAllBars();
+    const coordsList = groups.get(outKey) || [];
+    const outerToBars = new Map();
+    for (const c of coordsList){
+      const outerKey = `${c[0]},${c[1]}`;
+      if (!outerToBars.has(outerKey)) outerToBars.set(outerKey, new Set());
+      outerToBars.get(outerKey).add(c[2]);
+    }
+    for (const [outerKey, ks] of outerToBars.entries()){
+      const xEl = xCellMap.get(`x:${outerKey}`);
+      emphasizeBarsInCell(xEl, ks);
+    }
+  } else {
+    highlightInputBoxesForOutKey(outKey);
+  }
+
+  exprHint.textContent = `Output cell ${outKey === "scalar" ? "y" : "y[" + outKey + "]"}`;
+  mathBox.textContent = exprForOutKey(outKey);
+}
+
+/* Hover input (rank<=2 leaf cell) */
+function onHoverInputLeaf(coords){
+  clearAll();
+  const outKey = (dimMode === null) ? "scalar" : (coords.filter((_,ax)=>ax!==dimMode).join(",") || "scalar");
+  focusOutput(outKey);
+  highlightInputBoxesForOutKey(outKey);
+  exprHint.textContent = `Input leaf x${formatCoords(coords)} → output ${outKey === "scalar" ? "y" : "y[" + outKey + "]"}`;
+  mathBox.textContent = exprForOutKey(outKey);
+}
+
+/* Hover input bar leaf (rank3) */
+function onHoverInputBarLeaf(i,j,k){
+  clearAll();
+
+  const inCoords = [i,j,k];
+  const outCoords = (dimMode === null) ? [] : inCoords.filter((_,ax)=>ax!==dimMode);
+  const outKey = (dimMode === null) ? "scalar" : (outCoords.length ? outCoords.join(",") : "scalar");
+
+  focusOutput(outKey);
+
+  dimAllBars();
+
+  const coordsList = groups.get(outKey) || [];
+  const outerToBars = new Map();
+  for (const c of coordsList){
+    const outerKey = `${c[0]},${c[1]}`;
+    if (!outerToBars.has(outerKey)) outerToBars.set(outerKey, new Set());
+    outerToBars.get(outerKey).add(c[2]);
+  }
+  for (const [outerKey, ks] of outerToBars.entries()){
+    const xEl = xCellMap.get(`x:${outerKey}`);
+    emphasizeBarsInCell(xEl, ks);
+  }
+
+  const hoveredOuter = xCellMap.get(`x:${i},${j}`);
+  if (hoveredOuter && hoveredOuter.__bars && hoveredOuter.__bars[k]){
+    hoveredOuter.__bars[k].classList.add("on");
+    hoveredOuter.__bars[k].classList.remove("dim");
+  }
+
+  exprHint.textContent = `Input bar leaf x[${i},${j},${k}] → output ${outKey === "scalar" ? "y" : "y[" + outKey + "]"}`;
+  mathBox.textContent = exprForOutKey(outKey);
+}
+
+/* Output axes */
+function renderOutputAxes(outShape){
+  const yRowLabels = document.getElementById("yRowLabels");
+  const yColLabels = document.getElementById("yColLabels");
+  yRowLabels.innerHTML = "";
+  yColLabels.innerHTML = "";
+
+  const r = outShape.length;
+  const colW = 92;
+
+  if (r < 2){
+    yRowLabels.style.display = "none";
+    yColLabels.style.display = "none";
+    return { colW };
+  }
+
+  yRowLabels.style.display = "grid";
+  yColLabels.style.display = "grid";
+
+  const rows = outShape[0];
+  const cols = outShape[1];
+
+  yRowLabels.style.gridTemplateRows = `repeat(${rows}, auto)`;
+  for (let i=0;i<rows;i++){
+    const d = document.createElement("div");
+    d.className = "axisCell";
+    d.textContent = `row ${i}`;
+    yRowLabels.appendChild(d);
+  }
+
+  yColLabels.style.gridTemplateColumns = `repeat(${cols}, ${colW}px)`;
+  yColLabels.style.gap = "6px";
+  for (let j=0;j<cols;j++){
+    const d = document.createElement("div");
+    d.className = "axisCell";
+    d.textContent = `col ${j}`;
+    yColLabels.appendChild(d);
+  }
+
+  return { colW };
+}
+
+/* Render */
+function render(){
+  buildGroups();
+  if (!isLocked) clearAll();
+
+  document.getElementById("xShape").textContent = `shape = (${shape.join(",")})`;
+  yTitle.textContent = `Output tensor y = mean(x, dim=${dimLabel()})`;
+
+  const ys = effectiveOutShape();
+  document.getElementById("yShape").textContent = `shape = (${ys.join(",") || ""})`;
+
+  xCellMap.clear();
+  xLeafMap.clear();
+  yCellMap.clear();
+
+  // INPUT
+  renderTensorInto(document.getElementById("xGrid"), "x", shape, true, null);
+
+  // OUTPUT
+  const { colW } = renderOutputAxes(ys);
+  renderTensorInto(document.getElementById("yGrid"), "y", ys, false, colW);
+
+  if (isLocked && typeof lastInteraction === "function"){
+    lastInteraction();
+  }
+}
+
+function renderTensorInto(gridEl, label, shapeArr, isInput, fixedColW){
+  gridEl.innerHTML = "";
+  const r = shapeArr.length;
+
+  let rows, cols;
+  if (r === 0){ rows=1; cols=1; }
+  else if (r === 1){ rows=1; cols=shapeArr[0]; }
+  else { rows=shapeArr[0]; cols=shapeArr[1]; }
+
+  // For rank3 input, use fixed widths so grid becomes width:max-content and scrolls cleanly
+  if (label === "x" && r === 3){
+    const cellW = 140;
+    gridEl.style.gridTemplateColumns = `repeat(${cols}, ${cellW}px)`;
+  } else if (label === "y" && r >= 2 && fixedColW){
+    gridEl.style.gridTemplateColumns = `repeat(${cols}, ${fixedColW}px)`;
+  } else {
+    const minCol = (label === "x" && r === 2) ? 86 : 86;
+    gridEl.style.gridTemplateColumns = `repeat(${cols}, minmax(${minCol}px, 1fr))`;
+  }
+
+  if (r === 0){
+    gridEl.appendChild(makeNumberCell(label, [], isInput ? data[0] : meanForOutKey("scalar")));
+    return;
+  }
+  if (r === 1){
+    for (let j=0;j<cols;j++){
+      const coords=[j];
+      const outKey=coords.join(",");
+      const value = isInput ? data[coordsToIndex(coords, shape)] : meanForOutKey(outKey);
+      gridEl.appendChild(makeNumberCell(label, coords, value));
+    }
+    return;
+  }
+  if (r === 2){
+    for (let i=0;i<rows;i++){
+      for (let j=0;j<cols;j++){
+        const coords=[i,j];
+        const outKey=coords.join(",");
+        const value = isInput ? data[coordsToIndex(coords, shape)] : meanForOutKey(outKey);
+        gridEl.appendChild(makeNumberCell(label, coords, value));
+      }
+    }
+    return;
+  }
+
+  // Rank 3 input: bars
+  const d2 = shapeArr[2];
+  for (let i=0;i<rows;i++){
+    for (let j=0;j<cols;j++){
+      const outerKey = `${i},${j}`;
+
+      const cell = document.createElement("div");
+      cell.className = "cell rank3 x";
+      cell.dataset.tensor = "x";
+      cell.dataset.key = outerKey;
+      cell.innerHTML = `<div class="ij">x${formatCoords([i,j])}</div>`;
+
+      const bars = document.createElement("div");
+      bars.className = "bars";
+      bars.style.gridTemplateColumns = `repeat(${d2}, minmax(0, 1fr))`;
+
+      const vals = [];
+      for (let k=0;k<d2;k++) vals.push(data[coordsToIndex([i,j,k], shape)]);
+      const minV = Math.min(...vals);
+      const maxV = Math.max(...vals);
+      const span = Math.max(1e-9, maxV - minV);
+
+      const barEls = [];
+      for (let k=0;k<d2;k++){
+        const wrap = document.createElement("div");
+        wrap.className = "barWrap";
+
+        const t = document.createElement("div");
+        t.className = "barVal";
+        t.textContent = String(vals[k]);
+
+        const b = document.createElement("div");
+        b.className = "bar colored";
+        b.style.setProperty("--barColor", barColorForIndex(k));
+        const h = 6 + Math.round(38 * ((vals[k]-minV)/span));
+        b.style.height = `${h}px`;
+
+        wrap.appendChild(t);
+        wrap.appendChild(b);
+        bars.appendChild(wrap);
+
+        wrap.addEventListener("mouseenter", (ev) => {
+          if (isLocked) return;
+          ev.stopPropagation();
+          onHoverInputBarLeaf(i,j,k);
+        });
+        wrap.addEventListener("mouseleave", (ev) => {
+          if (isLocked) return;
+          ev.stopPropagation();
+          clearAll();
+        });
+        wrap.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          if (isLocked) return;
+          setLocked(true);
+          lastInteraction = () => onHoverInputBarLeaf(i,j,k);
+          onHoverInputBarLeaf(i,j,k);
+        });
+
+        barEls.push(b);
+      }
+      cell.__bars = barEls;
+      cell.appendChild(bars);
+
+      gridEl.appendChild(cell);
+      xCellMap.set(`x:${outerKey}`, cell);
+    }
+  }
+}
+
+function makeNumberCell(label, coords, value){
+  const cell = document.createElement("div");
+  cell.className = "cell " + label + " " + (label === "y" ? "outCell" : "");
+  cell.dataset.tensor = label;
+
+  const shown = (label === "y") ? fmtOut(value) : fmtInput(value);
+  cell.innerHTML = `<div class="ij">${label}${formatCoords(coords)}</div><div class="v">${shown}</div>`;
+
+  if (label === "x"){
+    const key = coords.length === 0 ? "x:" : `x:${coords.join(",")}`;
+    xLeafMap.set(key, cell);
+  }
+
+  cell.addEventListener("mouseenter", () => {
+    if (isLocked) return;
+
+    if (label === "y"){
+      const outKey = coords.length ? coords.join(",") : "scalar";
+      onHoverOutput(outKey, cell);
+    } else {
+      onHoverInputLeaf(coords.slice());
+    }
+  });
+  cell.addEventListener("mouseleave", () => { if (!isLocked) clearAll(); });
+
+  cell.addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    if (isLocked) return;
+    setLocked(true);
+
+    if (label === "y"){
+      const outKey = coords.length ? coords.join(",") : "scalar";
+      lastInteraction = () => onHoverOutput(outKey, cell);
+      onHoverOutput(outKey, cell);
+    } else {
+      lastInteraction = () => onHoverInputLeaf(coords.slice());
+      lastInteraction();
+    }
+  });
+
+  if (label === "y"){
+    const outKey = coords.length ? coords.join(",") : "scalar";
+    yCellMap.set(outKey, cell);
+  }
+  return cell;
+}
+
+/* Controls */
+function rebuildDimOptions(){
+  const sel = document.getElementById("dimSelect");
+  sel.innerHTML = "";
+
+  const optNone = document.createElement("option");
+  optNone.value = "none";
+  optNone.textContent = "dim=None";
+  sel.appendChild(optNone);
+
+  for (let k=0;k<shape.length;k++){
+    const opt = document.createElement("option");
+    opt.value = String(k);
+    opt.textContent = `dim=${k}`;
+    sel.appendChild(opt);
+  }
+
+  if (dimMode === null) sel.value = "none";
+  else {
+    dimMode = Math.min(dimMode, shape.length-1);
+    sel.value = String(dimMode);
+  }
+}
+
+document.getElementById("applyBtn").addEventListener("click", ()=>{
+  shape = parseShape();
+  data = makeData(shape);
+  if (dimMode !== null && dimMode >= shape.length) dimMode = shape.length-1;
+  rebuildDimOptions();
+  render();
+});
+document.getElementById("regenBtn").addEventListener("click", ()=>{
+  data = makeData(shape);
+  render();
+});
+document.getElementById("dimSelect").addEventListener("change", (e)=>{
+  dimMode = (e.target.value === "none") ? null : parseInt(e.target.value, 10);
+  render();
+});
+
+/* Global click: unlock when locked */
+document.addEventListener("click", () => {
+  if (!isLocked) return;
+  setLocked(false);
+  lastInteraction = null;
+  clearAll();
+});
+
+/* Init */
+function init(){
+  rebuildDimOptions();
+  render();
+}
+init();
+</script>
+</body>
+</html>
