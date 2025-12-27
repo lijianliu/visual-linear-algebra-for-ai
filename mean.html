@@ -265,6 +265,66 @@
     align-items:center;
     min-width:0;
   }
+
+
+/* --- Mobile compact layout (iPhone) --- */
+@media (max-width: 480px) {
+  :root{
+    --page-pad: 10px;
+    --panel-pad: 12px;
+    --grid-gap: 8px;
+    --cell-pad: 10px;
+    --radius: 14px;
+  }
+
+  body { padding: var(--page-pad) !important; }
+
+  .panel, .card, .box, .exprPanel {
+    padding: var(--panel-pad) !important;
+    border-radius: var(--radius) !important;
+  }
+
+  /* Reduce large vertical spacing between major sections */
+  .stack, .container, #app, .main { gap: 10px !important; }
+  .sectionTitle { margin-bottom: 6px !important; }
+  h1, h2, h3 { margin: 6px 0 !important; }
+  h2 { font-size: 18px !important; }
+  h3 { font-size: 15px !important; }
+
+  /* Tighten grid spacing */
+  .grid, .xGrid, .yGrid, .matrixGrid, .tensorGrid {
+    gap: var(--grid-gap) !important;
+  }
+
+  /* Shrink individual tiles/cards */
+  .tile, .cell, .miniCard, .xBox, .yBox, .sliceBox {
+    padding: var(--cell-pad) !important;
+    border-radius: 12px !important;
+  }
+
+  /* Make slice boxes less wide so more fit without horizontal scroll */
+  .sliceBox, .xSlice, .slice {
+    min-width: 0 !important;
+  }
+
+  /* Tighten header pills (row/col labels) */
+  .pill, .rowPill, .colPill, .dimPill {
+    padding: 6px 10px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* Reduce big number size a bit */
+  .val, .num, .big, .yVal {
+    font-size: 18px !important;
+  }
+
+  /* Reduce internal bar spacing */
+  .bars { gap: 6px !important; }
+  .bar { width: 14px !important; }
+}
+
 </style>
 
 <style>
