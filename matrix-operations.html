@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Operations Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Warm off-white base - easier on eyes than pure white */
+            --bg-dark: #faf9f7;
+            --bg-card: #ffffff;
+            --bg-input: #f5f4f2;
+            
+            /* Rich, sophisticated accent colors */
+            --accent-blue: #0369a1;
+            --accent-purple: #7e22ce;
+            --accent-pink: #be185d;
+            --accent-green: #047857;
+            --accent-orange: #c2410c;
+            --accent-cyan: #0e7490;
+            
+            /* Warm text colors */
+            --text-primary: #1c1917;
+            --text-secondary: #78716c;
+            --border-color: #e7e5e4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 30vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 3rem 1rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(3, 105, 161, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(126, 34, 206, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(190, 24, 93, 0.04) 0%, transparent 60%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-2%, 2%) rotate(2deg); }
+        }
+
+        .hero h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 50%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .scroll-indicator {
+            display: none;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        .scroll-indicator svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(250, 249, 247, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--accent-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background: var(--bg-input);
+            border-color: var(--border-color);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 1.5rem 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            border-bottom: 24px solid #d6d3d1;
+        }
+
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        section:nth-child(even) {
+            background: transparent;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 1rem;
+            max-width: 700px;
+        }
+
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .section-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 400;
+            margin-bottom: 0.25rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .symbol {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+
+        /* Demo Container */
+        .demo-container {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 1rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .demo-layout {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .demo-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .matrix-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .matrix-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .matrix-grid {
+            display: grid;
+            gap: 4px;
+        }
+
+        .matrix-grid.cols-1 { grid-template-columns: repeat(1, 1fr); }
+        .matrix-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .matrix-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .matrix-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .matrix-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+        .matrix-grid input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .matrix-grid input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .matrix-grid input.highlight-a {
+            border-color: var(--accent-blue);
+            background: rgba(3, 105, 161, 0.08);
+        }
+
+        .matrix-grid input.highlight-b {
+            border-color: var(--accent-purple);
+            background: rgba(126, 34, 206, 0.08);
+        }
+
+        .vector-input {
+            display: flex;
+            gap: 4px;
+        }
+
+        .vector-input input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .vector-input input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .operator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--accent-pink);
+            font-weight: 600;
+            padding: 0 0.5rem;
+        }
+
+        .equals {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--accent-green);
+            font-weight: 600;
+            padding: 0 0.5rem;
+        }
+
+        /* Result Display */
+        .result-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .result-matrix {
+            display: grid;
+            gap: 4px;
+        }
+
+        .result-matrix.cols-1 { grid-template-columns: repeat(1, 1fr); }
+        .result-matrix.cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .result-matrix.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .result-matrix.cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .result-matrix.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+        .result-matrix .cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            background: rgba(4, 120, 87, 0.1);
+            border-radius: 6px;
+            color: var(--accent-green);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .result-scalar {
+            padding: 0.5rem 1rem;
+            background: rgba(4, 120, 87, 0.1);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .result-cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(4, 120, 87, 0.1);
+            border-radius: 6px;
+            color: var(--accent-green);
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        /* Calculation Breakdown */
+        .calculation-breakdown {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .breakdown-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.25rem;
+        }
+
+        .breakdown-content {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .breakdown-content .step {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.25rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .breakdown-content .step:hover {
+            background: rgba(3, 105, 161, 0.04);
+        }
+
+        .breakdown-content .val-a {
+            color: var(--accent-blue);
+        }
+
+        .breakdown-content .val-b {
+            color: var(--accent-purple);
+        }
+
+        .breakdown-content .result {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .breakdown-content .op {
+            color: var(--accent-pink);
+        }
+
+        /* Interactive Highlight */
+        .cell-interactive {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cell-interactive:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15);
+        }
+
+        .cell-interactive.active {
+            transform: scale(1.12);
+            box-shadow: 0 6px 20px rgba(4, 120, 87, 0.2);
+            border-color: var(--accent-orange);
+        }
+
+        /* Formula Display */
+        .formula-box {
+            padding: 0.4rem 0;
+            margin: 0.3rem 0;
+            text-align: center;
+        }
+
+        .formula {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .formula sub {
+            font-size: 0.65em;
+            color: var(--text-secondary);
+        }
+
+        /* Code snippet */
+        .code-snippet {
+            background: var(--bg-input);
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            margin-top: 0.4rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            overflow-x: auto;
+            color: var(--text-primary);
+        }
+
+        .code-snippet .keyword {
+            color: var(--accent-purple);
+        }
+
+        .code-snippet .function {
+            color: var(--accent-blue);
+        }
+
+        .code-snippet .string {
+            color: var(--accent-green);
+        }
+
+        .code-snippet .comment {
+            color: var(--text-secondary);
+        }
+
+        .code-snippet .op {
+            color: var(--accent-pink);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .demo-inputs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .operator, .equals {
+                transform: rotate(90deg);
+                padding: 0.25rem;
+            }
+
+            .matrix-grid input,
+            .vector-input input,
+            .result-matrix .cell {
+                width: 36px;
+                height: 36px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* 3D Visualization for Cross Product */
+        .viz-3d {
+            width: 100%;
+            height: 300px;
+            background: var(--bg-input);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .viz-3d canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Outer Product Grid */
+        .outer-result {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .outer-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .outer-cell {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            background: rgba(4, 120, 87, 0.1);
+            border-radius: 4px;
+            color: var(--accent-green);
+            font-weight: 500;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: #ffffff;
+            border: 1px solid var(--accent-blue);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        /* Section accents */
+        #scalar .section-number { color: var(--accent-orange); }
+        #elementwise .section-number { color: var(--accent-blue); }
+        #dotproduct .section-number { color: var(--accent-purple); }
+        #outerproduct .section-number { color: var(--accent-pink); }
+        #matmul .section-number { color: var(--accent-green); }
+        #crossproduct .section-number { color: var(--accent-cyan); }
+        #transpose .section-number { color: var(--accent-orange); }
+
+        /* Dimension Controls */
+        .dim-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .dim-control {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .dim-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .dim-btn {
+            width: 22px;
+            height: 22px;
+            border: none;
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .dim-btn:hover {
+            background: var(--accent-blue);
+            color: #ffffff;
+        }
+
+        .dim-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .dim-btn:disabled:hover {
+            background: var(--bg-input);
+            color: var(--text-secondary);
+        }
+
+        .dim-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            min-width: 16px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            padding: 1rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-logo">Matrix Operations</div>
+        <div class="nav-links">
+            <a href="#scalar">Scalar</a>
+            <a href="#elementwise">Element-wise</a>
+            <a href="#dotproduct">Dot Product</a>
+            <a href="#outerproduct">Outer Product</a>
+            <a href="#matmul">Matrix Multiply</a>
+            <a href="#crossproduct">Cross Product</a>
+            <a href="#transpose">Transpose</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Matrix Operations</h1>
+        <p>An interactive guide to understanding fundamental linear algebra operations</p>
+        <div class="scroll-indicator">
+            <span>Scroll to explore</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- SECTION 1: Scalar Multiplication -->
+    <section id="scalar">
+        <div class="section-header">
+            <div class="section-number">01 — Scaling</div>
+            <h2 class="section-title">Scalar Multiplication</h2>
+            <p class="section-subtitle">
+                Multiply every element by a single value.
+                <span class="symbol">c × A</span>
+            </p>
+            <div class="formula-box" >
+                <div class="formula" style="font-size: 0.8rem;">
+                    <span style="color: var(--accent-blue);">Scalar (0D)</span> × 
+                    <span style="color: var(--accent-purple);">Any Tensor (nD)</span> → 
+                    <span style="color: var(--accent-green);">Same Shape (nD)</span>
+                </div>
+                <div style="margin-top: 0.5rem; text-align: left; font-size: 0.75rem; color: var(--text-secondary);">
+                    <div style="color: var(--accent-orange); margin-bottom: 0.25rem;">Common in NN/Transformers:</div>
+                    <div>• <strong>Attention scaling</strong> — divide by √d_k to stabilize softmax</div>
+                    <div>• <strong>Learning rate</strong> — weights -= lr × gradients</div>
+                    <div>• <strong>Dropout scaling</strong> — multiply by 1/(1-p) during training</div>
+                    <div>• <strong>Temperature</strong> — logits / T to control softmax sharpness</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="dim-controls">
+                <div class="dim-control">
+                    <span class="dim-label">Rows:</span>
+                    <button class="dim-btn" onclick="changeScalarDim('rows', -1)">−</button>
+                    <span class="dim-value" id="scalar-rows">2</span>
+                    <button class="dim-btn" onclick="changeScalarDim('rows', 1)">+</button>
+                </div>
+                <div class="dim-control">
+                    <span class="dim-label">Cols:</span>
+                    <button class="dim-btn" onclick="changeScalarDim('cols', -1)">−</button>
+                    <span class="dim-value" id="scalar-cols">3</span>
+                    <button class="dim-btn" onclick="changeScalarDim('cols', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="formula-box">
+                <div class="formula">B<sub>ij</sub> = c × A<sub>ij</sub></div>
+            </div>
+
+            <div class="demo-layout">
+                <div class="demo-inputs">
+                    <div class="matrix-group">
+                        <div class="matrix-label">Scalar c</div>
+                        <div class="vector-input" id="scalar-c">
+                            <input type="number" value="3" style="width: 60px; font-size: 1.2rem;">
+                        </div>
+                    </div>
+
+                    <div class="operator">×</div>
+
+                    <div class="matrix-group">
+                        <div class="matrix-label">Matrix A</div>
+                        <div class="matrix-grid cols-3" id="scalar-matrix-a">
+                            <input type="number" value="1" data-row="0" data-col="0">
+                            <input type="number" value="2" data-row="0" data-col="1">
+                            <input type="number" value="3" data-row="0" data-col="2">
+                            <input type="number" value="4" data-row="1" data-col="0">
+                            <input type="number" value="5" data-row="1" data-col="1">
+                            <input type="number" value="6" data-row="1" data-col="2">
+                        </div>
+                    </div>
+
+                    <div class="equals">=</div>
+
+                    <div class="result-group">
+                        <div class="matrix-label">Result B</div>
+                        <div class="result-matrix cols-3" id="scalar-result">
+                            <div class="cell">3</div>
+                            <div class="cell">6</div>
+                            <div class="cell">9</div>
+                            <div class="cell">12</div>
+                            <div class="cell">15</div>
+                            <div class="cell">18</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calculation-breakdown" id="scalar-breakdown">
+                    <div class="breakdown-title">🔥 Used in Transformers: Attention Scaling</div>
+                    <div class="breakdown-content">
+                        <div class="step">
+                            In self-attention: <span class="result">scores = (Q @ K.T) / √d_k</span>
+                        </div>
+                        <div class="step">
+                            The <span class="val-a">1/√d_k</span> is scalar multiplication to prevent large dot products from pushing softmax into tiny gradients.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+                    <span class="comment"># PyTorch</span><br>
+                    B = c <span class="op">*</span> A<br>
+                    <span class="comment"># Transformer attention scaling</span><br>
+                    scores = (Q <span class="op">@</span> K.T) <span class="op">/</span> math.<span class="function">sqrt</span>(d_k)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: Element-wise Multiplication -->
+    <section id="elementwise">
+        <div class="section-header">
+            <div class="section-number">02 — Hadamard Product</div>
+            <h2 class="section-title">Element-wise Multiplication</h2>
+            <p class="section-subtitle">
+                Multiply corresponding elements. Shapes must match exactly.
+                <span class="symbol">A ⊙ B</span> or <span class="symbol">A * B</span>
+            </p>
+            <div class="formula-box" >
+                <div class="formula" style="font-size: 0.8rem;">
+                    <span style="color: var(--accent-blue);">Tensor (m×n)</span> ⊙ 
+                    <span style="color: var(--accent-purple);">Tensor (m×n)</span> → 
+                    <span style="color: var(--accent-green);">Tensor (m×n)</span>
+                    <br><span style="color: var(--text-secondary); font-size: 0.8rem;">Same shape required (or broadcastable)</span>
+                </div>
+                <div style="margin-top: 0.5rem; text-align: left; font-size: 0.75rem; color: var(--text-secondary);">
+                    <div style="color: var(--accent-blue); margin-bottom: 0.25rem;">Common in NN/Transformers:</div>
+                    <div>• <strong>Gating mechanisms</strong> — LSTM/GRU: gate ⊙ candidate</div>
+                    <div>• <strong>Dropout</strong> — activations ⊙ binary_mask</div>
+                    <div>• <strong>Attention masking</strong> — scores ⊙ causal_mask</div>
+                    <div>• <strong>GLU/SwiGLU</strong> — σ(Wx) ⊙ (Vx) in FFN layers</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="dim-controls">
+                <div class="dim-control">
+                    <span class="dim-label">Rows:</span>
+                    <button class="dim-btn" onclick="changeEwDim('rows', -1)">−</button>
+                    <span class="dim-value" id="ew-rows">2</span>
+                    <button class="dim-btn" onclick="changeEwDim('rows', 1)">+</button>
+                </div>
+                <div class="dim-control">
+                    <span class="dim-label">Cols:</span>
+                    <button class="dim-btn" onclick="changeEwDim('cols', -1)">−</button>
+                    <span class="dim-value" id="ew-cols">2</span>
+                    <button class="dim-btn" onclick="changeEwDim('cols', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="formula-box">
+                <div class="formula">C<sub>ij</sub> = A<sub>ij</sub> × B<sub>ij</sub></div>
+            </div>
+
+            <div class="demo-layout">
+                <div class="demo-inputs">
+                    <div class="matrix-group">
+                        <div class="matrix-label">Matrix A</div>
+                        <div class="matrix-grid cols-2" id="ew-matrix-a">
+                            <input type="number" value="1" data-row="0" data-col="0">
+                            <input type="number" value="2" data-row="0" data-col="1">
+                            <input type="number" value="3" data-row="1" data-col="0">
+                            <input type="number" value="4" data-row="1" data-col="1">
+                        </div>
+                    </div>
+
+                    <div class="operator">⊙</div>
+
+                    <div class="matrix-group">
+                        <div class="matrix-label">Matrix B</div>
+                        <div class="matrix-grid cols-2" id="ew-matrix-b">
+                            <input type="number" value="5" data-row="0" data-col="0">
+                            <input type="number" value="6" data-row="0" data-col="1">
+                            <input type="number" value="7" data-row="1" data-col="0">
+                            <input type="number" value="8" data-row="1" data-col="1">
+                        </div>
+                    </div>
+
+                    <div class="equals">=</div>
+
+                    <div class="result-group">
+                        <div class="matrix-label">Result C</div>
+                        <div class="result-matrix cols-2" id="ew-result">
+                            <div class="cell cell-interactive" data-row="0" data-col="0">5</div>
+                            <div class="cell cell-interactive" data-row="0" data-col="1">12</div>
+                            <div class="cell cell-interactive" data-row="1" data-col="0">21</div>
+                            <div class="cell cell-interactive" data-row="1" data-col="1">32</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calculation-breakdown" id="ew-breakdown">
+                    <div class="breakdown-title">Click any result cell to see its calculation</div>
+                    <div class="breakdown-content">
+                        <div class="step">
+                            <span class="val-a">A[0,0]=1</span>
+                            <span class="op">×</span>
+                            <span class="val-b">B[0,0]=5</span>
+                            <span class="op">=</span>
+                            <span class="result">5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+                    <span class="comment"># PyTorch</span><br>
+                    C = A <span class="op">*</span> B<br>
+                    <span class="comment"># or</span><br>
+                    C = torch.<span class="function">mul</span>(A, B)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: Dot Product -->
+    <section id="dotproduct">
+        <div class="section-header">
+            <div class="section-number">03 — Inner Product</div>
+            <h2 class="section-title">Dot Product</h2>
+            <p class="section-subtitle">
+                Multiply elements, then sum all. Returns a scalar.
+                <span class="symbol">a · b</span> or <span class="symbol">aᵀb</span>
+            </p>
+            <div class="formula-box" >
+                <div class="formula" style="font-size: 0.8rem;">
+                    <span style="color: var(--accent-blue);">Vector (n,)</span> · 
+                    <span style="color: var(--accent-purple);">Vector (n,)</span> → 
+                    <span style="color: var(--accent-green);">Scalar</span>
+                    <br>
+                    <span style="color: var(--accent-blue);">Matrix (1,n)</span> @ 
+                    <span style="color: var(--accent-purple);">Matrix (n,1)</span> → 
+                    <span style="color: var(--accent-green);">Matrix (1,1)</span>
+                    <br><span style="color: var(--text-secondary); font-size: 0.75rem;">torch.dot() requires 1D; use aᵀ@b for 2D column vectors</span>
+                </div>
+                <div style="margin-top: 0.5rem; text-align: left; font-size: 0.75rem; color: var(--text-secondary);">
+                    <div style="color: var(--accent-purple); margin-bottom: 0.25rem;">Common in NN/Transformers:</div>
+                    <div>• <strong>Attention score</strong> — single q · k pair similarity</div>
+                    <div>• <strong>Single neuron</strong> — weights · inputs + bias</div>
+                    <div>• <strong>Cosine similarity</strong> — (a · b) / (‖a‖ × ‖b‖)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="dim-controls">
+                <div class="dim-control">
+                    <span class="dim-label">Length:</span>
+                    <button class="dim-btn" onclick="changeDotDim(-1)">−</button>
+                    <span class="dim-value" id="dot-len">3</span>
+                    <button class="dim-btn" onclick="changeDotDim(1)">+</button>
+                </div>
+            </div>
+
+            <div class="formula-box">
+                <div class="formula">a · b = Σ(a<sub>i</sub> × b<sub>i</sub>) = a<sup>T</sup>b</div>
+            </div>
+
+            <div class="demo-layout">
+                <div class="demo-inputs">
+                    <div class="matrix-group">
+                        <div class="matrix-label">Vector a</div>
+                        <div class="vector-input" id="dot-vec-a">
+                            <input type="number" value="1">
+                            <input type="number" value="2">
+                            <input type="number" value="3">
+                        </div>
+                    </div>
+
+                    <div class="operator">·</div>
+
+                    <div class="matrix-group">
+                        <div class="matrix-label">Vector b</div>
+                        <div class="vector-input" id="dot-vec-b">
+                            <input type="number" value="4">
+                            <input type="number" value="5">
+                            <input type="number" value="6">
+                        </div>
+                    </div>
+
+                    <div class="equals">=</div>
+
+                    <div class="result-group">
+                        <div class="matrix-label">Scalar Result</div>
+                        <div class="result-scalar" id="dot-result">32</div>
+                    </div>
+                </div>
+
+                <div class="calculation-breakdown" id="dot-breakdown">
+                    <div class="breakdown-title">Step-by-step calculation</div>
+                    <div class="breakdown-content">
+                        <div class="step">
+                            <span class="val-a">1</span>
+                            <span class="op">×</span>
+                            <span class="val-b">4</span>
+                            <span class="op">+</span>
+                            <span class="val-a">2</span>
+                            <span class="op">×</span>
+                            <span class="val-b">5</span>
+                            <span class="op">+</span>
+                            <span class="val-a">3</span>
+                            <span class="op">×</span>
+                            <span class="val-b">6</span>
+                        </div>
+                        <div class="step">
+                            <span>=</span>
+                            <span class="result">4</span>
+                            <span class="op">+</span>
+                            <span class="result">10</span>
+                            <span class="op">+</span>
+                            <span class="result">18</span>
+                            <span>=</span>
+                            <span class="result" style="font-size: 1.2em">32</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+                    <span class="comment"># 1D vectors</span><br>
+                    result = torch.<span class="function">dot</span>(a, b)<br>
+                    <span class="comment"># Column vectors (n,1): aᵀb</span><br>
+                    result = (a.T <span class="op">@</span> b).<span class="function">item</span>()
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: Outer Product -->
+    <section id="outerproduct">
+        <div class="section-header">
+            <div class="section-number">04 — Tensor Product</div>
+            <h2 class="section-title">Outer Product</h2>
+            <p class="section-subtitle">
+                Every element of a multiplied with every element of b. Creates a matrix.
+                <span class="symbol">a ⊗ b</span>
+            </p>
+            <div class="formula-box" >
+                <div class="formula" style="font-size: 0.8rem;">
+                    <span style="color: var(--accent-blue);">Vector (m,)</span> ⊗ 
+                    <span style="color: var(--accent-purple);">Vector (n,)</span> → 
+                    <span style="color: var(--accent-green);">Matrix (m×n)</span>
+                    <br><span style="color: var(--text-secondary); font-size: 0.8rem;">1D tensors, lengths can differ</span>
+                </div>
+                <div style="margin-top: 0.5rem; text-align: left; font-size: 0.75rem; color: var(--text-secondary);">
+                    <div style="color: var(--accent-pink); margin-bottom: 0.25rem;">Common in NN/Transformers:</div>
+                    <div>• <strong>LoRA</strong> — low-rank adaptation: W + A ⊗ B</div>
+                    <div>• <strong>Attention patterns</strong> — visualizing q ⊗ k relationships</div>
+                    <div>• <strong>Embedding lookup</strong> — one-hot ⊗ embedding_matrix</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="dim-controls">
+                <div class="dim-control">
+                    <span class="dim-label">Len(a):</span>
+                    <button class="dim-btn" onclick="changeOuterDim('a', -1)">−</button>
+                    <span class="dim-value" id="outer-len-a">3</span>
+                    <button class="dim-btn" onclick="changeOuterDim('a', 1)">+</button>
+                </div>
+                <div class="dim-control">
+                    <span class="dim-label">Len(b):</span>
+                    <button class="dim-btn" onclick="changeOuterDim('b', -1)">−</button>
+                    <span class="dim-value" id="outer-len-b">4</span>
+                    <button class="dim-btn" onclick="changeOuterDim('b', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="formula-box">
+                <div class="formula">C<sub>ij</sub> = a<sub>i</sub> × b<sub>j</sub></div>
+            </div>
+
+            <div class="demo-layout">
+                <div class="demo-inputs">
+                    <div class="matrix-group">
+                        <div class="matrix-label">Vector a (column)</div>
+                        <div class="matrix-grid cols-1" id="outer-vec-a">
+                            <input type="number" value="1">
+                            <input type="number" value="2">
+                            <input type="number" value="3">
+                        </div>
+                    </div>
+
+                    <div class="operator">⊗</div>
+
+                    <div class="matrix-group">
+                        <div class="matrix-label">Vector b (row)</div>
+                        <div class="vector-input" id="outer-vec-b">
+                            <input type="number" value="4">
+                            <input type="number" value="5">
+                            <input type="number" value="6">
+                            <input type="number" value="7">
+                        </div>
+                    </div>
+
+                    <div class="equals">=</div>
+
+                    <div class="result-group">
+                        <div class="matrix-label">Result Matrix (3×4)</div>
+                        <div class="result-matrix cols-4" id="outer-result">
+                            <div class="cell cell-interactive">4</div>
+                            <div class="cell cell-interactive">5</div>
+                            <div class="cell cell-interactive">6</div>
+                            <div class="cell cell-interactive">7</div>
+                            <div class="cell cell-interactive">8</div>
+                            <div class="cell cell-interactive">10</div>
+                            <div class="cell cell-interactive">12</div>
+                            <div class="cell cell-interactive">14</div>
+                            <div class="cell cell-interactive">12</div>
+                            <div class="cell cell-interactive">15</div>
+                            <div class="cell cell-interactive">18</div>
+                            <div class="cell cell-interactive">21</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calculation-breakdown" id="outer-breakdown">
+                    <div class="breakdown-title">Hover over result cells to see calculation</div>
+                    <div class="breakdown-content">
+                        Each cell C[i,j] = a[i] × b[j]
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+                    <span class="comment"># PyTorch</span><br>
+                    C = torch.<span class="function">outer</span>(a, b)<br>
+                    <span class="comment"># or using einsum</span><br>
+                    C = torch.<span class="function">einsum</span>(<span class="string">'i,j->ij'</span>, a, b)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: Matrix Multiplication -->
+    <section id="matmul">
+        <div class="section-header">
+            <div class="section-number">05 — Matrix Product</div>
+            <h2 class="section-title">Matrix Multiplication</h2>
+            <p class="section-subtitle">
+                Each output is a dot product of a row from A and a column from B.
+                <span class="symbol">A @ B</span>
+            </p>
+            <div class="formula-box" >
+                <div class="formula" style="font-size: 0.8rem;">
+                    <span style="color: var(--accent-blue);">Matrix (m×n)</span> @ 
+                    <span style="color: var(--accent-purple);">Matrix (n×p)</span> → 
+                    <span style="color: var(--accent-green);">Matrix (m×p)</span>
+                    <br><span style="color: var(--text-secondary); font-size: 0.8rem;">Inner dimensions must match (n = n)</span>
+                </div>
+                <div style="margin-top: 0.5rem; text-align: left; font-size: 0.75rem; color: var(--text-secondary);">
+                    <div style="color: var(--accent-green); margin-bottom: 0.25rem;">Common in NN/Transformers (THE core operation!):</div>
+                    <div>• <strong>Linear layers</strong> — y = X @ W + b (every dense layer)</div>
+                    <div>• <strong>Q, K, V projections</strong> — Q = X @ W_q</div>
+                    <div>• <strong>Attention scores</strong> — scores = Q @ K.T</div>
+                    <div>• <strong>Attention output</strong> — output = softmax(scores) @ V</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="dim-controls">
+                <div class="dim-control">
+                    <span class="dim-label">A rows:</span>
+                    <button class="dim-btn" onclick="changeMmDim('m', -1)">−</button>
+                    <span class="dim-value" id="mm-m">2</span>
+                    <button class="dim-btn" onclick="changeMmDim('m', 1)">+</button>
+                </div>
+                <div class="dim-control">
+                    <span class="dim-label">A cols / B rows:</span>
+                    <button class="dim-btn" onclick="changeMmDim('n', -1)">−</button>
+                    <span class="dim-value" id="mm-n">3</span>
+                    <button class="dim-btn" onclick="changeMmDim('n', 1)">+</button>
+                </div>
+                <div class="dim-control">
+                    <span class="dim-label">B cols:</span>
+                    <button class="dim-btn" onclick="changeMmDim('p', -1)">−</button>
+                    <span class="dim-value" id="mm-p">2</span>
+                    <button class="dim-btn" onclick="changeMmDim('p', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="formula-box">
+                <div class="formula">C<sub>ij</sub> = Σ<sub>k</sub> A<sub>ik</sub> × B<sub>kj</sub> (row i of A · column j of B)</div>
+            </div>
+
+            <div class="demo-layout">
+                <div class="demo-inputs">
+                    <div class="matrix-group">
+                        <div class="matrix-label">Matrix A (2×3)</div>
+                        <div class="matrix-grid cols-3" id="mm-matrix-a">
+                            <input type="number" value="1" data-row="0" data-col="0">
+                            <input type="number" value="2" data-row="0" data-col="1">
+                            <input type="number" value="3" data-row="0" data-col="2">
+                            <input type="number" value="4" data-row="1" data-col="0">
+                            <input type="number" value="5" data-row="1" data-col="1">
+                            <input type="number" value="6" data-row="1" data-col="2">
+                        </div>
+                    </div>
+
+                    <div class="operator">@</div>
+
+                    <div class="matrix-group">
+                        <div class="matrix-label">Matrix B (3×2)</div>
+                        <div class="matrix-grid cols-2" id="mm-matrix-b">
+                            <input type="number" value="7" data-row="0" data-col="0">
+                            <input type="number" value="8" data-row="0" data-col="1">
+                            <input type="number" value="9" data-row="1" data-col="0">
+                            <input type="number" value="10" data-row="1" data-col="1">
+                            <input type="number" value="11" data-row="2" data-col="0">
+                            <input type="number" value="12" data-row="2" data-col="1">
+                        </div>
+                    </div>
+
+                    <div class="equals">=</div>
+
+                    <div class="result-group">
+                        <div class="matrix-label">Result C (2×2)</div>
+                        <div class="result-matrix cols-2" id="mm-result">
+                            <div class="cell cell-interactive" data-row="0" data-col="0">58</div>
+                            <div class="cell cell-interactive" data-row="0" data-col="1">64</div>
+                            <div class="cell cell-interactive" data-row="1" data-col="0">139</div>
+                            <div class="cell cell-interactive" data-row="1" data-col="1">154</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calculation-breakdown" id="mm-breakdown">
+                    <div class="breakdown-title">Click any result cell to see its calculation</div>
+                    <div class="breakdown-content">
+                        <div class="step">
+                            C[0,0] = row 0 of A · col 0 of B
+                        </div>
+                        <div class="step">
+                            <span class="val-a">1</span><span class="op">×</span><span class="val-b">7</span>
+                            <span class="op">+</span>
+                            <span class="val-a">2</span><span class="op">×</span><span class="val-b">9</span>
+                            <span class="op">+</span>
+                            <span class="val-a">3</span><span class="op">×</span><span class="val-b">11</span>
+                            <span>=</span>
+                            <span class="result">7 + 18 + 33 = 58</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+                    <span class="comment"># PyTorch</span><br>
+                    C = A <span class="op">@</span> B<br>
+                    <span class="comment"># or</span><br>
+                    C = torch.<span class="function">matmul</span>(A, B)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: Cross Product -->
+    <section id="crossproduct">
+        <div class="section-header">
+            <div class="section-number">06 — Vector Product</div>
+            <h2 class="section-title">Cross Product</h2>
+            <p class="section-subtitle">
+                Returns a vector perpendicular to both inputs.
+                <span class="symbol">a × b</span>
+            </p>
+            <div class="formula-box" >
+                <div class="formula" style="font-size: 0.8rem;">
+                    <span style="color: var(--accent-blue);">Vector (3,)</span> × 
+                    <span style="color: var(--accent-purple);">Vector (3,)</span> → 
+                    <span style="color: var(--accent-green);">Vector (3,)</span>
+                    <br><span style="color: var(--text-secondary); font-size: 0.8rem;">3D vectors only!</span>
+                </div>
+                <div style="margin-top: 0.5rem; text-align: left; font-size: 0.75rem; color: var(--text-secondary);">
+                    <div style="color: var(--accent-cyan); margin-bottom: 0.25rem;">Use cases (rare in LLMs, common in 3D):</div>
+                    <div>• <strong>3D graphics/NeRF</strong> — surface normals, camera rays</div>
+                    <div>• <strong>Robotics</strong> — torque, angular momentum</div>
+                    <div>• <strong>Physics simulations</strong> — magnetic force F = qv × B</div>
+                    <div style="color: var(--accent-pink); margin-top: 0.5rem; font-style: italic;">⚠️ Not used in standard transformers/LLMs</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="formula-box">
+                <div class="formula">
+                    a × b = [a₂b₃ - a₃b₂, a₃b₁ - a₁b₃, a₁b₂ - a₂b₁]
+                </div>
+            </div>
+
+            <div class="demo-layout">
+                <div class="demo-inputs">
+                    <div class="matrix-group">
+                        <div class="matrix-label">Vector a</div>
+                        <div class="vector-input" id="cross-vec-a">
+                            <input type="number" value="1">
+                            <input type="number" value="0">
+                            <input type="number" value="0">
+                        </div>
+                        
+                    </div>
+
+                    <div class="operator">×</div>
+
+                    <div class="matrix-group">
+                        <div class="matrix-label">Vector b</div>
+                        <div class="vector-input" id="cross-vec-b">
+                            <input type="number" value="0">
+                            <input type="number" value="1">
+                            <input type="number" value="0">
+                        </div>
+                        
+                    </div>
+
+                    <div class="equals">=</div>
+
+                    <div class="result-group">
+                        <div class="matrix-label">Result Vector</div>
+                        <div class="vector-input" id="cross-result">
+                            <div class="cell result-cell">0</div>
+                            <div class="cell result-cell">0</div>
+                            <div class="cell result-cell">1</div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="calculation-breakdown" id="cross-breakdown">
+                    <div class="breakdown-title">Step-by-step calculation</div>
+                    <div class="breakdown-content">
+                        <div class="step">
+                            x: <span class="val-a">a[1]</span><span class="op">×</span><span class="val-b">b[2]</span>
+                            <span class="op">-</span>
+                            <span class="val-a">a[2]</span><span class="op">×</span><span class="val-b">b[1]</span>
+                            = <span class="result">0×0 - 0×1 = 0</span>
+                        </div>
+                        <div class="step">
+                            y: <span class="val-a">a[2]</span><span class="op">×</span><span class="val-b">b[0]</span>
+                            <span class="op">-</span>
+                            <span class="val-a">a[0]</span><span class="op">×</span><span class="val-b">b[2]</span>
+                            = <span class="result">0×0 - 1×0 = 0</span>
+                        </div>
+                        <div class="step">
+                            z: <span class="val-a">a[0]</span><span class="op">×</span><span class="val-b">b[1]</span>
+                            <span class="op">-</span>
+                            <span class="val-a">a[1]</span><span class="op">×</span><span class="val-b">b[0]</span>
+                            = <span class="result">1×1 - 0×0 = 1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+                    <span class="comment"># PyTorch</span><br>
+                    result = torch.<span class="function">cross</span>(a, b)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: Transpose -->
+    <section id="transpose">
+        <div class="section-header">
+            <div class="section-number">07 — Transpose</div>
+            <h2 class="section-title">Matrix Transpose</h2>
+            <p class="section-subtitle">
+                Flip rows and columns. Row i becomes column i.
+                <span class="symbol">Aᵀ</span>
+            </p>
+            <div class="formula-box" >
+                <div class="formula" style="font-size: 0.8rem;">
+                    <span style="color: var(--accent-blue);">Matrix (m×n)</span> → 
+                    <span style="color: var(--accent-green);">Matrix (n×m)</span>
+                    <br><span style="color: var(--text-secondary); font-size: 0.8rem;">2D tensor (or specify dims for higher)</span>
+                </div>
+                <div style="margin-top: 0.5rem; text-align: left; font-size: 0.75rem; color: var(--text-secondary);">
+                    <div style="color: var(--accent-orange); margin-bottom: 0.25rem;">Common in NN/Transformers:</div>
+                    <div>• <strong>Attention</strong> — Q @ K<sup>T</sup> (transpose K for dot products)</div>
+                    <div>• <strong>Weight tying</strong> — output_embed = input_embed.T</div>
+                    <div>• <strong>Backpropagation</strong> — gradients use W.T</div>
+                    <div>• <strong>Batch reshaping</strong> — swap batch/sequence dims</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-container">
+            <div class="dim-controls">
+                <div class="dim-control">
+                    <span class="dim-label">Rows:</span>
+                    <button class="dim-btn" onclick="changeTransDim('rows', -1)">−</button>
+                    <span class="dim-value" id="trans-rows">2</span>
+                    <button class="dim-btn" onclick="changeTransDim('rows', 1)">+</button>
+                </div>
+                <div class="dim-control">
+                    <span class="dim-label">Cols:</span>
+                    <button class="dim-btn" onclick="changeTransDim('cols', -1)">−</button>
+                    <span class="dim-value" id="trans-cols">3</span>
+                    <button class="dim-btn" onclick="changeTransDim('cols', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="formula-box">
+                <div class="formula">B<sub>ji</sub> = A<sub>ij</sub> (swap row and column indices)</div>
+            </div>
+
+            <div class="demo-layout">
+                <div class="demo-inputs">
+                    <div class="matrix-group">
+                        <div class="matrix-label">Matrix A (2×3)</div>
+                        <div class="matrix-grid cols-3" id="trans-matrix-a">
+                            <input type="number" value="1" data-row="0" data-col="0">
+                            <input type="number" value="2" data-row="0" data-col="1">
+                            <input type="number" value="3" data-row="0" data-col="2">
+                            <input type="number" value="4" data-row="1" data-col="0">
+                            <input type="number" value="5" data-row="1" data-col="1">
+                            <input type="number" value="6" data-row="1" data-col="2">
+                        </div>
+                    </div>
+
+                    <div class="operator" style="font-size: 1.2rem;">ᵀ</div>
+                    <div class="equals">=</div>
+
+                    <div class="result-group">
+                        <div class="matrix-label">Result Aᵀ (3×2)</div>
+                        <div class="result-matrix cols-2" id="trans-result">
+                            <div class="cell cell-interactive">1</div>
+                            <div class="cell cell-interactive">4</div>
+                            <div class="cell cell-interactive">2</div>
+                            <div class="cell cell-interactive">5</div>
+                            <div class="cell cell-interactive">3</div>
+                            <div class="cell cell-interactive">6</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calculation-breakdown" id="trans-breakdown">
+                    <div class="breakdown-title">Visual mapping</div>
+                    <div class="breakdown-content">
+                        <div class="step"><span class="val-a">A[0,0]=1</span> → <span class="result">B[0,0]=1</span></div>
+                        <div class="step"><span class="val-a">A[0,1]=2</span> → <span class="result">B[1,0]=2</span></div>
+                        <div class="step"><span class="val-a">A[0,2]=3</span> → <span class="result">B[2,0]=3</span></div>
+                        <div class="step"><span class="val-a">A[1,0]=4</span> → <span class="result">B[0,1]=4</span></div>
+                        <div class="step"><span class="val-a">A[1,1]=5</span> → <span class="result">B[1,1]=5</span></div>
+                        <div class="step"><span class="val-a">A[1,2]=6</span> → <span class="result">B[2,1]=6</span></div>
+                    </div>
+                </div>
+
+                <div class="code-snippet">
+                    <span class="comment"># PyTorch</span><br>
+                    B = A.<span class="function">T</span><br>
+                    <span class="comment"># or</span><br>
+                    B = torch.<span class="function">transpose</span>(A, 0, 1)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Interactive guide to matrix operations for neural networks & transformers</p>
+    </footer>
+
+    <script>
+        // Helper: Get matrix values from inputs
+        function getMatrixValues(containerId) {
+            const container = document.getElementById(containerId);
+            const inputs = container.querySelectorAll('input');
+            const values = [];
+            inputs.forEach(input => values.push(parseFloat(input.value) || 0));
+            return values;
+        }
+
+        // Helper: Get vector values
+        function getVectorValues(containerId) {
+            return getMatrixValues(containerId);
+        }
+
+        // Dimension limits
+        const MIN_DIM = 1;
+        const MAX_DIM = 5;
+
+        // Helper: Generate matrix input grid
+        function generateMatrixGrid(containerId, rows, cols, prefix = '') {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            container.className = `matrix-grid cols-${cols}`;
+            
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.value = i * cols + j + 1;
+                    input.dataset.row = i;
+                    input.dataset.col = j;
+                    container.appendChild(input);
+                }
+            }
+        }
+
+        // Helper: Generate vector input
+        function generateVectorInput(containerId, length, startVal = 1) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            for (let i = 0; i < length; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = startVal + i;
+                container.appendChild(input);
+            }
+        }
+
+        // Helper: Generate result matrix
+        function generateResultMatrix(containerId, rows, cols) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            container.className = `result-matrix cols-${cols}`;
+            
+            for (let i = 0; i < rows * cols; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell cell-interactive';
+                cell.textContent = '0';
+                container.appendChild(cell);
+            }
+        }
+
+        // =====================
+        // SCALAR DIMENSION CHANGE
+        // =====================
+        let scalarDims = { rows: 2, cols: 3 };
+        
+        function changeScalarDim(dim, delta) {
+            const newVal = scalarDims[dim] + delta;
+            if (newVal < MIN_DIM || newVal > MAX_DIM) return;
+            scalarDims[dim] = newVal;
+            
+            document.getElementById('scalar-rows').textContent = scalarDims.rows;
+            document.getElementById('scalar-cols').textContent = scalarDims.cols;
+            
+            generateMatrixGrid('scalar-matrix-a', scalarDims.rows, scalarDims.cols);
+            generateResultMatrix('scalar-result', scalarDims.rows, scalarDims.cols);
+            
+            // Re-attach event listeners
+            document.querySelectorAll('#scalar-matrix-a input').forEach(input => {
+                input.addEventListener('input', updateScalarMul);
+            });
+            
+            updateScalarMul();
+        }
+
+        // =====================
+        // ELEMENT-WISE DIMENSION CHANGE
+        // =====================
+        let ewDims = { rows: 2, cols: 2 };
+        
+        function changeEwDim(dim, delta) {
+            const newVal = ewDims[dim] + delta;
+            if (newVal < MIN_DIM || newVal > MAX_DIM) return;
+            ewDims[dim] = newVal;
+            
+            document.getElementById('ew-rows').textContent = ewDims.rows;
+            document.getElementById('ew-cols').textContent = ewDims.cols;
+            
+            generateMatrixGrid('ew-matrix-a', ewDims.rows, ewDims.cols);
+            generateMatrixGrid('ew-matrix-b', ewDims.rows, ewDims.cols);
+            generateResultMatrix('ew-result', ewDims.rows, ewDims.cols);
+            
+            // Different starting values for B
+            document.querySelectorAll('#ew-matrix-b input').forEach((input, i) => {
+                input.value = i + ewDims.rows * ewDims.cols + 1;
+            });
+            
+            // Re-attach event listeners
+            document.querySelectorAll('#ew-matrix-a input, #ew-matrix-b input').forEach(input => {
+                input.addEventListener('input', updateElementWise);
+            });
+            
+            document.querySelectorAll('#ew-result .cell').forEach((cell, idx) => {
+                cell.addEventListener('click', () => {
+                    const row = Math.floor(idx / ewDims.cols);
+                    const col = idx % ewDims.cols;
+                    showElementWiseBreakdown(row, col);
+                    document.querySelectorAll('#ew-result .cell').forEach(c => c.classList.remove('active'));
+                    cell.classList.add('active');
+                });
+            });
+            
+            updateElementWise();
+        }
+
+        // =====================
+        // DOT PRODUCT DIMENSION CHANGE
+        // =====================
+        let dotLen = 3;
+        
+        function changeDotDim(delta) {
+            const newVal = dotLen + delta;
+            if (newVal < MIN_DIM || newVal > MAX_DIM) return;
+            dotLen = newVal;
+            
+            document.getElementById('dot-len').textContent = dotLen;
+            
+            generateVectorInput('dot-vec-a', dotLen, 1);
+            generateVectorInput('dot-vec-b', dotLen, dotLen + 1);
+            
+            // Re-attach event listeners
+            document.querySelectorAll('#dot-vec-a input, #dot-vec-b input').forEach(input => {
+                input.addEventListener('input', updateDotProduct);
+            });
+            
+            updateDotProduct();
+        }
+
+        // =====================
+        // OUTER PRODUCT DIMENSION CHANGE
+        // =====================
+        let outerDims = { a: 3, b: 4 };
+        
+        function changeOuterDim(vec, delta) {
+            const newVal = outerDims[vec] + delta;
+            if (newVal < MIN_DIM || newVal > MAX_DIM) return;
+            outerDims[vec] = newVal;
+            
+            document.getElementById('outer-len-a').textContent = outerDims.a;
+            document.getElementById('outer-len-b').textContent = outerDims.b;
+            
+            // Regenerate vector a (column)
+            const vecAContainer = document.getElementById('outer-vec-a');
+            vecAContainer.innerHTML = '';
+            vecAContainer.className = 'matrix-grid cols-1';
+            for (let i = 0; i < outerDims.a; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = i + 1;
+                vecAContainer.appendChild(input);
+            }
+            
+            // Regenerate vector b (row)
+            generateVectorInput('outer-vec-b', outerDims.b, outerDims.a + 1);
+            
+            // Update result label
+            document.querySelector('#outerproduct .result-group .matrix-label').textContent = 
+                `Result Matrix (${outerDims.a}×${outerDims.b})`;
+            
+            // Re-attach event listeners
+            document.querySelectorAll('#outer-vec-a input, #outer-vec-b input').forEach(input => {
+                input.addEventListener('input', updateOuterProduct);
+            });
+            
+            updateOuterProduct();
+        }
+
+        // =====================
+        // MATRIX MULTIPLY DIMENSION CHANGE
+        // =====================
+        let mmDims = { m: 2, n: 3, p: 2 };
+        
+        function changeMmDim(dim, delta) {
+            const newVal = mmDims[dim] + delta;
+            if (newVal < MIN_DIM || newVal > MAX_DIM) return;
+            mmDims[dim] = newVal;
+            
+            document.getElementById('mm-m').textContent = mmDims.m;
+            document.getElementById('mm-n').textContent = mmDims.n;
+            document.getElementById('mm-p').textContent = mmDims.p;
+            
+            // Regenerate matrices
+            generateMatrixGrid('mm-matrix-a', mmDims.m, mmDims.n);
+            generateMatrixGrid('mm-matrix-b', mmDims.n, mmDims.p);
+            generateResultMatrix('mm-result', mmDims.m, mmDims.p);
+            
+            // Different starting values for B
+            document.querySelectorAll('#mm-matrix-b input').forEach((input, i) => {
+                input.value = mmDims.m * mmDims.n + i + 1;
+            });
+            
+            // Update labels
+            document.querySelector('#mm-matrix-a').parentElement.querySelector('.matrix-label').textContent = 
+                `Matrix A (${mmDims.m}×${mmDims.n})`;
+            document.querySelector('#mm-matrix-b').parentElement.querySelector('.matrix-label').textContent = 
+                `Matrix B (${mmDims.n}×${mmDims.p})`;
+            document.querySelector('#mm-result').parentElement.querySelector('.matrix-label').textContent = 
+                `Result C (${mmDims.m}×${mmDims.p})`;
+            
+            // Re-attach event listeners
+            document.querySelectorAll('#mm-matrix-a input, #mm-matrix-b input').forEach(input => {
+                input.addEventListener('input', updateMatMul);
+            });
+            
+            document.querySelectorAll('#mm-result .cell').forEach((cell, idx) => {
+                cell.addEventListener('click', () => {
+                    const row = Math.floor(idx / mmDims.p);
+                    const col = idx % mmDims.p;
+                    showMatMulBreakdown(row, col);
+                    document.querySelectorAll('#mm-result .cell').forEach(c => c.classList.remove('active'));
+                    cell.classList.add('active');
+                });
+            });
+            
+            updateMatMul();
+        }
+
+        // =====================
+        // TRANSPOSE DIMENSION CHANGE
+        // =====================
+        let transDims = { rows: 2, cols: 3 };
+        
+        function changeTransDim(dim, delta) {
+            const newVal = transDims[dim] + delta;
+            if (newVal < MIN_DIM || newVal > MAX_DIM) return;
+            transDims[dim] = newVal;
+            
+            document.getElementById('trans-rows').textContent = transDims.rows;
+            document.getElementById('trans-cols').textContent = transDims.cols;
+            
+            generateMatrixGrid('trans-matrix-a', transDims.rows, transDims.cols);
+            generateResultMatrix('trans-result', transDims.cols, transDims.rows);
+            
+            // Update labels
+            document.querySelector('#trans-matrix-a').parentElement.querySelector('.matrix-label').textContent = 
+                `Matrix A (${transDims.rows}×${transDims.cols})`;
+            document.querySelector('#trans-result').parentElement.querySelector('.matrix-label').textContent = 
+                `Result Aᵀ (${transDims.cols}×${transDims.rows})`;
+            
+            // Re-attach event listeners
+            document.querySelectorAll('#trans-matrix-a input').forEach(input => {
+                input.addEventListener('input', updateTranspose);
+            });
+            
+            updateTranspose();
+        }
+
+        // =====================
+        // SCALAR MULTIPLICATION
+        // =====================
+        function updateScalarMul() {
+            const c = parseFloat(document.querySelector('#scalar-c input').value) || 0;
+            const a = getMatrixValues('scalar-matrix-a');
+            const result = a.map(val => val * c);
+            
+            const resultCells = document.querySelectorAll('#scalar-result .cell');
+            resultCells.forEach((cell, i) => {
+                cell.textContent = result[i];
+            });
+        }
+
+        document.querySelectorAll('#scalar-c input, #scalar-matrix-a input').forEach(input => {
+            input.addEventListener('input', updateScalarMul);
+        });
+
+        // =====================
+        // ELEMENT-WISE MULTIPLICATION
+        // =====================
+        function updateElementWise() {
+            const a = getMatrixValues('ew-matrix-a');
+            const b = getMatrixValues('ew-matrix-b');
+            const result = a.map((val, i) => val * b[i]);
+            
+            const resultCells = document.querySelectorAll('#ew-result .cell');
+            resultCells.forEach((cell, i) => {
+                cell.textContent = result[i];
+            });
+        }
+
+        function showElementWiseBreakdown(row, col) {
+            const a = getMatrixValues('ew-matrix-a');
+            const b = getMatrixValues('ew-matrix-b');
+            const idx = row * ewDims.cols + col;
+            const result = a[idx] * b[idx];
+            
+            const breakdown = document.querySelector('#ew-breakdown .breakdown-content');
+            breakdown.innerHTML = `
+                <div class="step">
+                    <span class="val-a">A[${row},${col}] = ${a[idx]}</span>
+                    <span class="op">×</span>
+                    <span class="val-b">B[${row},${col}] = ${b[idx]}</span>
+                    <span class="op">=</span>
+                    <span class="result">${result}</span>
+                </div>
+            `;
+            
+            // Highlight corresponding inputs
+            document.querySelectorAll('#ew-matrix-a input, #ew-matrix-b input').forEach(inp => {
+                inp.classList.remove('highlight-a', 'highlight-b');
+            });
+            document.querySelectorAll(`#ew-matrix-a input`)[idx].classList.add('highlight-a');
+            document.querySelectorAll(`#ew-matrix-b input`)[idx].classList.add('highlight-b');
+        }
+
+        // Event listeners for element-wise
+        document.querySelectorAll('#ew-matrix-a input, #ew-matrix-b input').forEach(input => {
+            input.addEventListener('input', updateElementWise);
+        });
+
+        document.querySelectorAll('#ew-result .cell').forEach((cell, idx) => {
+            cell.addEventListener('click', () => {
+                const row = Math.floor(idx / 2);
+                const col = idx % 2;
+                showElementWiseBreakdown(row, col);
+                
+                document.querySelectorAll('#ew-result .cell').forEach(c => c.classList.remove('active'));
+                cell.classList.add('active');
+            });
+        });
+
+        // =====================
+        // DOT PRODUCT
+        // =====================
+        function updateDotProduct() {
+            const a = getVectorValues('dot-vec-a');
+            const b = getVectorValues('dot-vec-b');
+            const products = a.map((val, i) => val * b[i]);
+            const result = products.reduce((sum, val) => sum + val, 0);
+            
+            document.getElementById('dot-result').textContent = result;
+            
+            const breakdown = document.querySelector('#dot-breakdown .breakdown-content');
+            let step1 = '<div class="step">';
+            let step2 = '<div class="step"><span>=</span>';
+            
+            a.forEach((val, i) => {
+                step1 += `<span class="val-a">${val}</span><span class="op">×</span><span class="val-b">${b[i]}</span>`;
+                step2 += `<span class="result">${products[i]}</span>`;
+                if (i < a.length - 1) {
+                    step1 += '<span class="op">+</span>';
+                    step2 += '<span class="op">+</span>';
+                }
+            });
+            
+            step1 += '</div>';
+            step2 += `<span>=</span><span class="result" style="font-size: 1.2em">${result}</span></div>`;
+            
+            breakdown.innerHTML = step1 + step2;
+        }
+
+        document.querySelectorAll('#dot-vec-a input, #dot-vec-b input').forEach(input => {
+            input.addEventListener('input', updateDotProduct);
+        });
+
+        // =====================
+        // OUTER PRODUCT
+        // =====================
+        function updateOuterProduct() {
+            const a = getVectorValues('outer-vec-a');
+            const b = getVectorValues('outer-vec-b');
+            
+            const resultContainer = document.getElementById('outer-result');
+            resultContainer.innerHTML = '';
+            resultContainer.className = 'result-matrix cols-' + b.length;
+            
+            a.forEach((aVal, i) => {
+                b.forEach((bVal, j) => {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell cell-interactive';
+                    cell.textContent = aVal * bVal;
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    cell.addEventListener('mouseenter', () => showOuterBreakdown(i, j, aVal, bVal));
+                    resultContainer.appendChild(cell);
+                });
+            });
+        }
+
+        function showOuterBreakdown(row, col, aVal, bVal) {
+            const breakdown = document.querySelector('#outer-breakdown .breakdown-content');
+            breakdown.innerHTML = `
+                <div class="step">
+                    <span>C[${row},${col}] =</span>
+                    <span class="val-a">a[${row}] = ${aVal}</span>
+                    <span class="op">×</span>
+                    <span class="val-b">b[${col}] = ${bVal}</span>
+                    <span class="op">=</span>
+                    <span class="result">${aVal * bVal}</span>
+                </div>
+            `;
+        }
+
+        document.querySelectorAll('#outer-vec-a input, #outer-vec-b input').forEach(input => {
+            input.addEventListener('input', updateOuterProduct);
+        });
+
+        // Initialize outer product
+        updateOuterProduct();
+
+        // =====================
+        // MATRIX MULTIPLICATION
+        // =====================
+        function updateMatMul() {
+            const aInputs = Array.from(document.querySelectorAll('#mm-matrix-a input'));
+            const bInputs = Array.from(document.querySelectorAll('#mm-matrix-b input'));
+            
+            // Build matrices from inputs using dynamic dimensions
+            const A = [];
+            for (let i = 0; i < mmDims.m; i++) {
+                A[i] = [];
+                for (let j = 0; j < mmDims.n; j++) {
+                    A[i][j] = parseFloat(aInputs[i * mmDims.n + j].value) || 0;
+                }
+            }
+            
+            const B = [];
+            for (let i = 0; i < mmDims.n; i++) {
+                B[i] = [];
+                for (let j = 0; j < mmDims.p; j++) {
+                    B[i][j] = parseFloat(bInputs[i * mmDims.p + j].value) || 0;
+                }
+            }
+            
+            // Matrix multiplication C = A @ B
+            const resultCells = document.querySelectorAll('#mm-result .cell');
+            let cellIdx = 0;
+            for (let i = 0; i < mmDims.m; i++) {
+                for (let j = 0; j < mmDims.p; j++) {
+                    let sum = 0;
+                    for (let k = 0; k < mmDims.n; k++) {
+                        sum += A[i][k] * B[k][j];
+                    }
+                    resultCells[cellIdx++].textContent = sum;
+                }
+            }
+        }
+
+        function showMatMulBreakdown(row, col) {
+            const aInputs = Array.from(document.querySelectorAll('#mm-matrix-a input'));
+            const bInputs = Array.from(document.querySelectorAll('#mm-matrix-b input'));
+            
+            // Build matrices
+            const A = [];
+            for (let i = 0; i < mmDims.m; i++) {
+                A[i] = [];
+                for (let j = 0; j < mmDims.n; j++) {
+                    A[i][j] = parseFloat(aInputs[i * mmDims.n + j].value) || 0;
+                }
+            }
+            
+            const B = [];
+            for (let i = 0; i < mmDims.n; i++) {
+                B[i] = [];
+                for (let j = 0; j < mmDims.p; j++) {
+                    B[i][j] = parseFloat(bInputs[i * mmDims.p + j].value) || 0;
+                }
+            }
+            
+            // Calculate products for this cell
+            const products = [];
+            for (let k = 0; k < mmDims.n; k++) {
+                products.push(A[row][k] * B[k][col]);
+            }
+            const sum = products.reduce((a, b) => a + b, 0);
+            
+            // Build breakdown HTML
+            let step2 = '<div class="step">';
+            let step3 = '<div class="step"><span>=</span>';
+            
+            for (let k = 0; k < mmDims.n; k++) {
+                step2 += `<span class="val-a">${A[row][k]}</span><span class="op">×</span><span class="val-b">${B[k][col]}</span>`;
+                step3 += `<span class="result">${products[k]}</span>`;
+                if (k < mmDims.n - 1) {
+                    step2 += '<span class="op">+</span>';
+                    step3 += '<span class="op">+</span>';
+                }
+            }
+            step2 += '</div>';
+            step3 += `<span>=</span><span class="result" style="font-size: 1.2em">${sum}</span></div>`;
+            
+            const breakdown = document.querySelector('#mm-breakdown .breakdown-content');
+            breakdown.innerHTML = `
+                <div class="step">
+                    C[${row},${col}] = row ${row} of A · column ${col} of B
+                </div>
+                ${step2}
+                ${step3}
+            `;
+            
+            // Highlight row in A and column in B
+            document.querySelectorAll('#mm-matrix-a input').forEach((inp, idx) => {
+                inp.classList.remove('highlight-a');
+                if (Math.floor(idx / 3) === row) inp.classList.add('highlight-a');
+            });
+            
+            document.querySelectorAll('#mm-matrix-b input').forEach((inp, idx) => {
+                inp.classList.remove('highlight-b');
+                if (idx % 2 === col) inp.classList.add('highlight-b');
+            });
+        }
+
+        document.querySelectorAll('#mm-matrix-a input, #mm-matrix-b input').forEach(input => {
+            input.addEventListener('input', updateMatMul);
+        });
+
+        document.querySelectorAll('#mm-result .cell').forEach((cell, idx) => {
+            cell.addEventListener('click', () => {
+                const row = Math.floor(idx / 2);
+                const col = idx % 2;
+                showMatMulBreakdown(row, col);
+                
+                document.querySelectorAll('#mm-result .cell').forEach(c => c.classList.remove('active'));
+                cell.classList.add('active');
+            });
+        });
+
+        // =====================
+        // CROSS PRODUCT
+        // =====================
+        function updateCrossProduct() {
+            const a = getVectorValues('cross-vec-a');
+            const b = getVectorValues('cross-vec-b');
+            
+            const result = [
+                a[1] * b[2] - a[2] * b[1],
+                a[2] * b[0] - a[0] * b[2],
+                a[0] * b[1] - a[1] * b[0]
+            ];
+            
+            const resultCells = document.querySelectorAll('#cross-result .cell');
+            resultCells.forEach((cell, i) => {
+                cell.textContent = result[i];
+            });
+            
+            const breakdown = document.querySelector('#cross-breakdown .breakdown-content');
+            breakdown.innerHTML = `
+                <div class="step">
+                    x: <span class="val-a">a[1]=${a[1]}</span><span class="op">×</span><span class="val-b">b[2]=${b[2]}</span>
+                    <span class="op">-</span>
+                    <span class="val-a">a[2]=${a[2]}</span><span class="op">×</span><span class="val-b">b[1]=${b[1]}</span>
+                    = <span class="result">${a[1]}×${b[2]} - ${a[2]}×${b[1]} = ${result[0]}</span>
+                </div>
+                <div class="step">
+                    y: <span class="val-a">a[2]=${a[2]}</span><span class="op">×</span><span class="val-b">b[0]=${b[0]}</span>
+                    <span class="op">-</span>
+                    <span class="val-a">a[0]=${a[0]}</span><span class="op">×</span><span class="val-b">b[2]=${b[2]}</span>
+                    = <span class="result">${a[2]}×${b[0]} - ${a[0]}×${b[2]} = ${result[1]}</span>
+                </div>
+                <div class="step">
+                    z: <span class="val-a">a[0]=${a[0]}</span><span class="op">×</span><span class="val-b">b[1]=${b[1]}</span>
+                    <span class="op">-</span>
+                    <span class="val-a">a[1]=${a[1]}</span><span class="op">×</span><span class="val-b">b[0]=${b[0]}</span>
+                    = <span class="result">${a[0]}×${b[1]} - ${a[1]}×${b[0]} = ${result[2]}</span>
+                </div>
+            `;
+        }
+
+        document.querySelectorAll('#cross-vec-a input, #cross-vec-b input').forEach(input => {
+            input.addEventListener('input', updateCrossProduct);
+        });
+
+        // =====================
+        // TRANSPOSE
+        // =====================
+        function updateTranspose() {
+            const inputs = Array.from(document.querySelectorAll('#trans-matrix-a input'));
+            
+            // Build matrix A from inputs
+            const A = [];
+            for (let i = 0; i < transDims.rows; i++) {
+                A[i] = [];
+                for (let j = 0; j < transDims.cols; j++) {
+                    A[i][j] = parseFloat(inputs[i * transDims.cols + j].value) || 0;
+                }
+            }
+            
+            // Transpose: AT[j][i] = A[i][j]
+            const resultCells = document.querySelectorAll('#trans-result .cell');
+            let cellIdx = 0;
+            for (let j = 0; j < transDims.cols; j++) {
+                for (let i = 0; i < transDims.rows; i++) {
+                    resultCells[cellIdx++].textContent = A[i][j];
+                }
+            }
+            
+            // Build breakdown HTML
+            let breakdownHtml = '';
+            for (let i = 0; i < transDims.rows; i++) {
+                for (let j = 0; j < transDims.cols; j++) {
+                    breakdownHtml += `<div class="step"><span class="val-a">A[${i},${j}]=${A[i][j]}</span> → <span class="result">Aᵀ[${j},${i}]=${A[i][j]}</span></div>`;
+                }
+            }
+            
+            const breakdown = document.querySelector('#trans-breakdown .breakdown-content');
+            breakdown.innerHTML = breakdownHtml;
+        }
+
+        document.querySelectorAll('#trans-matrix-a input').forEach(input => {
+            input.addEventListener('input', updateTranspose);
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Initialize all
+        updateScalarMul();
+        updateElementWise();
+        updateDotProduct();
+        updateMatMul();
+        updateCrossProduct();
+        updateTranspose();
+    </script>
+</body>
+</html>
