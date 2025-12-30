@@ -11,26 +11,46 @@
             padding: 0;
         }
 
+        html, body {
+            height: 100%;
+        }
+
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background: #1a1a2e;
-            min-height: 100vh;
-            padding: 10px;
             color: #e0e0e0;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
+        .main-container {
+            display: flex;
+            height: 100vh;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .left-panel {
+            width: 320px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
         }
 
         .description {
             background: linear-gradient(135deg, rgba(100, 255, 218, 0.08) 0%, rgba(255, 107, 157, 0.08) 100%);
             border-left: 3px solid #64ffda;
             padding: 10px 12px;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-            line-height: 1.5;
+            font-size: 0.8rem;
+            line-height: 1.4;
             border-radius: 0 4px 4px 0;
         }
 
@@ -42,18 +62,25 @@
             color: #ffd93d;
         }
 
-        .controls-row {
-            display: flex;
-            gap: 8px;
+        .section {
+            background: rgba(255,255,255,0.03);
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64ffda;
             margin-bottom: 8px;
-            flex-wrap: wrap;
-            align-items: center;
         }
 
         .input-group {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
+            margin-bottom: 8px;
         }
 
         .input-group label {
@@ -63,14 +90,14 @@
         }
 
         .input-group input[type="text"] {
+            flex: 1;
             background: #0f0f1a;
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 4px;
-            padding: 6px 10px;
+            padding: 8px 10px;
             font-family: 'Courier New', monospace;
             font-size: 0.9rem;
             color: #fff;
-            width: 200px;
             outline: none;
         }
 
@@ -82,24 +109,34 @@
             background: #64ffda;
             border: none;
             border-radius: 4px;
-            padding: 6px 12px;
+            padding: 8px 16px;
             font-size: 0.85rem;
             font-weight: 600;
             color: #0f0f1a;
             cursor: pointer;
+            width: 100%;
+            margin-top: 4px;
         }
 
         .btn:hover {
             background: #4fd1c5;
         }
 
+        .presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
         .btn-small {
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
-            color: #e0e0e0;
+            border-radius: 4px;
             padding: 4px 8px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-family: 'Courier New', monospace;
+            color: #e0e0e0;
+            cursor: pointer;
         }
 
         .btn-small:hover {
@@ -111,17 +148,18 @@
         .slider-group {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            margin-bottom: 8px;
         }
 
         .slider-group label {
             font-size: 0.75rem;
             color: #8892b0;
-            white-space: nowrap;
+            min-width: 40px;
         }
 
         .slider-group input[type="range"] {
-            width: 80px;
+            flex: 1;
             -webkit-appearance: none;
             height: 4px;
             border-radius: 2px;
@@ -130,8 +168,8 @@
 
         .slider-group input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: #64ffda;
             cursor: pointer;
@@ -141,107 +179,30 @@
             font-family: 'Courier New', monospace;
             font-size: 0.75rem;
             color: #fff;
-            min-width: 45px;
-        }
-
-        .canvas-container {
-            background: #0f0f1a;
-            border-radius: 6px;
-            padding: 8px;
-            position: relative;
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            border-radius: 4px;
-            cursor: crosshair;
-            touch-action: none;
-        }
-
-        canvas.panning {
-            cursor: grab;
-        }
-
-        .overlay-controls {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            display: flex;
-            gap: 4px;
-            z-index: 10;
-        }
-
-        .overlay-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(15, 15, 26, 0.9);
-            color: #64ffda;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .overlay-btn:hover {
-            background: rgba(100, 255, 218, 0.2);
-        }
-
-        .overlay-btn.text {
-            font-size: 0.6rem;
-            font-weight: bold;
-        }
-
-        .mode-toggle {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            display: flex;
-            gap: 2px;
-            z-index: 10;
-        }
-
-        .mode-btn {
-            padding: 5px 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(15, 15, 26, 0.9);
-            color: #8892b0;
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
-
-        .mode-btn.active {
-            background: rgba(100, 255, 218, 0.2);
-            border-color: #64ffda;
-            color: #64ffda;
-        }
-
-        .info-bar {
-            display: flex;
-            gap: 15px;
-            padding: 6px 0;
-            font-size: 0.8rem;
-            justify-content: center;
-            flex-wrap: wrap;
+            min-width: 40px;
+            text-align: right;
         }
 
         .info-item {
             display: flex;
-            gap: 4px;
-            align-items: center;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
         }
 
         .info-item .label {
             color: #8892b0;
+            font-size: 0.8rem;
         }
 
         .info-item .value {
             font-family: 'Courier New', monospace;
             font-weight: 600;
+            font-size: 0.85rem;
         }
 
         .info-item.x-val .value { color: #64ffda; }
@@ -251,27 +212,25 @@
         .grad-explanation {
             font-size: 0.7rem;
             color: #8892b0;
-            margin-left: 4px;
+            margin-top: 4px;
         }
 
         .error-message {
             background: rgba(255, 107, 107, 0.2);
             border: 1px solid rgba(255, 107, 107, 0.5);
             color: #ff6b6b;
-            padding: 6px 10px;
+            padding: 8px;
             border-radius: 4px;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             display: none;
         }
 
         .legend {
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            font-size: 0.75rem;
+            gap: 12px;
+            font-size: 0.7rem;
             color: #8892b0;
-            padding: 4px 0;
+            margin-top: 8px;
         }
 
         .legend-item {
@@ -281,7 +240,7 @@
         }
 
         .legend-color {
-            width: 16px;
+            width: 14px;
             height: 3px;
             border-radius: 1px;
         }
@@ -295,91 +254,173 @@
             background: #64ffda; 
         }
 
-        @media (max-width: 600px) {
-            .input-group input[type="text"] { width: 150px; }
-            .slider-group input[type="range"] { width: 60px; }
+        .canvas-container {
+            flex: 1;
+            background: #0f0f1a;
+            border-radius: 6px;
+            position: relative;
+            min-height: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        canvas.panning {
+            cursor: grab;
+        }
+
+        .overlay-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .overlay-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(15, 15, 26, 0.9);
+            color: #64ffda;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay-btn:hover {
+            background: rgba(100, 255, 218, 0.2);
+        }
+
+        .overlay-btn.text {
+            font-size: 0.65rem;
+            font-weight: bold;
+        }
+
+        .mode-toggle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 2px;
+            z-index: 10;
+        }
+
+        .mode-btn {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(15, 15, 26, 0.9);
+            color: #8892b0;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .mode-btn.active {
+            background: rgba(100, 255, 218, 0.2);
+            border-color: #64ffda;
+            color: #64ffda;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="description">
-            <strong>Gradient Visualizer for Neural Network Intuition</strong> — 
-            This tool plots mathematical functions and computes their <span class="highlight">derivative (gradient)</span> numerically at any point. 
-            In neural networks, gradients are the foundation of learning: during <span class="highlight">backpropagation</span>, 
-            the network computes gradients to understand how to adjust weights to minimize error. 
-            The yellow tangent line shows the gradient's direction and steepness — 
-            <span class="highlight">gradient descent</span> follows this slope downhill to find optimal solutions.
-            Try plotting loss functions like <code>x^2</code> or activation functions like <code>1/(1+exp(-x))</code> (sigmoid).
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="description">
+                <strong>Gradient Visualizer for Neural Network Intuition</strong> — 
+                This tool plots mathematical functions and computes their <span class="highlight">derivative (gradient)</span> numerically. 
+                In neural networks, gradients power <span class="highlight">backpropagation</span> — 
+                <span class="highlight">gradient descent</span> follows the slope to minimize error.
+            </div>
+
+            <div class="section">
+                <div class="section-title">Function</div>
+                <div class="input-group">
+                    <label>f(x)=</label>
+                    <input type="text" id="expressionInput" value="x^2" placeholder="e.g., x^2 + sin(x)">
+                </div>
+                <button class="btn" onclick="updateExpression()">Plot</button>
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Presets</div>
+                <div class="presets">
+                    <button class="btn-small" onclick="setPreset('x^2')">x² (loss)</button>
+                    <button class="btn-small" onclick="setPreset('1/(1+exp(-x))')">sigmoid</button>
+                    <button class="btn-small" onclick="setPreset('max(0,x)')">ReLU</button>
+                    <button class="btn-small" onclick="setPreset('tanh(x)')">tanh</button>
+                    <button class="btn-small" onclick="setPreset('exp(-x^2/2)')">gaussian</button>
+                    <button class="btn-small" onclick="setPreset('sin(x)')">sin(x)</button>
+                    <button class="btn-small" onclick="setPreset('x^3 - 3*x')">cubic</button>
+                    <button class="btn-small" onclick="setPreset('ln(x)')">ln(x)</button>
+                    <button class="btn-small" onclick="setPreset('1/x')">1/x</button>
+                    <button class="btn-small" onclick="setPreset('abs(x)')">|x|</button>
+                    <button class="btn-small" onclick="setPreset('sin(x)/x')">sinc</button>
+                    <button class="btn-small" onclick="setPreset('x*exp(-x)')">x·e⁻ˣ</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Controls</div>
+                <div class="slider-group">
+                    <label>X:</label>
+                    <input type="range" id="xSlider" min="-5" max="5" step="0.01" value="1">
+                    <span class="value" id="xDisplay">1.00</span>
+                </div>
+                <div class="slider-group">
+                    <label>Zoom:</label>
+                    <input type="range" id="zoomSlider" min="0.1" max="5" step="0.01" value="1">
+                    <span class="value" id="zoomDisplay">1.0x</span>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color fn"></div>f(x)</div>
+                    <div class="legend-item"><div class="legend-color tan"></div>gradient</div>
+                    <div class="legend-item"><div class="legend-color pt"></div>point</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Values</div>
+                <div class="info-item x-val">
+                    <span class="label">x</span>
+                    <span class="value" id="infoX">1.00</span>
+                </div>
+                <div class="info-item y-val">
+                    <span class="label">f(x)</span>
+                    <span class="value" id="infoY">4.00</span>
+                </div>
+                <div class="info-item grad">
+                    <span class="label">f'(x) = Δy/Δx</span>
+                    <span class="value" id="infoGradient">2.00</span>
+                </div>
+                <div class="grad-explanation" id="gradExplanation">(per 1 unit in x, y increases by 2.00)</div>
+            </div>
         </div>
 
-        <div class="error-message" id="errorMessage"></div>
-
-        <div class="controls-row">
-            <div class="input-group">
-                <label>f(x)=</label>
-                <input type="text" id="expressionInput" value="3*x^2 - 4*x + 5" placeholder="e.g., x^2 + sin(x)">
+        <div class="right-panel">
+            <div class="canvas-container">
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="selectModeBtn" onclick="setMode('select')">Select</button>
+                    <button class="mode-btn" id="panModeBtn" onclick="setMode('pan')">Pan</button>
+                </div>
+                <div class="overlay-controls">
+                    <button class="overlay-btn" onclick="zoomIn()" title="Zoom In">+</button>
+                    <button class="overlay-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+                    <button class="overlay-btn text" onclick="resetView()" title="Fit">FIT</button>
+                </div>
+                <canvas id="plotCanvas"></canvas>
             </div>
-            <button class="btn" onclick="updateExpression()">Plot</button>
-            <button class="btn-small" onclick="setPreset('x^2')">x² (loss)</button>
-            <button class="btn-small" onclick="setPreset('1/(1+exp(-x))')">sigmoid</button>
-            <button class="btn-small" onclick="setPreset('max(0,x)')">ReLU</button>
-            <button class="btn-small" onclick="setPreset('tanh(x)')">tanh</button>
-            <button class="btn-small" onclick="setPreset('exp(-x^2/2)')">gaussian</button>
-            <button class="btn-small" onclick="setPreset('sin(x)')">sin(x)</button>
-            <button class="btn-small" onclick="setPreset('x^3 - 3*x')">cubic</button>
-            <button class="btn-small" onclick="setPreset('ln(x)')">ln(x)</button>
-            <button class="btn-small" onclick="setPreset('1/x')">1/x</button>
-            <button class="btn-small" onclick="setPreset('abs(x)')">|x|</button>
-            <button class="btn-small" onclick="setPreset('sin(x)/x')">sinc</button>
-            <button class="btn-small" onclick="setPreset('x*exp(-x)')">x·e⁻ˣ</button>
-        </div>
-
-        <div class="controls-row">
-            <div class="slider-group">
-                <label>X:</label>
-                <input type="range" id="xSlider" min="-5" max="5" step="0.01" value="1">
-                <span class="value" id="xDisplay">1.00</span>
-            </div>
-            <div class="slider-group">
-                <label>Zoom:</label>
-                <input type="range" id="zoomSlider" min="0.1" max="5" step="0.01" value="1">
-                <span class="value" id="zoomDisplay">1.0x</span>
-            </div>
-            <div class="legend">
-                <div class="legend-item"><div class="legend-color fn"></div>f(x)</div>
-                <div class="legend-item"><div class="legend-color tan"></div>gradient</div>
-                <div class="legend-item"><div class="legend-color pt"></div>point</div>
-            </div>
-        </div>
-
-        <div class="info-bar">
-            <div class="info-item x-val">
-                <span class="label">x:</span>
-                <span class="value" id="infoX">1.00</span>
-            </div>
-            <div class="info-item y-val">
-                <span class="label">f(x):</span>
-                <span class="value" id="infoY">9.41</span>
-            </div>
-            <div class="info-item grad">
-                <span class="label">f'(x)=Δy/Δx=</span>
-                <span class="value" id="infoGradient">8.40</span>
-                <span class="grad-explanation" id="gradExplanation">(per 1 unit in x, y changes by 8.40)</span>
-            </div>
-        </div>
-
-        <div class="canvas-container">
-            <div class="mode-toggle">
-                <button class="mode-btn active" id="selectModeBtn" onclick="setMode('select')">Select</button>
-                <button class="mode-btn" id="panModeBtn" onclick="setMode('pan')">Pan</button>
-            </div>
-            <div class="overlay-controls">
-                <button class="overlay-btn" onclick="zoomIn()" title="Zoom In">+</button>
-                <button class="overlay-btn" onclick="zoomOut()" title="Zoom Out">−</button>
-                <button class="overlay-btn text" onclick="resetView()" title="Fit">FIT</button>
-            </div>
-            <canvas id="plotCanvas" width="860" height="450"></canvas>
         </div>
     </div>
 
@@ -400,15 +441,34 @@
         const panModeBtn = document.getElementById('panModeBtn');
 
         let currentX = 1;
-        let currentExpression = '3*x^2 - 4*x + 5';
+        let currentExpression = 'x^2';
         let viewCenterX = 0, viewCenterY = 0;
         let baseXRange = 5, baseYRange = 10;
         let zoomLevel = 1;
         let mode = 'select';
         let isPanning = false;
+        let isInitialized = false;
         let isLocked = false;
         let panStartX = 0, panStartY = 0;
         let panStartCenterX = 0, panStartCenterY = 0;
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const rect = container.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            if (isInitialized) draw();
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            // Maintain 1:1 aspect ratio on resize
+            if (isInitialized) {
+                const aspectRatio = canvas.width / canvas.height || 1.5;
+                baseXRange = baseYRange * aspectRatio;
+                draw();
+            }
+        });
 
         function getXRange() { return baseXRange / zoomLevel; }
         function getYRange() { return baseYRange / zoomLevel; }
@@ -422,7 +482,6 @@
             let i = 0;
             while (i < expr.length) {
                 if (expr[i] === '^') {
-                    // Find base by walking backwards
                     let base = '';
                     let j = result.length - 1;
                     let parenCount = 0;
@@ -433,11 +492,9 @@
                         else if (char === '(') parenCount--;
                         
                         if (parenCount === 0 && (char === '+' || char === '-' || char === '*' || char === '/' || char === ',') && j !== result.length - 1) {
-                            // Check if minus is unary (at start or after operator/open paren)
                             if (char === '-' && j > 0) {
                                 const prevChar = result[j-1];
                                 if (prevChar !== ')' && !prevChar.match(/[a-zA-Z0-9_]/)) {
-                                    // Unary minus - include it in base
                                     base = char + base;
                                     result = result.substring(0, j);
                                     break;
@@ -456,7 +513,6 @@
                         result = result.substring(0, j + 1);
                     }
                     
-                    // Find exponent
                     i++;
                     let exponent = '';
                     parenCount = 0;
@@ -486,7 +542,6 @@
         }
 
         function parseExpression(expr) {
-            // Handle max/min for ReLU etc
             let parsed = expr
                 .replace(/\bmax\b/gi, 'Math.max')
                 .replace(/\bmin\b/gi, 'Math.min')
@@ -511,7 +566,6 @@
                 .replace(/\blog\b/gi, 'Math.log10')
                 .replace(/Math\.LN/g, 'Math.log');
             
-            // Replace standalone 'e' with Math.E (but not in words like 'exp')
             parsed = parsed.replace(/\be\b(?![a-zA-Z])/g, 'Math.E');
             
             if (parsed.includes('^')) parsed = convertPower(parsed);
@@ -548,56 +602,13 @@
         function showError(msg) { errorMessage.textContent = msg; errorMessage.style.display = 'block'; }
         function hideError() { errorMessage.style.display = 'none'; }
 
-        function autoScale() {
-            const samples = 500, testXRange = 10;
-            let validYValues = [];
-            for (let i = 0; i <= samples; i++) {
-                const x = -testXRange + (2 * testXRange * i) / samples;
-                try {
-                    const y = f(x);
-                    if (isFinite(y) && !isNaN(y)) validYValues.push({ x, y });
-                } catch (e) {}
-            }
-            if (validYValues.length < 10) {
-                baseXRange = 5; baseYRange = 10; viewCenterX = 0; viewCenterY = 0; zoomLevel = 1;
-                return;
-            }
-            const sortedY = validYValues.map(p => p.y).sort((a, b) => a - b);
-            const lowerIdx = Math.floor(sortedY.length * 0.02);
-            const upperIdx = Math.floor(sortedY.length * 0.98);
-            let minY = sortedY[lowerIdx], maxY = sortedY[upperIdx];
-            let minX = -testXRange, maxX = testXRange;
-            const relevantPoints = validYValues.filter(p => p.y >= minY && p.y <= maxY);
-            if (relevantPoints.length > 0) {
-                const xValues = relevantPoints.map(p => p.x);
-                minX = Math.min(...xValues); maxX = Math.max(...xValues);
-            }
-            
-            // Detect if function has bounded extrema (min/max not at edges)
-            const minYPoint = validYValues.find(p => p.y === sortedY[lowerIdx]);
-            const maxYPoint = validYValues.find(p => p.y === sortedY[upperIdx]);
-            const edgeThreshold = testXRange * 0.8;
-            const hasInteriorMin = minYPoint && Math.abs(minYPoint.x) < edgeThreshold;
-            const hasInteriorMax = maxYPoint && Math.abs(maxYPoint.x) < edgeThreshold;
-            const hasBoundedExtrema = hasInteriorMin || hasInteriorMax;
-            
-            // Add more padding for bounded functions
-            const yPadding = hasBoundedExtrema ? (maxY - minY) * 0.35 : (maxY - minY) * 0.15 || 1;
-            const xPadding = (maxX - minX) * 0.1 || 1;
-            minY -= yPadding; maxY += yPadding; minX -= xPadding; maxX += xPadding;
+        function resetScale() {
             viewCenterX = 0; viewCenterY = 0;
-            baseXRange = Math.max(1, Math.abs(minX), Math.abs(maxX));
-            baseYRange = Math.max(1, Math.abs(minY), Math.abs(maxY));
-            baseXRange = niceNumber(baseXRange); baseYRange = niceNumber(baseYRange);
+            baseYRange = 10;
+            const aspectRatio = canvas.width / canvas.height || 1.5;
+            baseXRange = baseYRange * aspectRatio;
             zoomLevel = 1; zoomSlider.value = 1; zoomDisplay.textContent = '1.0x';
             updateSliderRange();
-        }
-
-        function niceNumber(value) {
-            const exp = Math.floor(Math.log10(value));
-            const frac = value / Math.pow(10, exp);
-            let nice = frac < 1.5 ? 1 : frac < 3 ? 2 : frac < 7 ? 5 : 10;
-            return nice * Math.pow(10, exp);
         }
 
         function updateSliderRange() {
@@ -614,11 +625,23 @@
                 const newF = createFunction(expr);
                 newF(0); newF(1); newF(-1);
                 f = newF; currentExpression = expr;
-                hideError(); isLocked = false; autoScale(); draw();
+                hideError(); isLocked = false;
+                resetScale();
+                draw();
             } catch (e) { showError(e.message); }
         }
 
-        function setPreset(expr) { expressionInput.value = expr; updateExpression(); }
+        function setPreset(expr) {
+            expressionInput.value = expr;
+            try {
+                const newF = createFunction(expr);
+                newF(0); newF(1); newF(-1);
+                f = newF; currentExpression = expr;
+                hideError(); isLocked = false;
+                resetScale();
+                draw();
+            } catch (e) { showError(e.message); }
+        }
         function setMode(newMode) {
             mode = newMode;
             isLocked = false;
@@ -644,27 +667,49 @@
 
         function zoomIn() { zoomAt(1.3, canvas.width / 2, canvas.height / 2); }
         function zoomOut() { zoomAt(0.7, canvas.width / 2, canvas.height / 2); }
-        function resetView() { autoScale(); draw(); }
+        function resetView() { resetScale(); draw(); }
+
+        function niceNumber(value) {
+            const exp = Math.floor(Math.log10(value));
+            const frac = value / Math.pow(10, exp);
+            let nice = frac < 1.5 ? 1 : frac < 3 ? 2 : frac < 7 ? 5 : 10;
+            return nice * Math.pow(10, exp);
+        }
 
         function getGridStep(range) {
             const rawStep = (range * 2) / 5;
             return niceNumber(rawStep);
         }
+        
+        function getLabelStep(range, axisLength, minPixelSpacing) {
+            // Calculate minimum step to avoid overlap
+            const gridStep = getGridStep(range);
+            const pixelsPerUnit = axisLength / (range * 2);
+            const pixelsPerGridStep = gridStep * pixelsPerUnit;
+            
+            if (pixelsPerGridStep >= minPixelSpacing) {
+                return gridStep;
+            }
+            
+            // Need larger step - find multiplier
+            const multiplier = Math.ceil(minPixelSpacing / pixelsPerGridStep);
+            return gridStep * multiplier;
+        }
 
         function draw() {
             ctx.fillStyle = '#0f0f1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            const xGridStep = getGridStep(getXRange()), yGridStep = getGridStep(getYRange());
+            const gridStep = getGridStep(Math.min(getXRange(), getYRange()));
 
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
             ctx.lineWidth = 1;
-            const xStart = Math.ceil(getXMin() / xGridStep) * xGridStep;
-            for (let x = xStart; x <= getXMax(); x += xGridStep) {
+            const xStart = Math.ceil(getXMin() / gridStep) * gridStep;
+            for (let x = xStart; x <= getXMax(); x += gridStep) {
                 const cx = toCanvasX(x);
                 ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, canvas.height); ctx.stroke();
             }
-            const yStart = Math.ceil(getYMin() / yGridStep) * yGridStep;
-            for (let y = yStart; y <= getYMax(); y += yGridStep) {
+            const yStart = Math.ceil(getYMin() / gridStep) * gridStep;
+            for (let y = yStart; y <= getYMax(); y += gridStep) {
                 const cy = toCanvasY(y);
                 ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(canvas.width, cy); ctx.stroke();
             }
@@ -681,30 +726,40 @@
             }
 
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.font = '20px Courier New';
+            ctx.font = '14px Segoe UI, sans-serif';
             ctx.textAlign = 'center';
-            for (let x = xStart; x <= getXMax(); x += xGridStep) {
+            
+            // Use separate label steps to prevent overlap
+            const xLabelStep = getLabelStep(getXRange(), canvas.width, 60);
+            const yLabelStep = getLabelStep(getYRange(), canvas.height, 30);
+            
+            const xLabelStart = Math.ceil(getXMin() / xLabelStep) * xLabelStep;
+            for (let x = xLabelStart; x <= getXMax(); x += xLabelStep) {
                 const cx = toCanvasX(x);
-                if (cx > 30 && cx < canvas.width - 30) {
+                if (cx > 25 && cx < canvas.width - 25) {
                     if (Math.abs(x) < 0.0001) {
-                        // Draw 0 to the left of Y axis
                         ctx.textAlign = 'right';
-                        const labelY = getYMin() <= 0 && getYMax() >= 0 ? toCanvasY(0) + 22 : canvas.height - 6;
-                        ctx.fillText('0', cx - 8, Math.min(canvas.height - 6, Math.max(22, labelY)));
+                        const labelY = getYMin() <= 0 && getYMax() >= 0 ? toCanvasY(0) + 16 : canvas.height - 4;
+                        ctx.fillText('0', cx - 6, Math.min(canvas.height - 4, Math.max(16, labelY)));
                         ctx.textAlign = 'center';
                     } else {
-                        const labelY = getYMin() <= 0 && getYMax() >= 0 ? toCanvasY(0) + 22 : canvas.height - 6;
-                        ctx.fillText(x.toFixed(1), cx, Math.min(canvas.height - 6, Math.max(22, labelY)));
+                        const labelY = getYMin() <= 0 && getYMax() >= 0 ? toCanvasY(0) + 16 : canvas.height - 4;
+                        // Format number appropriately
+                        const labelText = Math.abs(x) >= 1000 ? x.toExponential(1) : x.toFixed(1);
+                        ctx.fillText(labelText, cx, Math.min(canvas.height - 4, Math.max(16, labelY)));
                     }
                 }
             }
             ctx.textAlign = 'right';
-            for (let y = yStart; y <= getYMax(); y += yGridStep) {
-                if (Math.abs(y) < 0.0001) continue; // Skip 0 on Y axis, already shown on X
+            const yLabelStart = Math.ceil(getYMin() / yLabelStep) * yLabelStep;
+            for (let y = yLabelStart; y <= getYMax(); y += yLabelStep) {
+                if (Math.abs(y) < 0.0001) continue;
                 const cy = toCanvasY(y);
-                if (cy > 22 && cy < canvas.height - 22) {
-                    const labelX = getXMin() <= 0 && getXMax() >= 0 ? toCanvasX(0) - 8 : 45;
-                    ctx.fillText(y.toFixed(1), Math.max(45, Math.min(canvas.width - 6, labelX)), cy + 6);
+                if (cy > 16 && cy < canvas.height - 16) {
+                    const labelX = getXMin() <= 0 && getXMax() >= 0 ? toCanvasX(0) - 6 : 35;
+                    // Format number appropriately
+                    const labelText = Math.abs(y) >= 1000 ? y.toExponential(1) : y.toFixed(1);
+                    ctx.fillText(labelText, Math.max(35, Math.min(canvas.width - 4, labelX)), cy + 4);
                 }
             }
 
@@ -760,7 +815,6 @@
                 ctx.fill();
             }
 
-            // Display lock message
             if (isLocked && mode === 'select') {
                 ctx.fillStyle = 'rgba(15, 15, 26, 0.8)';
                 ctx.fillRect(canvas.width / 2 - 110, canvas.height - 35, 220, 25);
@@ -872,7 +926,20 @@
         xSlider.addEventListener('input', updateFromSlider);
         zoomSlider.addEventListener('input', updateZoomFromSlider);
 
-        autoScale(); draw();
+        // Initialize
+        function initPlot() {
+            resizeCanvas();
+            resetScale();
+            isInitialized = true;
+            draw();
+        }
+        
+        // Wait for DOM to be fully ready
+        if (document.readyState === 'complete') {
+            initPlot();
+        } else {
+            window.addEventListener('load', initPlot);
+        }
     </script>
 </body>
 </html>
