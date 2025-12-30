@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backpropagation Visualizer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: #131a2b;
+            --bg-node: #1a2540;
+            --accent-blue: #4f8fff;
+            --accent-green: #00e88f;
+            --accent-red: #ff6b6b;
+            --accent-yellow: #ffd93d;
+            --accent-purple: #a78bfa;
+            --accent-orange: #ff9f43;
+            --accent-cyan: #00d9ff;
+            --accent-pink: #ff6bb5;
+            --text-primary: #e8edf5;
+            --text-secondary: #8892a8;
+            --border: #2a3654;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 24px;
+            background-image: 
+                radial-gradient(ellipse at 20% 20%, rgba(79, 143, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(167, 139, 250, 0.08) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--accent-blue);
+            border-radius: 2px;
+        }
+
+        /* Computational Graph */
+        .graph-container {
+            position: relative;
+            height: 260px;
+            margin-bottom: 20px;
+        }
+
+        .graph-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .graph-svg line {
+            stroke: var(--border);
+            stroke-width: 2;
+        }
+
+        .node {
+            position: absolute;
+            background: var(--bg-node);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 10px;
+            min-width: 80px;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .node.input-a {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(79, 143, 255, 0.2);
+        }
+
+        .node.input-b {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 15px rgba(255, 159, 67, 0.2);
+        }
+
+        .node.input-c {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.2);
+        }
+
+        .node.input-f {
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 15px rgba(255, 107, 181, 0.2);
+        }
+
+        .node.operation {
+            border-color: var(--accent-yellow);
+            background: linear-gradient(135deg, var(--bg-node), #2a2520);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            min-width: unset;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .node.output {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 15px rgba(0, 232, 143, 0.2);
+        }
+
+        .node-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .node.input-a .node-label { color: var(--accent-blue); }
+        .node.input-b .node-label { color: var(--accent-orange); }
+        .node.input-c .node-label { color: var(--accent-cyan); }
+        .node.input-f .node-label { color: var(--accent-pink); }
+        .node.output .node-label { color: var(--accent-green); }
+
+        .node-data {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            margin-top: 2px;
+            color: var(--text-primary);
+        }
+
+        .node-grad {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            margin-top: 2px;
+            color: var(--accent-purple);
+        }
+
+        /* Controls */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .controls-grid.five-cols {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        @media (max-width: 600px) {
+            .controls-grid.five-cols {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .control-value {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .control-value.val-a { color: var(--accent-blue); }
+        .control-value.val-b { color: var(--accent-orange); }
+        .control-value.val-c { color: var(--accent-cyan); }
+        .control-value.val-f { color: var(--accent-pink); }
+        .control-value.val-lr { color: var(--accent-purple); }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--bg-dark);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        #slider-b::-webkit-slider-thumb { background: var(--accent-orange); }
+        #slider-c::-webkit-slider-thumb { background: var(--accent-cyan); }
+        #slider-f::-webkit-slider-thumb { background: var(--accent-pink); }
+        #slider-lr::-webkit-slider-thumb { background: var(--accent-purple); }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ascent {
+            background: linear-gradient(135deg, var(--accent-red), #ff8585);
+            color: white;
+        }
+
+        .btn-descent {
+            background: linear-gradient(135deg, var(--accent-green), #00ffaa);
+            color: #0a0e17;
+        }
+
+        .btn-reset {
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            flex: 0.6;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-auto {
+            background: linear-gradient(135deg, var(--accent-purple), #c4a8ff);
+            color: white;
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .mode-btn.active.descent {
+            background: var(--accent-green);
+            color: #0a0e17;
+        }
+
+        .mode-btn.active.ascent {
+            background: var(--accent-red);
+        }
+
+        /* Chart */
+        .chart-container {
+            height: 320px;
+            position: relative;
+        }
+
+        /* Legend */
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.a { background: var(--accent-blue); }
+        .legend-dot.b { background: var(--accent-orange); }
+        .legend-dot.c { background: var(--accent-cyan); }
+        .legend-dot.f { background: var(--accent-pink); }
+        .legend-dot.L { background: var(--accent-green); }
+
+        /* Formula Display */
+        .formula-box {
+            background: var(--bg-dark);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+        }
+
+        .formula {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .formula .var-a { color: var(--accent-blue); }
+        .formula .var-b { color: var(--accent-orange); }
+        .formula .var-c { color: var(--accent-cyan); }
+        .formula .var-f { color: var(--accent-pink); }
+        .formula .op { color: var(--accent-yellow); }
+        .formula .result { color: var(--accent-green); }
+
+        /* Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 16px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .stat-value.val-a { color: var(--accent-blue); }
+        .stat-value.val-b { color: var(--accent-orange); }
+        .stat-value.val-c { color: var(--accent-cyan); }
+        .stat-value.val-f { color: var(--accent-pink); }
+        .stat-value.val-L { color: var(--accent-green); }
+
+        /* Explanation */
+        .explanation {
+            background: var(--bg-dark);
+            border-left: 3px solid var(--accent-purple);
+            border-radius: 0 10px 10px 0;
+            padding: 12px;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .explanation strong {
+            color: var(--accent-purple);
+        }
+
+        .highlight-ascent {
+            color: var(--accent-red);
+            font-weight: 600;
+        }
+
+        .highlight-descent {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        /* Direction indicator */
+        .direction-indicator {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .direction-indicator.descent {
+            background: rgba(0, 232, 143, 0.15);
+            color: var(--accent-green);
+        }
+
+        .direction-indicator.ascent {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--accent-red);
+        }
+
+        /* Individual plots section */
+        .individual-plots-section {
+            grid-column: 1 / -1;
+        }
+
+        .individual-plots-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 1000px) {
+            .individual-plots-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .individual-plots-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .mini-chart-container {
+            background: var(--bg-dark);
+            border-radius: 10px;
+            padding: 12px;
+            position: relative;
+        }
+
+        .mini-chart-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .mini-chart-container canvas {
+            height: 120px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Backpropagation Visualizer</h1>
+            <p class="subtitle">L = (a × b + c) × f — Watch how gradients flow through the computational graph</p>
+        </header>
+
+        <div class="main-grid">
+            <div class="card">
+                <div class="card-title">Computational Graph</div>
+                
+                <div class="formula-box">
+                    <div class="formula">
+                        <span class="result">L</span> <span class="op">=</span> 
+                        ((<span class="var-a">a</span> <span class="op">×</span> <span class="var-b">b</span>) 
+                        <span class="op">+</span> <span class="var-c">c</span>)
+                        <span class="op">×</span> <span class="var-f">f</span>
+                        <span class="op">=</span> <span class="result" id="formula-result">(−6 + 10) × −2 = −8</span>
+                    </div>
+                </div>
+
+                <div class="graph-container" id="graph">
+                    <svg class="graph-svg" id="svg-lines"></svg>
+                    
+                    <!-- Input a -->
+                    <div class="node input-a" id="node-a" style="left: 2%; top: 5%;">
+                        <div class="node-label">a</div>
+                        <div class="node-data" id="data-a">2.00</div>
+                        <div class="node-grad" id="grad-a">∇ 6.00</div>
+                    </div>
+                    
+                    <!-- Input b -->
+                    <div class="node input-b" id="node-b" style="left: 2%; top: 38%;">
+                        <div class="node-label">b</div>
+                        <div class="node-data" id="data-b">-3.00</div>
+                        <div class="node-grad" id="grad-b">∇ -4.00</div>
+                    </div>
+                    
+                    <!-- Multiply op (a*b) -->
+                    <div class="node operation" id="node-mult" style="left: 20%; top: 20%;">
+                        ×
+                    </div>
+                    
+                    <!-- e = a*b -->
+                    <div class="node" id="node-e" style="left: 32%; top: 5%;">
+                        <div class="node-label">e</div>
+                        <div class="node-data" id="data-e">-6.00</div>
+                        <div class="node-grad" id="grad-e">∇ -2.00</div>
+                    </div>
+                    
+                    <!-- Input c -->
+                    <div class="node input-c" id="node-c" style="left: 32%; top: 55%;">
+                        <div class="node-label">c</div>
+                        <div class="node-data" id="data-c">10.00</div>
+                        <div class="node-grad" id="grad-c">∇ -2.00</div>
+                    </div>
+                    
+                    <!-- Add op (e+c) -->
+                    <div class="node operation" id="node-add" style="left: 48%; top: 28%;">
+                        +
+                    </div>
+                    
+                    <!-- d = e+c -->
+                    <div class="node" id="node-d" style="left: 58%; top: 5%;">
+                        <div class="node-label">d</div>
+                        <div class="node-data" id="data-d">4.00</div>
+                        <div class="node-grad" id="grad-d">∇ -2.00</div>
+                    </div>
+                    
+                    <!-- Input f -->
+                    <div class="node input-f" id="node-f" style="left: 58%; top: 55%;">
+                        <div class="node-label">f</div>
+                        <div class="node-data" id="data-f">-2.00</div>
+                        <div class="node-grad" id="grad-f">∇ 4.00</div>
+                    </div>
+                    
+                    <!-- Multiply op (d*f) -->
+                    <div class="node operation" id="node-mult2" style="left: 74%; top: 28%;">
+                        ×
+                    </div>
+                    
+                    <!-- L = d*f -->
+                    <div class="node output" id="node-L" style="left: 86%; top: 28%;">
+                        <div class="node-label">L</div>
+                        <div class="node-data" id="data-L">-8.00</div>
+                        <div class="node-grad">∇ 1.00</div>
+                    </div>
+                </div>
+
+                <div class="controls-grid five-cols">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>a</span>
+                            <span class="control-value val-a" id="val-a">2.00</span>
+                        </div>
+                        <input type="range" id="slider-a" min="-10" max="10" step="0.1" value="2">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>b</span>
+                            <span class="control-value val-b" id="val-b">-3.00</span>
+                        </div>
+                        <input type="range" id="slider-b" min="-10" max="10" step="0.1" value="-3">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>c</span>
+                            <span class="control-value val-c" id="val-c">10.00</span>
+                        </div>
+                        <input type="range" id="slider-c" min="-10" max="10" step="0.1" value="10">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>f</span>
+                            <span class="control-value val-f" id="val-f">-2.00</span>
+                        </div>
+                        <input type="range" id="slider-f" min="-10" max="10" step="0.1" value="-2">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>lr</span>
+                            <span class="control-value val-lr" id="val-lr">0.10</span>
+                        </div>
+                        <input type="range" id="slider-lr" min="0.01" max="0.5" step="0.01" value="0.1">
+                    </div>
+                </div>
+
+                <div class="explanation">
+                    <strong>Gradients (via chain rule):</strong><br>
+                    ∇a = f × b &nbsp;|&nbsp; ∇b = f × a &nbsp;|&nbsp; ∇c = f &nbsp;|&nbsp; ∇f = d<br><br>
+                    <span class="highlight-descent">Descent:</span> param − lr × ∇ &nbsp;|&nbsp;
+                    <span class="highlight-ascent">Ascent:</span> param + lr × ∇
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Variables Over Steps</div>
+                
+                <div class="mode-toggle">
+                    <button class="mode-btn descent active" id="mode-descent" onclick="setMode('descent')">
+                        📉 Gradient Descent (minimize L)
+                    </button>
+                    <button class="mode-btn ascent" id="mode-ascent" onclick="setMode('ascent')">
+                        📈 Gradient Ascent (maximize L)
+                    </button>
+                </div>
+
+                <div class="direction-indicator descent" id="direction-indicator">
+                    Moving to MINIMIZE L → variables adjust opposite to gradients
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-descent" id="btn-step" onclick="step()">
+                        Step
+                    </button>
+                    <button class="btn-auto" id="btn-auto" onclick="toggleAuto()">
+                        ▶ Auto Run
+                    </button>
+                    <button class="btn-reset" onclick="reset()">
+                        ↺ Reset
+                    </button>
+                </div>
+
+                <div class="chart-legend">
+                    <div class="legend-item"><div class="legend-dot L"></div> L (left)</div>
+                    <div class="legend-item" style="border-left: 1px solid #2a3654; padding-left: 12px;"><div class="legend-dot a"></div> a</div>
+                    <div class="legend-item"><div class="legend-dot b"></div> b</div>
+                    <div class="legend-item"><div class="legend-dot c"></div> c</div>
+                    <div class="legend-item"><div class="legend-dot f"></div> f (right)</div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="chart"></canvas>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat">
+                        <div class="stat-label">a</div>
+                        <div class="stat-value val-a" id="stat-a">2.0000</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">b</div>
+                        <div class="stat-value val-b" id="stat-b">-3.0000</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">c</div>
+                        <div class="stat-value val-c" id="stat-c">10.0000</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">f</div>
+                        <div class="stat-value val-f" id="stat-f">-2.0000</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">L</div>
+                        <div class="stat-value val-L" id="stat-L">-8.0000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Individual Variable Plots -->
+        <div class="individual-plots-section">
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-title">Individual Variable Trajectories</div>
+                <div class="individual-plots-grid">
+                    <div class="mini-chart-container">
+                        <div class="mini-chart-label" style="color: var(--accent-blue);">a</div>
+                        <canvas id="chart-a"></canvas>
+                    </div>
+                    <div class="mini-chart-container">
+                        <div class="mini-chart-label" style="color: var(--accent-orange);">b</div>
+                        <canvas id="chart-b"></canvas>
+                    </div>
+                    <div class="mini-chart-container">
+                        <div class="mini-chart-label" style="color: var(--accent-cyan);">c</div>
+                        <canvas id="chart-c"></canvas>
+                    </div>
+                    <div class="mini-chart-container">
+                        <div class="mini-chart-label" style="color: var(--accent-pink);">f</div>
+                        <canvas id="chart-f"></canvas>
+                    </div>
+                    <div class="mini-chart-container">
+                        <div class="mini-chart-label" style="color: var(--accent-green);">L (output)</div>
+                        <canvas id="chart-L"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State - matching the YouTube video values
+        let a = 2.0, b = -3.0, c = 10.0, f = -2.0;
+        let lr = 0.1;
+        let mode = 'descent';
+        let steps = 0;
+        let autoRunning = false;
+        let autoInterval = null;
+
+        // Colors
+        const colors = {
+            a: '#4f8fff',
+            b: '#ff9f43',
+            c: '#00d9ff',
+            f: '#ff6bb5',
+            L: '#00e88f'
+        };
+
+        // Chart setup
+        const ctx = document.getElementById('chart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [0],
+                datasets: [
+                    {
+                        label: 'a',
+                        data: [2.0],
+                        borderColor: colors.a,
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 2,
+                        pointBackgroundColor: colors.a,
+                        yAxisID: 'yRight'
+                    },
+                    {
+                        label: 'b',
+                        data: [-3.0],
+                        borderColor: colors.b,
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 2,
+                        pointBackgroundColor: colors.b,
+                        yAxisID: 'yRight'
+                    },
+                    {
+                        label: 'c',
+                        data: [10.0],
+                        borderColor: colors.c,
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 2,
+                        pointBackgroundColor: colors.c,
+                        yAxisID: 'yRight'
+                    },
+                    {
+                        label: 'f',
+                        data: [-2.0],
+                        borderColor: colors.f,
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 2,
+                        pointBackgroundColor: colors.f,
+                        yAxisID: 'yRight'
+                    },
+                    {
+                        label: 'L',
+                        data: [-8.0],
+                        borderColor: colors.L,
+                        backgroundColor: 'rgba(0, 232, 143, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        pointBackgroundColor: colors.L,
+                        yAxisID: 'yLeft'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#131a2b',
+                        borderColor: '#2a3654',
+                        borderWidth: 1,
+                        titleFont: { family: 'JetBrains Mono' },
+                        bodyFont: { family: 'JetBrains Mono' },
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y.toFixed(4)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Step',
+                            color: '#8892a8',
+                            font: { family: 'Space Grotesk', size: 11 }
+                        },
+                        grid: { color: 'rgba(42, 54, 84, 0.5)' },
+                        ticks: { color: '#8892a8', font: { family: 'JetBrains Mono', size: 10 } }
+                    },
+                    yLeft: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'L (output)',
+                            color: '#00e88f',
+                            font: { family: 'Space Grotesk', size: 11, weight: 'bold' }
+                        },
+                        grid: { color: 'rgba(0, 232, 143, 0.15)' },
+                        ticks: { color: '#00e88f', font: { family: 'JetBrains Mono', size: 10 } }
+                    },
+                    yRight: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'a, b, c, f (inputs)',
+                            color: '#8892a8',
+                            font: { family: 'Space Grotesk', size: 11, weight: 'bold' }
+                        },
+                        grid: { drawOnChartArea: false },
+                        ticks: { color: '#8892a8', font: { family: 'JetBrains Mono', size: 10 } }
+                    }
+                }
+            }
+        });
+
+        // Forward pass: L = (a*b + c) * f
+        function forward() {
+            const e = a * b;       // e = a * b
+            const d = e + c;       // d = e + c
+            const L = d * f;       // L = d * f
+            return { e, d, L };
+        }
+
+        // Backward pass (compute gradients using chain rule)
+        function backward() {
+            const { e, d, L } = forward();
+            // dL/dL = 1
+            // dL/dd = f (since L = d * f)
+            // dL/df = d (since L = d * f)
+            // dL/de = dL/dd * dd/de = f * 1 = f
+            // dL/dc = dL/dd * dd/dc = f * 1 = f
+            // dL/da = dL/de * de/da = f * b
+            // dL/db = dL/de * de/db = f * a
+            return {
+                grad_a: f * b,
+                grad_b: f * a,
+                grad_c: f,
+                grad_f: d,
+                grad_e: f,
+                grad_d: f
+            };
+        }
+
+        // Update display
+        function updateDisplay() {
+            const { e, d, L } = forward();
+            const grads = backward();
+
+            // Update node values
+            document.getElementById('data-a').textContent = a.toFixed(2);
+            document.getElementById('data-b').textContent = b.toFixed(2);
+            document.getElementById('data-c').textContent = c.toFixed(2);
+            document.getElementById('data-f').textContent = f.toFixed(2);
+            document.getElementById('data-e').textContent = e.toFixed(2);
+            document.getElementById('data-d').textContent = d.toFixed(2);
+            document.getElementById('data-L').textContent = L.toFixed(2);
+
+            // Update gradients
+            document.getElementById('grad-a').textContent = `∇ ${grads.grad_a.toFixed(2)}`;
+            document.getElementById('grad-b').textContent = `∇ ${grads.grad_b.toFixed(2)}`;
+            document.getElementById('grad-c').textContent = `∇ ${grads.grad_c.toFixed(2)}`;
+            document.getElementById('grad-f').textContent = `∇ ${grads.grad_f.toFixed(2)}`;
+            document.getElementById('grad-e').textContent = `∇ ${grads.grad_e.toFixed(2)}`;
+            document.getElementById('grad-d').textContent = `∇ ${grads.grad_d.toFixed(2)}`;
+
+            // Update formula
+            document.getElementById('formula-result').textContent = 
+                `(${e.toFixed(1)} + ${c.toFixed(1)}) × ${f.toFixed(1)} = ${L.toFixed(1)}`;
+
+            // Update sliders
+            document.getElementById('slider-a').value = Math.max(-10, Math.min(10, a));
+            document.getElementById('slider-b').value = Math.max(-10, Math.min(10, b));
+            document.getElementById('slider-c').value = Math.max(-10, Math.min(10, c));
+            document.getElementById('slider-f').value = Math.max(-10, Math.min(10, f));
+            document.getElementById('val-a').textContent = a.toFixed(2);
+            document.getElementById('val-b').textContent = b.toFixed(2);
+            document.getElementById('val-c').textContent = c.toFixed(2);
+            document.getElementById('val-f').textContent = f.toFixed(2);
+
+            // Update stats
+            document.getElementById('stat-a').textContent = a.toFixed(4);
+            document.getElementById('stat-b').textContent = b.toFixed(4);
+            document.getElementById('stat-c').textContent = c.toFixed(4);
+            document.getElementById('stat-f').textContent = f.toFixed(4);
+            document.getElementById('stat-L').textContent = L.toFixed(4);
+        }
+
+        // Take a gradient step
+        function step() {
+            const grads = backward();
+            const sign = mode === 'descent' ? -1 : 1;
+            
+            // Update parameters
+            a = a + sign * lr * grads.grad_a;
+            b = b + sign * lr * grads.grad_b;
+            c = c + sign * lr * grads.grad_c;
+            f = f + sign * lr * grads.grad_f;
+
+            steps++;
+            const { L } = forward();
+            
+            // Update chart
+            chart.data.labels.push(steps);
+            chart.data.datasets[0].data.push(a);
+            chart.data.datasets[1].data.push(b);
+            chart.data.datasets[2].data.push(c);
+            chart.data.datasets[3].data.push(f);
+            chart.data.datasets[4].data.push(L);
+            
+            // Keep last 50 points
+            if (chart.data.labels.length > 50) {
+                chart.data.labels.shift();
+                chart.data.datasets.forEach(ds => ds.data.shift());
+            }
+            chart.update('none');
+
+            updateDisplay();
+            updateMiniCharts(steps);
+        }
+
+        // Set mode
+        function setMode(newMode) {
+            mode = newMode;
+            document.getElementById('mode-descent').classList.toggle('active', mode === 'descent');
+            document.getElementById('mode-ascent').classList.toggle('active', mode === 'ascent');
+            
+            const btnStep = document.getElementById('btn-step');
+            const indicator = document.getElementById('direction-indicator');
+            
+            if (mode === 'descent') {
+                btnStep.className = 'btn-descent';
+                indicator.className = 'direction-indicator descent';
+                indicator.textContent = 'Moving to MINIMIZE L → variables adjust opposite to gradients';
+                chart.data.datasets[4].backgroundColor = 'rgba(0, 232, 143, 0.1)';
+            } else {
+                btnStep.className = 'btn-ascent';
+                indicator.className = 'direction-indicator ascent';
+                indicator.textContent = 'Moving to MAXIMIZE L → variables adjust along gradients';
+                chart.data.datasets[4].backgroundColor = 'rgba(255, 107, 107, 0.1)';
+            }
+            chart.update();
+        }
+
+        // Reset
+        function reset() {
+            stopAuto();
+            a = 2.0;
+            b = -3.0;
+            c = 10.0;
+            f = -2.0;
+            steps = 0;
+            const { L } = forward();
+            
+            chart.data.labels = [0];
+            chart.data.datasets[0].data = [a];
+            chart.data.datasets[1].data = [b];
+            chart.data.datasets[2].data = [c];
+            chart.data.datasets[3].data = [f];
+            chart.data.datasets[4].data = [L];
+            chart.update();
+            
+            updateDisplay();
+            resetMiniCharts();
+        }
+
+        // Auto run
+        function toggleAuto() {
+            if (autoRunning) {
+                stopAuto();
+            } else {
+                startAuto();
+            }
+        }
+
+        function startAuto() {
+            autoRunning = true;
+            document.getElementById('btn-auto').textContent = '⏸ Pause';
+            autoInterval = setInterval(step, 200);
+        }
+
+        function stopAuto() {
+            autoRunning = false;
+            document.getElementById('btn-auto').textContent = '▶ Auto Run';
+            if (autoInterval) {
+                clearInterval(autoInterval);
+                autoInterval = null;
+            }
+        }
+
+        // Helper to update chart after slider change
+        function updateChart() {
+            steps++;
+            const { L } = forward();
+            chart.data.labels.push(steps);
+            chart.data.datasets[0].data.push(a);
+            chart.data.datasets[1].data.push(b);
+            chart.data.datasets[2].data.push(c);
+            chart.data.datasets[3].data.push(f);
+            chart.data.datasets[4].data.push(L);
+            if (chart.data.labels.length > 50) {
+                chart.data.labels.shift();
+                chart.data.datasets.forEach(ds => ds.data.shift());
+            }
+            chart.update('none');
+            updateMiniCharts(steps);
+        }
+
+        // Slider handlers
+        document.getElementById('slider-a').addEventListener('input', (e) => {
+            a = parseFloat(e.target.value);
+            document.getElementById('val-a').textContent = a.toFixed(2);
+            updateDisplay();
+            updateChart();
+        });
+
+        document.getElementById('slider-b').addEventListener('input', (e) => {
+            b = parseFloat(e.target.value);
+            document.getElementById('val-b').textContent = b.toFixed(2);
+            updateDisplay();
+            updateChart();
+        });
+
+        document.getElementById('slider-c').addEventListener('input', (e) => {
+            c = parseFloat(e.target.value);
+            document.getElementById('val-c').textContent = c.toFixed(2);
+            updateDisplay();
+            updateChart();
+        });
+
+        document.getElementById('slider-f').addEventListener('input', (e) => {
+            f = parseFloat(e.target.value);
+            document.getElementById('val-f').textContent = f.toFixed(2);
+            updateDisplay();
+            updateChart();
+        });
+
+        document.getElementById('slider-lr').addEventListener('input', (e) => {
+            lr = parseFloat(e.target.value);
+            document.getElementById('val-lr').textContent = lr.toFixed(2);
+        });
+
+        // Draw SVG lines
+        function drawLines() {
+            const svg = document.getElementById('svg-lines');
+            const graph = document.getElementById('graph');
+            const rect = graph.getBoundingClientRect();
+
+            function getNodeRight(id) {
+                const node = document.getElementById(id);
+                if (!node) return { x: 0, y: 0 };
+                const nodeRect = node.getBoundingClientRect();
+                return {
+                    x: nodeRect.right - rect.left,
+                    y: nodeRect.top - rect.top + nodeRect.height / 2
+                };
+            }
+
+            function getNodeLeft(id) {
+                const node = document.getElementById(id);
+                if (!node) return { x: 0, y: 0 };
+                const nodeRect = node.getBoundingClientRect();
+                return {
+                    x: nodeRect.left - rect.left,
+                    y: nodeRect.top - rect.top + nodeRect.height / 2
+                };
+            }
+
+            const lines = [
+                { from: getNodeRight('node-a'), to: getNodeLeft('node-mult') },
+                { from: getNodeRight('node-b'), to: getNodeLeft('node-mult') },
+                { from: getNodeRight('node-mult'), to: getNodeLeft('node-e') },
+                { from: getNodeRight('node-e'), to: getNodeLeft('node-add') },
+                { from: getNodeRight('node-c'), to: getNodeLeft('node-add') },
+                { from: getNodeRight('node-add'), to: getNodeLeft('node-d') },
+                { from: getNodeRight('node-d'), to: getNodeLeft('node-mult2') },
+                { from: getNodeRight('node-f'), to: getNodeLeft('node-mult2') },
+                { from: getNodeRight('node-mult2'), to: getNodeLeft('node-L') }
+            ];
+
+            svg.innerHTML = lines.map(l => 
+                `<line x1="${l.from.x}" y1="${l.from.y}" x2="${l.to.x}" y2="${l.to.y}"/>`
+            ).join('');
+        }
+
+        // Initialize
+        updateDisplay();
+        setTimeout(drawLines, 100);
+        window.addEventListener('resize', drawLines);
+
+        // Individual mini charts
+        function createMiniChart(canvasId, color, label) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [0],
+                    datasets: [{
+                        data: [0],
+                        borderColor: color,
+                        backgroundColor: color + '20',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 1,
+                        pointBackgroundColor: color
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#131a2b',
+                            borderColor: '#2a3654',
+                            borderWidth: 1,
+                            titleFont: { family: 'JetBrains Mono', size: 10 },
+                            bodyFont: { family: 'JetBrains Mono', size: 10 },
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y.toFixed(4);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: false
+                        },
+                        y: {
+                            grid: { color: 'rgba(42, 54, 84, 0.3)' },
+                            ticks: { 
+                                color: '#8892a8', 
+                                font: { family: 'JetBrains Mono', size: 9 },
+                                maxTicksLimit: 4
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create mini charts
+        const miniCharts = {
+            a: createMiniChart('chart-a', colors.a, 'a'),
+            b: createMiniChart('chart-b', colors.b, 'b'),
+            c: createMiniChart('chart-c', colors.c, 'c'),
+            f: createMiniChart('chart-f', colors.f, 'f'),
+            L: createMiniChart('chart-L', colors.L, 'L')
+        };
+
+        // Set initial values
+        miniCharts.a.data.datasets[0].data = [a];
+        miniCharts.b.data.datasets[0].data = [b];
+        miniCharts.c.data.datasets[0].data = [c];
+        miniCharts.f.data.datasets[0].data = [f];
+        miniCharts.L.data.datasets[0].data = [forward().L];
+        Object.values(miniCharts).forEach(ch => ch.update());
+
+        // Function to update mini charts
+        function updateMiniCharts(stepNum) {
+            const { L: Lval } = forward();
+            
+            // Update labels
+            Object.values(miniCharts).forEach(ch => {
+                ch.data.labels.push(stepNum);
+                if (ch.data.labels.length > 50) {
+                    ch.data.labels.shift();
+                }
+            });
+
+            // Update data
+            miniCharts.a.data.datasets[0].data.push(a);
+            miniCharts.b.data.datasets[0].data.push(b);
+            miniCharts.c.data.datasets[0].data.push(c);
+            miniCharts.f.data.datasets[0].data.push(f);
+            miniCharts.L.data.datasets[0].data.push(Lval);
+
+            // Trim if needed
+            Object.values(miniCharts).forEach(ch => {
+                if (ch.data.datasets[0].data.length > 50) {
+                    ch.data.datasets[0].data.shift();
+                }
+                ch.update('none');
+            });
+        }
+
+        // Function to reset mini charts
+        function resetMiniCharts() {
+            Object.values(miniCharts).forEach(ch => {
+                ch.data.labels = [0];
+            });
+            miniCharts.a.data.datasets[0].data = [a];
+            miniCharts.b.data.datasets[0].data = [b];
+            miniCharts.c.data.datasets[0].data = [c];
+            miniCharts.f.data.datasets[0].data = [f];
+            miniCharts.L.data.datasets[0].data = [forward().L];
+            Object.values(miniCharts).forEach(ch => ch.update());
+        }
+    </script>
+</body>
+</html>
