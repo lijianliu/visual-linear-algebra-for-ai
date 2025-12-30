@@ -6,3 +6,4 @@ you can play the visulizer at
 
 # Nerual Network
 * Derivative Plotter: https://lijianliu.github.io/visual-linear-algebra-for-ai/derivative-plotter.html (Added on 2025-12-29)
+* Micrograd Backpropagation Demo: https://lijianliu.github.io/visual-linear-algebra-for-ai/micrograd-backprop-visualizer.html (Added on 2025-12-30)
