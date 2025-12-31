@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLP Visualizer - Micrograd</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-panel: #12121a;
+            --bg-node: #1a1a25;
+            --border: #2a2a3a;
+            --text: #e0e0e0;
+            --text-dim: #888;
+            --accent-blue: #4a9eff;
+            --accent-green: #4ade80;
+            --accent-purple: #a78bfa;
+            --accent-orange: #fb923c;
+            --accent-pink: #f472b6;
+            --accent-cyan: #22d3ee;
+            --highlight: #fbbf24;
+            
+            /* Layer-specific colors */
+            --layer-input: #4ade80;    /* Green for inputs */
+            --layer-0: #60a5fa;        /* Blue for Layer 0 */
+            --layer-1: #a78bfa;        /* Purple for Layer 1 */
+            --layer-2: #fb923c;        /* Orange for Layer 2 (output) */
+            --layer-loss: #f472b6;     /* Pink for loss */
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-panel);
+        }
+
+        .header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-info {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+
+        .left-panel {
+            width: 400px;
+            min-width: 400px;
+            padding: 20px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            background: var(--bg-panel);
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            scroll-behavior: smooth;
+            background: var(--bg-dark);
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            margin-bottom: 15px;
+        }
+
+        .input-selector {
+            margin-bottom: 25px;
+        }
+
+        .input-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .input-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            background: var(--bg-node);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .input-btn:hover {
+            border-color: var(--accent-blue);
+            background: rgba(74, 158, 255, 0.1);
+        }
+
+        .input-btn.active {
+            border-color: var(--accent-blue);
+            background: rgba(74, 158, 255, 0.2);
+            color: var(--accent-blue);
+        }
+
+        .network-diagram {
+            margin-bottom: 25px;
+        }
+
+        .network-svg {
+            width: 100%;
+            height: 380px;
+        }
+
+        .layer-label {
+            font-size: 10px;
+            fill: var(--text-dim);
+            text-anchor: middle;
+        }
+
+        .param-count {
+            font-size: 8px;
+            fill: var(--accent-cyan);
+            text-anchor: middle;
+        }
+
+        .total-params {
+            font-size: 11px;
+            fill: var(--accent-orange);
+            text-anchor: middle;
+            font-weight: 600;
+        }
+
+        .neuron-circle {
+            fill: var(--bg-node);
+            stroke: var(--border);
+            stroke-width: 2;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .neuron-circle.input-node {
+            stroke: var(--layer-input);
+            fill: rgba(74, 222, 128, 0.15);
+        }
+
+        .neuron-circle.layer0-node {
+            stroke: var(--layer-0);
+            fill: rgba(96, 165, 250, 0.15);
+        }
+
+        .neuron-circle.layer1-node {
+            stroke: var(--layer-1);
+            fill: rgba(167, 139, 250, 0.15);
+        }
+
+        .neuron-circle.output-node {
+            stroke: var(--layer-2);
+            fill: rgba(251, 146, 60, 0.15);
+        }
+
+        .neuron-circle.bias-node {
+            stroke: var(--accent-cyan);
+            stroke-dasharray: 4 2;
+            fill: rgba(34, 211, 238, 0.1);
+        }
+
+        /* Highlighted states - stronger background, yellow border */
+        .neuron-circle:hover,
+        .neuron-circle.highlighted {
+            stroke: var(--highlight);
+            stroke-width: 3;
+        }
+
+        .neuron-circle.input-node:hover,
+        .neuron-circle.input-node.highlighted {
+            fill: rgba(74, 222, 128, 0.4);
+        }
+
+        .neuron-circle.layer0-node:hover,
+        .neuron-circle.layer0-node.highlighted {
+            fill: rgba(96, 165, 250, 0.4);
+        }
+
+        .neuron-circle.layer1-node:hover,
+        .neuron-circle.layer1-node.highlighted {
+            fill: rgba(167, 139, 250, 0.4);
+        }
+
+        .neuron-circle.output-node:hover,
+        .neuron-circle.output-node.highlighted {
+            fill: rgba(251, 146, 60, 0.4);
+        }
+
+        .neuron-circle.bias-node:hover,
+        .neuron-circle.bias-node.highlighted {
+            fill: rgba(34, 211, 238, 0.35);
+        }
+
+        .neuron-text {
+            font-size: 8px;
+            fill: var(--text);
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        .connection-line {
+            stroke: var(--border);
+            stroke-width: 1;
+            opacity: 0.3;
+            transition: all 0.2s;
+        }
+
+        .connection-line.highlighted {
+            stroke: var(--highlight);
+            stroke-width: 2.5;
+            opacity: 1;
+        }
+
+        .connection-line.bias-line {
+            stroke: var(--accent-cyan);
+            stroke-dasharray: 3 2;
+            opacity: 0.4;
+        }
+
+        .connection-line.bias-line.highlighted {
+            stroke: var(--highlight);
+            opacity: 1;
+        }
+
+        .params-list {
+            margin-bottom: 25px;
+        }
+
+        .param-group {
+            margin-bottom: 15px;
+        }
+
+        .param-group-title {
+            font-size: 0.7rem;
+            color: var(--accent-purple);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .param-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            background: var(--bg-node);
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s;
+        }
+
+        .param-item:hover,
+        .param-item.highlighted {
+            border-color: var(--highlight);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .param-label {
+            color: var(--text-dim);
+        }
+
+        .param-value {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .param-grad {
+            color: var(--accent-pink);
+            font-size: 0.65rem;
+        }
+
+        .param-breakdown {
+            background: var(--bg-node);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .param-breakdown-title {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+        }
+
+        .param-breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            margin-bottom: 6px;
+            padding: 4px 0;
+            align-items: center;
+        }
+
+        .param-breakdown-row.header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            font-size: 0.6rem;
+            color: var(--text-dim);
+        }
+
+        .param-breakdown-row.total {
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .param-breakdown-label {
+            color: var(--text-dim);
+            width: 60px;
+        }
+
+        .param-breakdown-shape {
+            color: var(--accent-green);
+            font-size: 0.65rem;
+            width: 50px;
+            text-align: center;
+        }
+
+        .param-breakdown-calc {
+            color: var(--accent-purple);
+            font-size: 0.65rem;
+            width: 60px;
+            text-align: center;
+        }
+
+        .param-breakdown-value {
+            color: var(--accent-cyan);
+            width: 30px;
+            text-align: right;
+        }
+
+        .param-breakdown-row.total .param-breakdown-value {
+            color: var(--accent-orange);
+        }
+
+        /* DAG Styles */
+        .dag-container {
+            min-width: 1200px;
+            padding: 20px;
+        }
+
+        .dag-svg {
+            width: 100%;
+            min-height: 800px;
+        }
+
+        .dag-node {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dag-node-rect {
+            fill: var(--bg-node);
+            stroke: var(--border);
+            stroke-width: 1.5;
+            rx: 4;
+        }
+
+        /* Layer-specific node colors - solid dark background with color tint */
+        .dag-node.layer-input .dag-node-rect {
+            stroke: var(--layer-input);
+            fill: #1a2820;
+        }
+        .dag-node.layer-0 .dag-node-rect {
+            stroke: var(--layer-0);
+            fill: #1a2230;
+        }
+        .dag-node.layer-1 .dag-node-rect {
+            stroke: var(--layer-1);
+            fill: #201a2d;
+        }
+        .dag-node.layer-2 .dag-node-rect {
+            stroke: var(--layer-2);
+            fill: #2a2018;
+        }
+        .dag-node.layer-loss .dag-node-rect {
+            stroke: var(--layer-loss);
+            fill: #281a22;
+        }
+
+        /* Highlighted states - brighter background, yellow border */
+        .dag-node.highlighted .dag-node-rect {
+            stroke: var(--highlight);
+            stroke-width: 2.5;
+        }
+        .dag-node.layer-input.highlighted .dag-node-rect {
+            fill: #2a4a3a;
+        }
+        .dag-node.layer-0.highlighted .dag-node-rect {
+            fill: #2a3a52;
+        }
+        .dag-node.layer-1.highlighted .dag-node-rect {
+            fill: #352a4a;
+        }
+        .dag-node.layer-2.highlighted .dag-node-rect {
+            fill: #4a3a28;
+        }
+        .dag-node.layer-loss.highlighted .dag-node-rect {
+            fill: #4a2a3a;
+        }
+
+        .dag-node-label {
+            font-size: 9px;
+            fill: var(--accent-blue);
+        }
+
+        /* Layer-specific label colors */
+        .dag-node.layer-input .dag-node-label {
+            fill: var(--layer-input);
+        }
+        .dag-node.layer-0 .dag-node-label {
+            fill: var(--layer-0);
+        }
+        .dag-node.layer-1 .dag-node-label {
+            fill: var(--layer-1);
+        }
+        .dag-node.layer-2 .dag-node-label {
+            fill: var(--layer-2);
+        }
+        .dag-node.layer-loss .dag-node-label {
+            fill: var(--layer-loss);
+        }
+
+        .dag-node-data {
+            font-size: 9px;
+            fill: var(--text);
+        }
+
+        .dag-node-grad {
+            font-size: 9px;
+            fill: var(--accent-pink);
+        }
+
+        .dag-op {
+            cursor: pointer;
+        }
+
+        .dag-op-circle {
+            fill: var(--bg-node);
+            stroke: var(--accent-purple);
+            stroke-width: 1.5;
+        }
+
+        /* Layer-specific op colors - solid dark background with color tint */
+        .dag-op.layer-input .dag-op-circle {
+            stroke: var(--layer-input);
+            fill: #1a2820;
+        }
+        .dag-op.layer-0 .dag-op-circle {
+            stroke: var(--layer-0);
+            fill: #1a2230;
+        }
+        .dag-op.layer-1 .dag-op-circle {
+            stroke: var(--layer-1);
+            fill: #201a2d;
+        }
+        .dag-op.layer-2 .dag-op-circle {
+            stroke: var(--layer-2);
+            fill: #2a2018;
+        }
+        .dag-op.layer-loss .dag-op-circle {
+            stroke: var(--layer-loss);
+            fill: #281a22;
+        }
+
+        /* Highlighted states - brighter background, yellow border */
+        .dag-op.highlighted .dag-op-circle {
+            stroke: var(--highlight);
+            stroke-width: 2.5;
+        }
+        .dag-op.layer-input.highlighted .dag-op-circle {
+            fill: #2a4a3a;
+        }
+        .dag-op.layer-0.highlighted .dag-op-circle {
+            fill: #2a3a52;
+        }
+        .dag-op.layer-1.highlighted .dag-op-circle {
+            fill: #352a4a;
+        }
+        .dag-op.layer-2.highlighted .dag-op-circle {
+            fill: #4a3a28;
+        }
+        .dag-op.layer-loss.highlighted .dag-op-circle {
+            fill: #4a2a3a;
+        }
+
+        .dag-op-text {
+            font-size: 11px;
+            fill: var(--text);
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+
+        .dag-edge {
+            stroke: var(--border);
+            stroke-width: 1;
+            fill: none;
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+
+        .dag-edge.highlighted {
+            stroke: var(--highlight);
+            stroke-width: 2;
+            opacity: 1;
+            marker-end: url(#arrow-yellow);
+        }
+        
+        .dag-edge.highlighted-input {
+            stroke: #22d3ee;
+            stroke-width: 2;
+            opacity: 1;
+            marker-end: url(#arrow-cyan);
+        }
+        
+        .dag-edge.highlighted-output {
+            stroke: #f472b6;
+            stroke-width: 2;
+            opacity: 1;
+            marker-end: url(#arrow-pink);
+        }
+        
+        /* Input highlight - cyan */
+        .dag-node.highlighted-input .dag-node-rect {
+            stroke: #22d3ee;
+            stroke-width: 2.5;
+        }
+        .dag-op.highlighted-input .dag-op-circle {
+            stroke: #22d3ee;
+            stroke-width: 2.5;
+        }
+        
+        /* Output highlight - pink */
+        .dag-node.highlighted-output .dag-node-rect {
+            stroke: #f472b6;
+            stroke-width: 2.5;
+        }
+        .dag-op.highlighted-output .dag-op-circle {
+            stroke: #f472b6;
+            stroke-width: 2.5;
+        }
+
+        /* Faded state for non-highlighted elements when highlighting is active */
+        .dag-svg.has-highlight .dag-node:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
+            opacity: 0.15;
+            transition: opacity 0.2s;
+        }
+        
+        .dag-svg.has-highlight .dag-op:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
+            opacity: 0.15;
+            transition: opacity 0.2s;
+        }
+        
+        .dag-svg.has-highlight .dag-edge:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
+            opacity: 0.08;
+        }
+        
+        .network-svg.has-highlight .neuron-circle:not(.highlighted) {
+            opacity: 0.2;
+            transition: opacity 0.2s;
+        }
+        
+        .network-svg.has-highlight .neuron-text {
+            opacity: 0.2;
+            transition: opacity 0.2s;
+        }
+        
+        .network-svg.has-highlight g:has(.neuron-circle.highlighted) .neuron-text {
+            opacity: 1;
+        }
+        
+        .network-svg.has-highlight .connection-line:not(.highlighted) {
+            opacity: 0.08;
+        }
+        
+        .params-list.has-highlight .param-item:not(.highlighted) {
+            opacity: 0.25;
+            transition: opacity 0.2s;
+        }
+        
+        .params-list.has-highlight .param-group-title {
+            opacity: 0.4;
+        }
+
+        .loss-display {
+            padding: 15px;
+            background: var(--bg-node);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .loss-title {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .loss-value {
+            font-size: 1.5rem;
+            color: var(--accent-orange);
+            font-weight: 700;
+        }
+
+        .prediction-display {
+            padding: 12px;
+            background: var(--bg-node);
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .pred-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+
+        .pred-label {
+            color: var(--text-dim);
+        }
+
+        .pred-value {
+            color: var(--accent-green);
+        }
+
+        .pred-target {
+            color: var(--accent-orange);
+        }
+
+        .no-samples {
+            color: var(--text-dim);
+            font-style: italic;
+            padding: 5px 0;
+        }
+
+        .legend {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.input { background: var(--layer-input); }
+        .legend-dot.layer0 { background: var(--layer-0); }
+        .legend-dot.layer1 { background: var(--layer-1); }
+        .legend-dot.layer2 { background: var(--layer-2); }
+        .legend-dot.loss { background: var(--layer-loss); }
+        .legend-dot.bias { 
+            background: transparent;
+            border: 2px dashed var(--accent-cyan);
+        }
+
+        .scroll-hint {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 5px;
+        }
+        
+        .dag-legend {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .dag-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MLP(3, [4, 4, 1]) Visualizer</h1>
+        <div class="header-info">Micrograd Neural Network • Interactive Computation Graph</div>
+    </div>
+
+    <div class="container">
+        <div class="left-panel">
+            <div class="input-selector">
+                <div class="section-title">Select Input Samples (click to toggle)</div>
+                <div class="input-buttons">
+                    <button class="input-btn active" data-idx="0">x[0]: [2.0, 3.0, -1.0]</button>
+                    <button class="input-btn" data-idx="1">x[1]: [3.0, -1.0, 0.5]</button>
+                    <button class="input-btn" data-idx="2">x[2]: [0.5, 1.0, 1.0]</button>
+                    <button class="input-btn" data-idx="3">x[3]: [1.0, 1.0, -1.0]</button>
+                </div>
+            </div>
+
+            <div class="loss-display">
+                <div class="loss-title">Total Loss (MSE)</div>
+                <div class="loss-value" id="loss-value">0.0000</div>
+            </div>
+
+            <div class="prediction-display">
+                <div class="section-title">Predictions vs Targets</div>
+                <div id="predictions-list">
+                    <div class="pred-row">
+                        <span class="pred-label">Sample 0:</span>
+                        <span class="pred-value">0.0000</span>
+                        <span class="pred-target">→ 1.0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="param-breakdown">
+                <div class="param-breakdown-title">PARAMETER COUNT</div>
+                <div class="param-breakdown-row header">
+                    <span class="param-breakdown-label">Layer</span>
+                    <span class="param-breakdown-shape">W shape</span>
+                    <span class="param-breakdown-shape">b shape</span>
+                    <span class="param-breakdown-calc">Calculation</span>
+                    <span class="param-breakdown-value">Params</span>
+                </div>
+                <div class="param-breakdown-row">
+                    <span class="param-breakdown-label">Layer 0</span>
+                    <span class="param-breakdown-shape">(4, 3)</span>
+                    <span class="param-breakdown-shape">(4,)</span>
+                    <span class="param-breakdown-calc">4×3 + 4</span>
+                    <span class="param-breakdown-value">16</span>
+                </div>
+                <div class="param-breakdown-row">
+                    <span class="param-breakdown-label">Layer 1</span>
+                    <span class="param-breakdown-shape">(4, 4)</span>
+                    <span class="param-breakdown-shape">(4,)</span>
+                    <span class="param-breakdown-calc">4×4 + 4</span>
+                    <span class="param-breakdown-value">20</span>
+                </div>
+                <div class="param-breakdown-row">
+                    <span class="param-breakdown-label">Layer 2</span>
+                    <span class="param-breakdown-shape">(1, 4)</span>
+                    <span class="param-breakdown-shape">(1,)</span>
+                    <span class="param-breakdown-calc">1×4 + 1</span>
+                    <span class="param-breakdown-value">5</span>
+                </div>
+                <div class="param-breakdown-row total">
+                    <span class="param-breakdown-label">Total</span>
+                    <span class="param-breakdown-shape"></span>
+                    <span class="param-breakdown-shape"></span>
+                    <span class="param-breakdown-calc">16+20+5</span>
+                    <span class="param-breakdown-value">41</span>
+                </div>
+            </div>
+
+            <div class="network-diagram">
+                <div class="section-title">Network Architecture</div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-dot input"></div>Input</div>
+                    <div class="legend-item"><div class="legend-dot layer0"></div>Layer 0</div>
+                    <div class="legend-item"><div class="legend-dot layer1"></div>Layer 1</div>
+                    <div class="legend-item"><div class="legend-dot layer2"></div>Layer 2</div>
+                    <div class="legend-item"><div class="legend-dot loss"></div>Loss</div>
+                    <div class="legend-item"><div class="legend-dot bias"></div>Bias</div>
+                </div>
+                <svg class="network-svg" id="network-svg"></svg>
+            </div>
+
+            <div class="params-list" id="params-list">
+                <div class="section-title">Parameters (hover to highlight)</div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="section-title">Computation Graph (DAG)</div>
+            <div class="scroll-hint">
+                ← Scroll horizontally to see full graph → 
+                <span id="lock-indicator" style="color: #fbbf24; display: none;">🔒 Locked</span>
+            </div>
+            <div class="dag-legend">
+                <span class="dag-legend-item"><span style="color: #fbbf24;">■</span> Selected</span>
+                <span class="dag-legend-item"><span style="color: #22d3ee;">→</span> Inputs</span>
+                <span class="dag-legend-item"><span style="color: #f472b6;">→</span> Outputs</span>
+                <span class="dag-legend-item" style="margin-left: 10px; opacity: 0.7;">(arrows show data flow)</span>
+            </div>
+            <div class="dag-container" id="dag-container">
+                <svg class="dag-svg" id="dag-svg"></svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // MICROGRAD VALUE CLASS
+        // =============================================
+        class Value {
+            constructor(data, children = [], op = '', label = '') {
+                this.data = data;
+                this.grad = 0.0;
+                this._backward = () => {};
+                this._prev = new Set(children);
+                this._op = op;
+                this.label = label;
+                this.id = Value.nextId++;
+            }
+
+            static nextId = 0;
+
+            add(other) {
+                other = other instanceof Value ? other : new Value(other);
+                const out = new Value(this.data + other.data, [this, other], '+');
+                out._backward = () => {
+                    this.grad += out.grad;
+                    other.grad += out.grad;
+                };
+                return out;
+            }
+
+            mul(other) {
+                other = other instanceof Value ? other : new Value(other);
+                const out = new Value(this.data * other.data, [this, other], '*');
+                out._backward = () => {
+                    this.grad += other.data * out.grad;
+                    other.grad += this.data * out.grad;
+                };
+                return out;
+            }
+
+            pow(n) {
+                const out = new Value(Math.pow(this.data, n), [this], `**${n}`);
+                out._backward = () => {
+                    this.grad += n * Math.pow(this.data, n - 1) * out.grad;
+                };
+                return out;
+            }
+
+            neg() {
+                const negOne = new Value(-1, [], '', '-1');
+                const out = this.mul(negOne);
+                out.label = this.label ? `neg(${this.label})` : 'neg';
+                return out;
+            }
+
+            sub(other) {
+                other = other instanceof Value ? other : new Value(other);
+                const negOther = other.neg();
+                negOther.label = other.label ? `-${other.label}` : '-val';
+                return this.add(negOther);
+            }
+
+            tanh() {
+                const x = this.data;
+                const t = (Math.exp(2 * x) - 1) / (Math.exp(2 * x) + 1);
+                const out = new Value(t, [this], 'tanh');
+                out._backward = () => {
+                    this.grad += (1 - t * t) * out.grad;
+                };
+                return out;
+            }
+
+            backward() {
+                const topo = [];
+                const visited = new Set();
+                const buildTopo = (v) => {
+                    if (!visited.has(v.id)) {
+                        visited.add(v.id);
+                        for (const child of v._prev) {
+                            buildTopo(child);
+                        }
+                        topo.push(v);
+                    }
+                };
+                buildTopo(this);
+                this.grad = 1.0;
+                for (const node of topo.reverse()) {
+                    node._backward();
+                }
+            }
+        }
+
+        // =============================================
+        // NEURAL NETWORK CLASSES
+        // =============================================
+        class Neuron {
+            constructor(nin, layerIdx = 0, neuronIdx = 0, rng) {
+                this.w = [];
+                for (let i = 0; i < nin; i++) {
+                    // Format: "L0.N1: w[2]" meaning Layer0, Neuron1, weight2
+                    this.w.push(new Value(rng() * 2 - 1, [], '', `L${layerIdx}.N${neuronIdx}: w[${i}]`));
+                }
+                this.b = new Value(rng() * 2 - 1, [], '', `L${layerIdx}.N${neuronIdx}: b`);
+                this.layerIdx = layerIdx;
+                this.neuronIdx = neuronIdx;
+            }
+
+            call(x, sampleIdx = null) {
+                const L = this.layerIdx;
+                const N = this.neuronIdx;
+                const s = sampleIdx !== null ? sampleIdx : 0;
+                const prefix = sampleIdx !== null ? `S${sampleIdx}.` : '';
+                
+                let act = this.b;
+                for (let i = 0; i < this.w.length; i++) {
+                    const prod = this.w[i].mul(x[i]);
+                    // Format: "S0.L0.N1: w[2]*in[2]" meaning Sample0, Layer0, Neuron1, weight2 * input2
+                    prod.label = `${prefix}L${L}.N${N}: w[${i}]*in[${i}]`;
+                    act = act.add(prod);
+                    act.label = `${prefix}L${L}.N${N}: sum${i}`;
+                }
+                act.label = `${prefix}L${L}.N${N}: pre_act`;
+                
+                const out = act.tanh();
+                out.label = `${prefix}L${L}.N${N}: out`;
+                return out;
+            }
+        }
+
+        class Layer {
+            constructor(nin, nout, layerIdx = 0, rng) {
+                this.neurons = [];
+                for (let i = 0; i < nout; i++) {
+                    this.neurons.push(new Neuron(nin, layerIdx, i, rng));
+                }
+            }
+
+            call(x, sampleIdx = null) {
+                const outs = this.neurons.map(n => n.call(x, sampleIdx));
+                return outs.length === 1 ? outs[0] : outs;
+            }
+        }
+
+        class MLP {
+            constructor(nin, nouts, rng) {
+                const sz = [nin, ...nouts];
+                this.layers = [];
+                for (let i = 0; i < nouts.length; i++) {
+                    this.layers.push(new Layer(sz[i], sz[i + 1], i, rng));
+                }
+            }
+
+            call(x, sampleIdx = null) {
+                for (const layer of this.layers) {
+                    x = layer.call(x, sampleIdx);
+                }
+                return x;
+            }
+
+            parameters() {
+                const params = [];
+                for (const layer of this.layers) {
+                    for (const neuron of layer.neurons) {
+                        params.push(...neuron.w);
+                        params.push(neuron.b);
+                    }
+                }
+                return params;
+            }
+        }
+
+        // =============================================
+        // GLOBAL STATE
+        // =============================================
+        function seededRandom(seed) {
+            return function() {
+                seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+                return seed / 0x7fffffff;
+            };
+        }
+
+        const rng = seededRandom(42);
+        const mlp = new MLP(3, [4, 4, 1], rng);
+
+        const xs = [
+            [2.0, 3.0, -1.0],
+            [3.0, -1.0, 0.5],
+            [0.5, 1.0, 1.0],
+            [1.0, 1.0, -1.0],
+        ];
+        const ys = [1.0, -1.0, -1.0, 1.0];
+
+        let selectedSamples = [0]; // Array of selected sample indices
+        
+        // Highlight lock state
+        let highlightLocked = false;
+        let lockedHighlightInfo = null; // { type: 'neuron'|'weight'|'bias'|'dag', params: {...} }
+        
+        // DAG element references
+        let dagElements = {
+            nodesByLabel: new Map(),
+            nodesByID: new Map(),
+            edgesByFromID: new Map(),
+            edgesByToID: new Map(),
+            opsByNodeID: new Map(),
+            opEdgesByNodeID: new Map(),
+        };
+
+        // =============================================
+        // COMPUTATION
+        // =============================================
+        function computeForward() {
+            // Don't reset Value.nextId - it causes ID collisions with existing weights!
+            // Value.nextId = 0;  // REMOVED - this was causing the bug!
+            
+            for (const p of mlp.parameters()) {
+                p.grad = 0;
+            }
+
+            // Compute for all selected samples
+            const results = [];
+            let totalLoss = null;
+            
+            for (const sampleIdx of selectedSamples) {
+                const xValues = xs[sampleIdx].map((v, i) => 
+                    new Value(v, [], '', `S${sampleIdx}.input: x[${i}]`)
+                );
+
+                const yPred = mlp.call(xValues, sampleIdx);
+                
+                const yTarget = new Value(ys[sampleIdx], [], '', `S${sampleIdx}.target: y`);
+                const diff = yPred.sub(yTarget);
+                diff.label = `S${sampleIdx}.pred - target`;
+                const sampleLoss = diff.pow(2);
+                sampleLoss.label = `S${sampleIdx}.loss (MSE)`;
+                
+                results.push({ sampleIdx, xValues, yPred, yTarget, loss: sampleLoss });
+                
+                if (totalLoss === null) {
+                    totalLoss = sampleLoss;
+                } else {
+                    totalLoss = totalLoss.add(sampleLoss);
+                    totalLoss.label = 'total loss';
+                }
+            }
+            
+            if (totalLoss) {
+                totalLoss.backward();
+            }
+
+            return { results, totalLoss };
+        }
+
+        function trace(root) {
+            const nodes = [];
+            const edges = [];
+            const visited = new Set();
+
+            function build(v) {
+                if (!visited.has(v.id)) {
+                    visited.add(v.id);
+                    nodes.push(v);
+                    for (const child of v._prev) {
+                        edges.push({ from: child, to: v });
+                        build(child);
+                    }
+                }
+            }
+            build(root);
+            return { nodes, edges };
+        }
+
+        // =============================================
+        // NETWORK DIAGRAM (LEFT PANEL)
+        // =============================================
+        function drawNetworkDiagram() {
+            const svg = document.getElementById('network-svg');
+            svg.innerHTML = '';
+
+            const width = 360;
+            const height = 380;
+            const layers = [3, 4, 4, 1];
+            const layerNames = ['Input', 'Hidden 1', 'Hidden 2', 'Output'];
+            const layerX = [50, 130, 210, 290];
+            const nodeRadius = 16;
+            const biasRadius = 10;
+
+            // Draw connections (weights)
+            for (let l = 0; l < layers.length - 1; l++) {
+                const fromCount = layers[l];
+                const toCount = layers[l + 1];
+                
+                for (let i = 0; i < fromCount; i++) {
+                    for (let j = 0; j < toCount; j++) {
+                        const y1 = 70 + (height - 120) / (fromCount + 1) * (i + 1);
+                        const y2 = 70 + (height - 120) / (toCount + 1) * (j + 1);
+                        
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', layerX[l] + nodeRadius);
+                        line.setAttribute('y1', y1);
+                        line.setAttribute('x2', layerX[l + 1] - nodeRadius);
+                        line.setAttribute('y2', y2);
+                        line.setAttribute('class', 'connection-line');
+                        line.setAttribute('data-from-layer', l);
+                        line.setAttribute('data-from-idx', i);
+                        line.setAttribute('data-to-layer', l + 1);
+                        line.setAttribute('data-to-idx', j);
+                        line.setAttribute('data-weight', `w[${l}][${j}][${i}]`);
+                        svg.appendChild(line);
+                    }
+                }
+
+                // Bias connections
+                for (let j = 0; j < toCount; j++) {
+                    const biasY = 70 + (height - 120) / (toCount + 1) * (j + 1) - 22;
+                    const neuronY = 70 + (height - 120) / (toCount + 1) * (j + 1);
+                    const biasX = layerX[l + 1];
+                    
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', biasX);
+                    line.setAttribute('y1', biasY + biasRadius);
+                    line.setAttribute('x2', biasX);
+                    line.setAttribute('y2', neuronY - nodeRadius);
+                    line.setAttribute('class', 'connection-line bias-line');
+                    line.setAttribute('data-bias', `b[${l}][${j}]`);
+                    line.setAttribute('data-to-layer', l + 1);
+                    line.setAttribute('data-to-idx', j);
+                    svg.appendChild(line);
+                }
+            }
+
+            // Draw nodes
+            for (let l = 0; l < layers.length; l++) {
+                const count = layers[l];
+                const x = layerX[l];
+
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', x);
+                label.setAttribute('y', 20);
+                label.setAttribute('class', 'layer-label');
+                label.textContent = layerNames[l];
+                svg.appendChild(label);
+
+                for (let i = 0; i < count; i++) {
+                    const y = 70 + (height - 120) / (count + 1) * (i + 1);
+                    
+                    // Draw bias node for non-input layers
+                    if (l > 0) {
+                        const biasY = y - 22;
+                        const biasG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                        biasG.setAttribute('data-bias', `b[${l-1}][${i}]`);
+
+                        const biasCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        biasCircle.setAttribute('cx', x);
+                        biasCircle.setAttribute('cy', biasY);
+                        biasCircle.setAttribute('r', biasRadius);
+                        biasCircle.setAttribute('class', 'neuron-circle bias-node');
+
+                        const biasText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        biasText.setAttribute('x', x);
+                        biasText.setAttribute('y', biasY + 3);
+                        biasText.setAttribute('class', 'neuron-text');
+                        biasText.setAttribute('font-size', '6px');
+                        biasText.textContent = 'b';
+
+                        biasG.appendChild(biasCircle);
+                        biasG.appendChild(biasText);
+                        svg.appendChild(biasG);
+
+                        biasG.addEventListener('mouseenter', () => handleHover('bias', { layerIdx: l - 1, neuronIdx: i }));
+                        biasG.addEventListener('mouseleave', () => clearHighlights());
+                        biasG.addEventListener('click', () => toggleHighlightLock('bias', { layerIdx: l - 1, neuronIdx: i }));
+                        biasG.style.cursor = 'pointer';
+                    }
+
+                    // Draw neuron node
+                    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    g.setAttribute('data-node', `layer${l}-${i}`);
+
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', x);
+                    circle.setAttribute('cy', y);
+                    circle.setAttribute('r', nodeRadius);
+                    
+                    let nodeClass = 'neuron-circle';
+                    if (l === 0) nodeClass += ' input-node';
+                    else if (l === 1) nodeClass += ' layer0-node';
+                    else if (l === 2) nodeClass += ' layer1-node';
+                    else if (l === 3) nodeClass += ' output-node';
+                    circle.setAttribute('class', nodeClass);
+
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', x);
+                    text.setAttribute('y', y + 3);
+                    text.setAttribute('class', 'neuron-text');
+                    
+                    if (l === 0) {
+                        text.textContent = `x[${i}]`;
+                    } else {
+                        text.textContent = `n${l-1},${i}`;
+                    }
+
+                    g.appendChild(circle);
+                    g.appendChild(text);
+                    svg.appendChild(g);
+
+                    g.addEventListener('mouseenter', () => handleHover('neuron', { layer: l, idx: i }));
+                    g.addEventListener('mouseleave', () => clearHighlights());
+                    g.addEventListener('click', () => toggleHighlightLock('neuron', { layer: l, idx: i }));
+                    g.style.cursor = 'pointer';
+                }
+            }
+
+            const totalLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            totalLabel.setAttribute('x', width / 2);
+            totalLabel.setAttribute('y', height - 10);
+            totalLabel.setAttribute('class', 'total-params');
+            totalLabel.textContent = `Total: 41 parameters`;
+            svg.appendChild(totalLabel);
+        }
+
+        // =============================================
+        // PARAMETERS LIST
+        // =============================================
+        function drawParamsList() {
+            const container = document.getElementById('params-list');
+            container.innerHTML = '<div class="section-title">Parameters (hover to highlight, click to lock)</div>';
+
+            for (let l = 0; l < mlp.layers.length; l++) {
+                const layer = mlp.layers[l];
+                
+                for (let n = 0; n < layer.neurons.length; n++) {
+                    const neuron = layer.neurons[n];
+                    
+                    const group = document.createElement('div');
+                    group.className = 'param-group';
+                    
+                    const title = document.createElement('div');
+                    title.className = 'param-group-title';
+                    title.innerHTML = `Layer ${l} • Neuron ${n}`;
+                    group.appendChild(title);
+
+                    for (let w = 0; w < neuron.w.length; w++) {
+                        const item = document.createElement('div');
+                        item.className = 'param-item';
+                        const wLabel = `L${l}.N${n}: w[${w}]`;
+                        item.setAttribute('data-label', wLabel);
+                        item.innerHTML = `
+                            <span class="param-label">${wLabel}</span>
+                            <span>
+                                <span class="param-value">${neuron.w[w].data.toFixed(4)}</span>
+                                <span class="param-grad">g:${neuron.w[w].grad.toFixed(4)}</span>
+                            </span>
+                        `;
+                        item.addEventListener('mouseenter', () => handleHover('weight', { layerIdx: l, neuronIdx: n, weightIdx: w }));
+                        item.addEventListener('mouseleave', () => clearHighlights());
+                        item.addEventListener('click', () => toggleHighlightLock('weight', { layerIdx: l, neuronIdx: n, weightIdx: w }));
+                        group.appendChild(item);
+                    }
+
+                    const biasItem = document.createElement('div');
+                    biasItem.className = 'param-item';
+                    const bLabel = `L${l}.N${n}: b`;
+                    biasItem.setAttribute('data-label', bLabel);
+                    biasItem.innerHTML = `
+                        <span class="param-label">${bLabel}</span>
+                        <span>
+                            <span class="param-value">${neuron.b.data.toFixed(4)}</span>
+                            <span class="param-grad">g:${neuron.b.grad.toFixed(4)}</span>
+                        </span>
+                    `;
+                    biasItem.addEventListener('mouseenter', () => handleHover('bias', { layerIdx: l, neuronIdx: n }));
+                    biasItem.addEventListener('mouseleave', () => clearHighlights());
+                    biasItem.addEventListener('click', () => toggleHighlightLock('bias', { layerIdx: l, neuronIdx: n }));
+                    group.appendChild(biasItem);
+
+                    container.appendChild(group);
+                }
+            }
+        }
+
+        // =============================================
+        // DAG DRAWING
+        // =============================================
+        function drawDAG(root) {
+            const { nodes, edges } = trace(root);
+            
+            dagElements = {
+                nodesByLabel: new Map(),
+                nodesByID: new Map(),
+                edgesByFromID: new Map(),
+                edgesByToID: new Map(),
+                opsByNodeID: new Map(),
+                opEdgesByNodeID: new Map(),
+            };
+
+            const svg = document.getElementById('dag-svg');
+            svg.innerHTML = '';
+
+            // Group nodes by their semantic layer based on label
+            const layerGroups = {
+                'input': [],       // input: x[0], x[1], x[2]
+                'L0_params': [],   // L0.N*: w[*], L0.N*: b
+                'L0_multiply': [], // L0.N*: w[*]*in[*]
+                'L0_add': [],      // L0.N*: sum*, L0.N*: pre_act
+                'L0_out': [],      // L0.N*: out
+                'L1_params': [],   // L1.N*: w[*], L1.N*: b
+                'L1_multiply': [], // L1.N*: w[*]*in[*]
+                'L1_add': [],      // L1.N*: sum*, L1.N*: pre_act
+                'L1_out': [],      // L1.N*: out
+                'L2_params': [],   // L2.N*: w[*], L2.N*: b
+                'L2_multiply': [], // L2.N*: w[*]*in[*]
+                'L2_add': [],      // L2.N*: sum*, L2.N*: pre_act
+                'L2_out': [],      // L2.N*: out
+                'other': [],       // any uncategorized nodes
+                'loss_target': [], // target values, neg, -1
+                'loss_diff': [],   // pred - target
+                'loss_final': [],  // loss (MSE), total loss
+            };
+
+            // Categorize each node
+            for (const node of nodes) {
+                const label = node.label || '';
+                
+                // Strip sample prefix if present (e.g., "S0.input: x[0]" -> "input: x[0]")
+                const cleanLabel = label.replace(/^S\d+\./, '');
+                
+                if (cleanLabel.startsWith('input:')) {
+                    layerGroups['input'].push(node);
+                } else if (cleanLabel.startsWith('L0.')) {
+                    if (cleanLabel.includes(': w[') && !cleanLabel.includes('*')) {
+                        layerGroups['L0_params'].push(node);
+                    } else if (cleanLabel.includes(': b')) {
+                        layerGroups['L0_params'].push(node);
+                    } else if (cleanLabel.includes('*in[')) {
+                        layerGroups['L0_multiply'].push(node);
+                    } else if (cleanLabel.includes(': out')) {
+                        layerGroups['L0_out'].push(node);
+                    } else {
+                        layerGroups['L0_add'].push(node);
+                    }
+                } else if (cleanLabel.startsWith('L1.')) {
+                    if (cleanLabel.includes(': w[') && !cleanLabel.includes('*')) {
+                        layerGroups['L1_params'].push(node);
+                    } else if (cleanLabel.includes(': b')) {
+                        layerGroups['L1_params'].push(node);
+                    } else if (cleanLabel.includes('*in[')) {
+                        layerGroups['L1_multiply'].push(node);
+                    } else if (cleanLabel.includes(': out')) {
+                        layerGroups['L1_out'].push(node);
+                    } else {
+                        layerGroups['L1_add'].push(node);
+                    }
+                } else if (cleanLabel.startsWith('L2.')) {
+                    if (cleanLabel.includes(': w[') && !cleanLabel.includes('*')) {
+                        layerGroups['L2_params'].push(node);
+                    } else if (cleanLabel.includes(': b')) {
+                        layerGroups['L2_params'].push(node);
+                    } else if (cleanLabel.includes('*in[')) {
+                        layerGroups['L2_multiply'].push(node);
+                    } else if (cleanLabel.includes(': out')) {
+                        layerGroups['L2_out'].push(node);
+                    } else {
+                        layerGroups['L2_add'].push(node);
+                    }
+                } else if (cleanLabel.includes('loss') || cleanLabel === 'total loss') {
+                    layerGroups['loss_final'].push(node);
+                } else if (cleanLabel.includes('pred') && cleanLabel.includes('target')) {
+                    layerGroups['loss_diff'].push(node);
+                } else if (cleanLabel.includes('target') || cleanLabel.startsWith('-') || cleanLabel === '-1' || cleanLabel.startsWith('neg')) {
+                    layerGroups['loss_target'].push(node);
+                } else {
+                    layerGroups['other'].push(node);
+                }
+            }
+
+            // Sort nodes within each group for consistent ordering
+            const sortByNeuronAndIndex = (a, b) => {
+                const labelA = a.label || '';
+                const labelB = b.label || '';
+                return labelA.localeCompare(labelB);
+            };
+            
+            Object.values(layerGroups).forEach(group => group.sort(sortByNeuronAndIndex));
+
+            // Define column positions
+            const nodeWidth = 120;
+            const nodeHeight = 44;
+            const opRadius = 14;
+            const colGap = 155;
+            const nodeGap = 52;
+            const startX = 50;
+            const startY = 30;
+
+            // Column order - separate multiply (*) and add (+) operations, loss at the end
+            const columns = [
+                'input',
+                'L0_params', 'L0_multiply', 'L0_add', 'L0_out',
+                'L1_params', 'L1_multiply', 'L1_add', 'L1_out',
+                'L2_params', 'L2_multiply', 'L2_add', 'L2_out',
+                'other',
+                'loss_target', 'loss_diff', 'loss_final'
+            ];
+
+            // Position nodes
+            const nodeMap = new Map();
+            let maxY = 0;
+
+            columns.forEach((colName, colIndex) => {
+                const nodesInCol = layerGroups[colName];
+                const x = startX + colIndex * colGap;
+                
+                nodesInCol.forEach((node, rowIndex) => {
+                    const y = startY + rowIndex * nodeGap;
+                    nodeMap.set(node.id, { node, x, y });
+                    maxY = Math.max(maxY, y);
+                });
+            });
+
+            const maxX = startX + (columns.length + 1) * colGap;
+            svg.setAttribute('viewBox', `0 0 ${maxX} ${maxY + nodeHeight + 50}`);
+            svg.style.width = maxX + 'px';
+            svg.style.height = (maxY + nodeHeight + 50) + 'px';
+
+            // Add marker definitions for arrows
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            
+            // Yellow arrow (main highlight)
+            const arrowYellow = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+            arrowYellow.setAttribute('id', 'arrow-yellow');
+            arrowYellow.setAttribute('viewBox', '0 0 10 10');
+            arrowYellow.setAttribute('refX', '9');
+            arrowYellow.setAttribute('refY', '5');
+            arrowYellow.setAttribute('markerWidth', '6');
+            arrowYellow.setAttribute('markerHeight', '6');
+            arrowYellow.setAttribute('orient', 'auto-start-reverse');
+            const pathYellow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            pathYellow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+            pathYellow.setAttribute('fill', '#fbbf24');
+            arrowYellow.appendChild(pathYellow);
+            defs.appendChild(arrowYellow);
+            
+            // Cyan arrow (input highlight)
+            const arrowCyan = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+            arrowCyan.setAttribute('id', 'arrow-cyan');
+            arrowCyan.setAttribute('viewBox', '0 0 10 10');
+            arrowCyan.setAttribute('refX', '9');
+            arrowCyan.setAttribute('refY', '5');
+            arrowCyan.setAttribute('markerWidth', '6');
+            arrowCyan.setAttribute('markerHeight', '6');
+            arrowCyan.setAttribute('orient', 'auto-start-reverse');
+            const pathCyan = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            pathCyan.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+            pathCyan.setAttribute('fill', '#22d3ee');
+            arrowCyan.appendChild(pathCyan);
+            defs.appendChild(arrowCyan);
+            
+            // Pink arrow (output highlight)
+            const arrowPink = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+            arrowPink.setAttribute('id', 'arrow-pink');
+            arrowPink.setAttribute('viewBox', '0 0 10 10');
+            arrowPink.setAttribute('refX', '9');
+            arrowPink.setAttribute('refY', '5');
+            arrowPink.setAttribute('markerWidth', '6');
+            arrowPink.setAttribute('markerHeight', '6');
+            arrowPink.setAttribute('orient', 'auto-start-reverse');
+            const pathPink = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            pathPink.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+            pathPink.setAttribute('fill', '#f472b6');
+            arrowPink.appendChild(pathPink);
+            defs.appendChild(arrowPink);
+            
+            svg.appendChild(defs);
+
+            // Create groups for layering - edges behind, nodes on top
+            const edgesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            edgesGroup.setAttribute('class', 'edges-layer');
+            svg.appendChild(edgesGroup);
+            
+            const opsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            opsGroup.setAttribute('class', 'ops-layer');
+            svg.appendChild(opsGroup);
+            
+            const nodesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            nodesGroup.setAttribute('class', 'nodes-layer');
+            svg.appendChild(nodesGroup);
+
+            // Draw edges (in edges layer - at the back)
+            for (const edge of edges) {
+                const fromInfo = nodeMap.get(edge.from.id);
+                const toInfo = nodeMap.get(edge.to.id);
+                
+                if (!fromInfo || !toInfo) continue;
+                
+                const x1 = fromInfo.x + nodeWidth;
+                const y1 = fromInfo.y + nodeHeight / 2;
+                const x2 = toInfo.x - opRadius * 2 - 10;
+                const y2 = toInfo.y + nodeHeight / 2;
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                
+                // Handle different edge directions
+                if (x1 < x2) {
+                    // Normal left-to-right edge
+                    const midX = (x1 + x2) / 2;
+                    path.setAttribute('d', `M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`);
+                } else {
+                    // Edge going backwards or same column - curve around
+                    const offset = 30;
+                    path.setAttribute('d', `M ${x1} ${y1} C ${x1 + offset} ${y1}, ${x1 + offset} ${y2}, ${x2} ${y2}`);
+                }
+                
+                path.setAttribute('class', 'dag-edge');
+                edgesGroup.appendChild(path);
+                
+                if (!dagElements.edgesByFromID.has(edge.from.id)) {
+                    dagElements.edgesByFromID.set(edge.from.id, []);
+                }
+                dagElements.edgesByFromID.get(edge.from.id).push({ element: path, toID: edge.to.id });
+                
+                if (!dagElements.edgesByToID.has(edge.to.id)) {
+                    dagElements.edgesByToID.set(edge.to.id, []);
+                }
+                dagElements.edgesByToID.get(edge.to.id).push({ element: path, fromID: edge.from.id });
+            }
+
+            // Draw nodes
+            for (const [id, info] of nodeMap) {
+                const node = info.node;
+                const x = info.x;
+                const y = info.y;
+                
+                // Determine layer class from label (strip sample prefix)
+                let layerClass = '';
+                if (node.label) {
+                    const cleanLabel = node.label.replace(/^S\d+\./, '');
+                    if (cleanLabel.startsWith('input:')) {
+                        layerClass = 'layer-input';
+                    } else if (cleanLabel.startsWith('L0.')) {
+                        layerClass = 'layer-0';
+                    } else if (cleanLabel.startsWith('L1.')) {
+                        layerClass = 'layer-1';
+                    } else if (cleanLabel.startsWith('L2.')) {
+                        layerClass = 'layer-2';
+                    } else if (cleanLabel.includes('loss') || cleanLabel.includes('target') || cleanLabel.includes('pred')) {
+                        layerClass = 'layer-loss';
+                    }
+                }
+
+                if (node._op) {
+                    const opX = x - opRadius - 5;
+                    const opY = y + nodeHeight / 2;
+
+                    const opG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    opG.setAttribute('class', `dag-op ${layerClass}`);
+
+                    const opCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    opCircle.setAttribute('cx', opX);
+                    opCircle.setAttribute('cy', opY);
+                    opCircle.setAttribute('r', opRadius);
+                    opCircle.setAttribute('class', 'dag-op-circle');
+
+                    const opText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    opText.setAttribute('x', opX);
+                    opText.setAttribute('y', opY);
+                    opText.setAttribute('class', 'dag-op-text');
+                    opText.textContent = node._op.length > 4 ? node._op.substring(0, 4) : node._op;
+
+                    opG.appendChild(opCircle);
+                    opG.appendChild(opText);
+                    opsGroup.appendChild(opG);
+                    
+                    dagElements.opsByNodeID.set(node.id, opG);
+                    
+                    // Add event handlers for op circle
+                    opG.addEventListener('mouseenter', () => handleHover('op', { nodeID: node.id }));
+                    opG.addEventListener('mouseleave', () => clearHighlights());
+                    opG.addEventListener('click', () => toggleHighlightLock('op', { nodeID: node.id }));
+                    opG.style.cursor = 'pointer';
+
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', opX + opRadius);
+                    line.setAttribute('y1', opY);
+                    line.setAttribute('x2', x);
+                    line.setAttribute('y2', y + nodeHeight / 2);
+                    line.setAttribute('class', 'dag-edge');
+                    opsGroup.appendChild(line);
+                    
+                    dagElements.opEdgesByNodeID.set(node.id, line);
+                }
+
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.setAttribute('class', `dag-node ${layerClass}`);
+
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', x);
+                rect.setAttribute('y', y);
+                rect.setAttribute('width', nodeWidth);
+                rect.setAttribute('height', nodeHeight);
+                rect.setAttribute('class', 'dag-node-rect');
+
+                const labelText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                labelText.setAttribute('x', x + 5);
+                labelText.setAttribute('y', y + 13);
+                labelText.setAttribute('class', 'dag-node-label');
+                labelText.textContent = node.label || '';
+
+                const dataText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                dataText.setAttribute('x', x + 5);
+                dataText.setAttribute('y', y + 27);
+                dataText.setAttribute('class', 'dag-node-data');
+                dataText.textContent = `data: ${node.data.toFixed(4)}`;
+
+                const gradText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                gradText.setAttribute('x', x + 5);
+                gradText.setAttribute('y', y + 40);
+                gradText.setAttribute('class', 'dag-node-grad');
+                gradText.textContent = `grad: ${node.grad.toFixed(4)}`;
+
+                g.appendChild(rect);
+                g.appendChild(labelText);
+                g.appendChild(dataText);
+                g.appendChild(gradText);
+                nodesGroup.appendChild(g);
+                
+                dagElements.nodesByID.set(node.id, { element: g, node: node });
+                
+                if (node.label) {
+                    if (!dagElements.nodesByLabel.has(node.label)) {
+                        dagElements.nodesByLabel.set(node.label, []);
+                    }
+                    dagElements.nodesByLabel.get(node.label).push({ element: g, node: node });
+                }
+
+                g.addEventListener('mouseenter', () => handleHover('dag', { nodeID: node.id }));
+                g.addEventListener('mouseleave', () => clearHighlights());
+                g.addEventListener('click', () => toggleHighlightLock('dag', { nodeID: node.id }));
+                g.style.cursor = 'pointer';
+            }
+        }
+
+        // =============================================
+        // HIGHLIGHTING FUNCTIONS
+        // =============================================
+        
+        function highlightNodeByID(nodeID) {
+            const info = dagElements.nodesByID.get(nodeID);
+            if (info) {
+                info.element.classList.add('highlighted');
+            }
+            
+            const op = dagElements.opsByNodeID.get(nodeID);
+            if (op) op.classList.add('highlighted');
+            
+            const opEdge = dagElements.opEdgesByNodeID.get(nodeID);
+            if (opEdge) opEdge.classList.add('highlighted');
+        }
+        
+        function highlightNodeByLabel(label) {
+            // First try exact match
+            const nodes = dagElements.nodesByLabel.get(label);
+            if (nodes) {
+                nodes.forEach(info => highlightNodeByID(info.node.id));
+            }
+            
+            // Also try with sample prefixes for all selected samples
+            for (const sampleIdx of selectedSamples) {
+                const prefixedLabel = `S${sampleIdx}.${label}`;
+                const prefixedNodes = dagElements.nodesByLabel.get(prefixedLabel);
+                if (prefixedNodes) {
+                    prefixedNodes.forEach(info => highlightNodeByID(info.node.id));
+                }
+            }
+        }
+        
+        function highlightEdgesFromID(nodeID) {
+            const edges = dagElements.edgesByFromID.get(nodeID);
+            if (edges) {
+                edges.forEach(edge => {
+                    edge.element.classList.add('highlighted');
+                    // Highlight target op
+                    const op = dagElements.opsByNodeID.get(edge.toID);
+                    if (op) op.classList.add('highlighted');
+                    const opEdge = dagElements.opEdgesByNodeID.get(edge.toID);
+                    if (opEdge) opEdge.classList.add('highlighted');
+                });
+            }
+        }
+        
+        function highlightEdgesToID(nodeID) {
+            const edges = dagElements.edgesByToID.get(nodeID);
+            if (edges) {
+                edges.forEach(edge => edge.element.classList.add('highlighted'));
+            }
+        }
+        
+        function highlightEdgesFromLabel(label) {
+            // First try exact match
+            const nodes = dagElements.nodesByLabel.get(label);
+            if (nodes) {
+                nodes.forEach(info => highlightEdgesFromID(info.node.id));
+            }
+            
+            // Also try with sample prefixes for all selected samples
+            for (const sampleIdx of selectedSamples) {
+                const prefixedLabel = `S${sampleIdx}.${label}`;
+                const prefixedNodes = dagElements.nodesByLabel.get(prefixedLabel);
+                if (prefixedNodes) {
+                    prefixedNodes.forEach(info => highlightEdgesFromID(info.node.id));
+                }
+            }
+        }
+
+        function highlightNeuron(layer, idx) {
+            setHighlightActive();
+            
+            // Highlight network diagram node
+            document.querySelectorAll(`[data-node="layer${layer}-${idx}"] .neuron-circle`).forEach(el => {
+                el.classList.add('highlighted');
+            });
+
+            // Highlight connections in network diagram
+            document.querySelectorAll('.connection-line').forEach(el => {
+                const toLayer = parseInt(el.getAttribute('data-to-layer'));
+                const toIdx = parseInt(el.getAttribute('data-to-idx'));
+                const fromLayer = parseInt(el.getAttribute('data-from-layer'));
+                const fromIdx = parseInt(el.getAttribute('data-from-idx'));
+                
+                if ((toLayer === layer && toIdx === idx) || (fromLayer === layer && fromIdx === idx)) {
+                    el.classList.add('highlighted');
+                }
+            });
+
+            if (layer === 0) {
+                // INPUT LAYER: x[idx] feeds into ALL 4 neurons in hidden layer 0
+                const xLabel = `input: x[${idx}]`;
+                
+                highlightNodeByLabel(xLabel);
+                highlightEdgesFromLabel(xLabel);
+                
+                // Highlight all w*x products and weights that use this x input
+                for (let neuron = 0; neuron < 4; neuron++) {
+                    const wxLabel = `L0.N${neuron}: w[${idx}]*in[${idx}]`;
+                    highlightNodeByLabel(wxLabel);
+                    
+                    const wLabel = `L0.N${neuron}: w[${idx}]`;
+                    highlightNodeByLabel(wLabel);
+                    highlightEdgesFromLabel(wLabel);
+                    
+                    document.querySelectorAll(`.param-item[data-label="${wLabel}"]`).forEach(el => {
+                        el.classList.add('highlighted');
+                    });
+                }
+            } else {
+                // HIDDEN/OUTPUT LAYER: neuron receives inputs from previous layer
+                const neuronLayer = layer - 1;
+                const outLabel = `L${neuronLayer}.N${idx}: out`;
+                
+                // Highlight the output of this neuron
+                highlightNodeByLabel(outLabel);
+                
+                // Determine input size from previous layer
+                const prevLayerSize = neuronLayer === 0 ? 3 : 4;
+                
+                // Highlight ALL INPUTS to this neuron
+                for (let i = 0; i < prevLayerSize; i++) {
+                    // Highlight the input (x or previous layer output)
+                    let inputLabel;
+                    if (neuronLayer === 0) {
+                        inputLabel = `input: x[${i}]`;
+                    } else {
+                        inputLabel = `L${neuronLayer - 1}.N${i}: out`;
+                    }
+                    highlightNodeByLabel(inputLabel);
+                    highlightEdgesFromLabel(inputLabel);
+                    
+                    // Highlight weight
+                    const wLabel = `L${neuronLayer}.N${idx}: w[${i}]`;
+                    highlightNodeByLabel(wLabel);
+                    highlightEdgesFromLabel(wLabel);
+                    
+                    document.querySelectorAll(`.param-item[data-label="${wLabel}"]`).forEach(el => {
+                        el.classList.add('highlighted');
+                    });
+                    
+                    // Highlight w*x product
+                    const wxLabel = `L${neuronLayer}.N${idx}: w[${i}]*in[${i}]`;
+                    highlightNodeByLabel(wxLabel);
+                    
+                    // Highlight sum
+                    const sumLabel = `L${neuronLayer}.N${idx}: sum${i}`;
+                    highlightNodeByLabel(sumLabel);
+                }
+                
+                // Highlight bias
+                const bLabel = `L${neuronLayer}.N${idx}: b`;
+                highlightNodeByLabel(bLabel);
+                highlightEdgesFromLabel(bLabel);
+                document.querySelectorAll(`.param-item[data-label="${bLabel}"]`).forEach(el => {
+                    el.classList.add('highlighted');
+                });
+                document.querySelectorAll(`[data-bias="b[${neuronLayer}][${idx}]"] .neuron-circle`).forEach(el => {
+                    el.classList.add('highlighted');
+                });
+                
+                // Highlight pre_act node
+                const actLabel = `L${neuronLayer}.N${idx}: pre_act`;
+                highlightNodeByLabel(actLabel);
+                
+                // Highlight input nodes in network diagram
+                if (neuronLayer === 0) {
+                    for (let i = 0; i < 3; i++) {
+                        document.querySelectorAll(`[data-node="layer0-${i}"] .neuron-circle`).forEach(el => {
+                            el.classList.add('highlighted');
+                        });
+                    }
+                } else {
+                    for (let i = 0; i < 4; i++) {
+                        document.querySelectorAll(`[data-node="layer${neuronLayer}-${i}"] .neuron-circle`).forEach(el => {
+                            el.classList.add('highlighted');
+                        });
+                    }
+                }
+                
+                // If not output layer, highlight outgoing edges
+                if (layer < 3) {
+                    highlightEdgesFromLabel(outLabel);
+                }
+            }
+        }
+
+        function highlightWeight(layerIdx, neuronIdx, weightIdx) {
+            setHighlightActive();
+            
+            const wLabel = `L${layerIdx}.N${neuronIdx}: w[${weightIdx}]`;
+            
+            document.querySelectorAll(`.param-item[data-label="${wLabel}"]`).forEach(el => {
+                el.classList.add('highlighted');
+            });
+            
+            highlightNodeByLabel(wLabel);
+            highlightEdgesFromLabel(wLabel);
+            
+            const wxLabel = `L${layerIdx}.N${neuronIdx}: w[${weightIdx}]*in[${weightIdx}]`;
+            highlightNodeByLabel(wxLabel);
+            
+            let xLabel;
+            if (layerIdx === 0) {
+                xLabel = `input: x[${weightIdx}]`;
+            } else {
+                xLabel = `L${layerIdx - 1}.N${weightIdx}: out`;
+            }
+            highlightNodeByLabel(xLabel);
+            highlightEdgesFromLabel(xLabel);
+            
+            // Use old format for data attributes
+            document.querySelectorAll(`.connection-line[data-weight="w[${layerIdx}][${neuronIdx}][${weightIdx}]"]`).forEach(el => {
+                el.classList.add('highlighted');
+            });
+        }
+
+        function highlightBias(layerIdx, neuronIdx) {
+            setHighlightActive();
+            
+            const bLabel = `L${layerIdx}.N${neuronIdx}: b`;
+            
+            document.querySelectorAll(`.param-item[data-label="${bLabel}"]`).forEach(el => {
+                el.classList.add('highlighted');
+            });
+            
+            // Use old format for data attributes
+            document.querySelectorAll(`[data-bias="b[${layerIdx}][${neuronIdx}]"] .neuron-circle`).forEach(el => {
+                el.classList.add('highlighted');
+            });
+            
+            document.querySelectorAll(`.connection-line[data-bias="b[${layerIdx}][${neuronIdx}]"]`).forEach(el => {
+                el.classList.add('highlighted');
+            });
+            
+            highlightNodeByLabel(bLabel);
+            highlightEdgesFromLabel(bLabel);
+        }
+
+        function highlightDAGNode(nodeID) {
+            setHighlightActive();
+            
+            // Highlight the main node
+            highlightNodeByID(nodeID);
+            
+            // Highlight incoming edges and input nodes (cyan)
+            const inEdges = dagElements.edgesByToID.get(nodeID);
+            if (inEdges) {
+                inEdges.forEach(edge => {
+                    edge.element.classList.add('highlighted-input');
+                    // Highlight the input node
+                    const inputInfo = dagElements.nodesByID.get(edge.fromID);
+                    if (inputInfo) {
+                        inputInfo.element.classList.add('highlighted-input');
+                    }
+                });
+            }
+            
+            // Highlight outgoing edges and output nodes (pink)
+            const outEdges = dagElements.edgesByFromID.get(nodeID);
+            if (outEdges) {
+                outEdges.forEach(edge => {
+                    edge.element.classList.add('highlighted-output');
+                    // Highlight target op
+                    const op = dagElements.opsByNodeID.get(edge.toID);
+                    if (op) op.classList.add('highlighted-output');
+                    const opEdge = dagElements.opEdgesByNodeID.get(edge.toID);
+                    if (opEdge) opEdge.classList.add('highlighted-output');
+                    // Highlight the output node
+                    const outputInfo = dagElements.nodesByID.get(edge.toID);
+                    if (outputInfo) {
+                        outputInfo.element.classList.add('highlighted-output');
+                    }
+                });
+            }
+            
+            // Highlight parameter in params list
+            const info = dagElements.nodesByID.get(nodeID);
+            if (info && info.node.label) {
+                document.querySelectorAll(`.param-item[data-label="${info.node.label}"]`).forEach(el => {
+                    el.classList.add('highlighted');
+                });
+            }
+        }
+        
+        function highlightOp(nodeID) {
+            setHighlightActive();
+            
+            // Highlight the op circle itself
+            const op = dagElements.opsByNodeID.get(nodeID);
+            if (op) op.classList.add('highlighted');
+            const opEdge = dagElements.opEdgesByNodeID.get(nodeID);
+            if (opEdge) opEdge.classList.add('highlighted');
+            
+            // Highlight the output node (pink)
+            const outputInfo = dagElements.nodesByID.get(nodeID);
+            if (outputInfo) {
+                outputInfo.element.classList.add('highlighted-output');
+            }
+            
+            // Highlight incoming edges and input nodes (cyan)
+            const inEdges = dagElements.edgesByToID.get(nodeID);
+            if (inEdges) {
+                inEdges.forEach(edge => {
+                    edge.element.classList.add('highlighted-input');
+                    // Highlight the input node
+                    const inputInfo = dagElements.nodesByID.get(edge.fromID);
+                    if (inputInfo) {
+                        inputInfo.element.classList.add('highlighted-input');
+                    }
+                });
+            }
+        }
+
+        function clearHighlights() {
+            if (highlightLocked) return; // Don't clear if locked
+            document.querySelectorAll('.highlighted, .highlighted-input, .highlighted-output').forEach(el => {
+                el.classList.remove('highlighted', 'highlighted-input', 'highlighted-output');
+            });
+            // Remove has-highlight class from containers
+            document.getElementById('dag-svg').classList.remove('has-highlight');
+            document.getElementById('network-svg').classList.remove('has-highlight');
+            document.getElementById('params-list').classList.remove('has-highlight');
+        }
+        
+        function forceClealHighlights() {
+            document.querySelectorAll('.highlighted, .highlighted-input, .highlighted-output').forEach(el => {
+                el.classList.remove('highlighted', 'highlighted-input', 'highlighted-output');
+            });
+            // Remove has-highlight class from containers
+            document.getElementById('dag-svg').classList.remove('has-highlight');
+            document.getElementById('network-svg').classList.remove('has-highlight');
+            document.getElementById('params-list').classList.remove('has-highlight');
+        }
+        
+        function setHighlightActive() {
+            // Add has-highlight class to containers to fade non-highlighted elements
+            document.getElementById('dag-svg').classList.add('has-highlight');
+            document.getElementById('network-svg').classList.add('has-highlight');
+            document.getElementById('params-list').classList.add('has-highlight');
+        }
+        
+        function centerNodeInView(nodeID) {
+            const container = document.querySelector('.right-panel');
+            
+            // Get node position
+            const nodeInfo = dagElements.nodesByID.get(nodeID);
+            if (!nodeInfo) return;
+            
+            const nodeElement = nodeInfo.element;
+            const rect = nodeElement.querySelector('rect');
+            if (!rect) return;
+            
+            const nodeX = parseFloat(rect.getAttribute('x'));
+            const nodeY = parseFloat(rect.getAttribute('y'));
+            const nodeWidth = parseFloat(rect.getAttribute('width'));
+            const nodeHeight = parseFloat(rect.getAttribute('height'));
+            
+            // Calculate center of node
+            const nodeCenterX = nodeX + nodeWidth / 2;
+            const nodeCenterY = nodeY + nodeHeight / 2;
+            
+            // Account for padding
+            const padding = 20;
+            
+            // Calculate scroll position to center the node
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            
+            const scrollX = nodeCenterX + padding - containerWidth / 2;
+            const scrollY = nodeCenterY + padding + 80 - containerHeight / 2; // 80 for header area
+            
+            // Smooth scroll to position
+            container.scrollTo({
+                left: Math.max(0, scrollX),
+                top: Math.max(0, scrollY),
+                behavior: 'smooth'
+            });
+        }
+        
+        function centerOpInView(nodeID) {
+            const container = document.querySelector('.right-panel');
+            
+            // Get op position from the op element
+            const opElement = dagElements.opsByNodeID.get(nodeID);
+            if (!opElement) return;
+            
+            const circle = opElement.querySelector('circle');
+            if (!circle) return;
+            
+            const opCenterX = parseFloat(circle.getAttribute('cx'));
+            const opCenterY = parseFloat(circle.getAttribute('cy'));
+            
+            // Account for padding
+            const padding = 20;
+            
+            // Calculate scroll position to center the op
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            
+            const scrollX = opCenterX + padding - containerWidth / 2;
+            const scrollY = opCenterY + padding + 80 - containerHeight / 2; // 80 for header area
+            
+            // Smooth scroll to position
+            container.scrollTo({
+                left: Math.max(0, scrollX),
+                top: Math.max(0, scrollY),
+                behavior: 'smooth'
+            });
+        }
+
+        function toggleHighlightLock(type, params) {
+            const lockIndicator = document.getElementById('lock-indicator');
+            
+            if (highlightLocked && lockedHighlightInfo && 
+                lockedHighlightInfo.type === type && 
+                JSON.stringify(lockedHighlightInfo.params) === JSON.stringify(params)) {
+                // Clicking same element - unlock
+                highlightLocked = false;
+                lockedHighlightInfo = null;
+                lockIndicator.style.display = 'none';
+                forceClealHighlights();
+            } else {
+                // Lock to this element
+                highlightLocked = true;
+                lockedHighlightInfo = { type, params };
+                lockIndicator.style.display = 'inline';
+                forceClealHighlights();
+                // Re-apply highlight
+                if (type === 'neuron') {
+                    highlightNeuron(params.layer, params.idx);
+                } else if (type === 'weight') {
+                    highlightWeight(params.layerIdx, params.neuronIdx, params.weightIdx);
+                } else if (type === 'bias') {
+                    highlightBias(params.layerIdx, params.neuronIdx);
+                } else if (type === 'dag') {
+                    highlightDAGNode(params.nodeID);
+                    centerNodeInView(params.nodeID);
+                } else if (type === 'op') {
+                    highlightOp(params.nodeID);
+                    centerOpInView(params.nodeID);
+                }
+            }
+        }
+        
+        function handleHover(type, params) {
+            if (highlightLocked) return; // Don't change highlight if locked
+            if (type === 'neuron') {
+                highlightNeuron(params.layer, params.idx);
+            } else if (type === 'weight') {
+                highlightWeight(params.layerIdx, params.neuronIdx, params.weightIdx);
+            } else if (type === 'bias') {
+                highlightBias(params.layerIdx, params.neuronIdx);
+            } else if (type === 'dag') {
+                highlightDAGNode(params.nodeID);
+            } else if (type === 'op') {
+                highlightOp(params.nodeID);
+            }
+        }
+
+        // =============================================
+        // UPDATE UI
+        // =============================================
+        function updateUI() {
+            if (selectedSamples.length === 0) {
+                document.getElementById('loss-value').textContent = '—';
+                document.getElementById('predictions-list').innerHTML = '<div class="no-samples">No samples selected</div>';
+                return;
+            }
+            
+            const { results, totalLoss } = computeForward();
+            
+            document.getElementById('loss-value').textContent = totalLoss.data.toFixed(4);
+            
+            // Update predictions list
+            const predList = document.getElementById('predictions-list');
+            predList.innerHTML = results.map(r => `
+                <div class="pred-row">
+                    <span class="pred-label">Sample ${r.sampleIdx}:</span>
+                    <span class="pred-value">${r.yPred.data.toFixed(4)}</span>
+                    <span class="pred-target">→ ${ys[r.sampleIdx].toFixed(1)}</span>
+                </div>
+            `).join('');
+
+            drawNetworkDiagram();
+            drawParamsList();
+            drawDAG(totalLoss);
+        }
+
+        // =============================================
+        // EVENT HANDLERS
+        // =============================================
+        document.querySelectorAll('.input-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sampleIdx = parseInt(btn.getAttribute('data-idx'));
+                
+                if (selectedSamples.includes(sampleIdx)) {
+                    // Remove from selection
+                    selectedSamples = selectedSamples.filter(i => i !== sampleIdx);
+                    btn.classList.remove('active');
+                } else {
+                    // Add to selection
+                    selectedSamples.push(sampleIdx);
+                    selectedSamples.sort();
+                    btn.classList.add('active');
+                }
+                
+                // Reset highlight lock when changing samples
+                highlightLocked = false;
+                lockedHighlightInfo = null;
+                document.getElementById('lock-indicator').style.display = 'none';
+                updateUI();
+            });
+        });
+
+        // Initial render
+        updateUI();
+    </script>
+</body>
+</html>
