@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network 3D Decision Boundary</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --accent-cyan: #00f5d4;
+            --accent-magenta: #f72585;
+            --accent-yellow: #fee440;
+            --text-primary: #e8e8ed;
+            --text-secondary: #8888a0;
+            --border-color: #2a2a3a;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-text span {
+            color: var(--accent-cyan);
+        }
+        
+        .section {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .param-row:last-child {
+            border-bottom: none;
+        }
+        
+        .param-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .param-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+        }
+        
+        .slider-container {
+            margin: 12px 0;
+        }
+        
+        .slider-container label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), #00c4a7);
+            color: var(--bg-primary);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 245, 212, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--accent-cyan);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .header {
+            padding: 20px 32px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .header h1 span {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+        }
+        
+        .status-dot.active {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(ellipse at center, #151520 0%, var(--bg-primary) 100%);
+        }
+        
+        #canvas3d {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .legend {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(18, 18, 26, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        .legend-color.positive {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 8px var(--accent-cyan);
+        }
+        
+        .legend-color.negative {
+            background: var(--accent-magenta);
+            box-shadow: 0 0 8px var(--accent-magenta);
+        }
+        
+        .legend-color.uncertain {
+            background: #4d4d59;
+            box-shadow: 0 0 8px #4d4d59;
+        }
+        
+        .legend-color.changed {
+            background: #ffff66;
+            box-shadow: 0 0 8px #ffff66;
+        }
+        
+        .legend-color.training {
+            background: transparent;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+        
+        .loss-chart {
+            height: 80px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-top: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loss-chart canvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .controls-hint {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            background: rgba(18, 18, 26, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .controls-hint kbd {
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            margin: 0 2px;
+        }
+        
+        .network-viz {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px 0;
+            gap: 8px;
+        }
+        
+        .layer {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+        }
+        
+        .neuron {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .neuron.active {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+        
+        .layer-connector {
+            width: 24px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+            opacity: 0.3;
+        }
+        
+        .layer-label {
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">NN</div>
+                <div class="logo-text">micro<span>grad</span></div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Network Architecture</div>
+                <div class="network-viz">
+                    <div class="layer">
+                        <div class="neuron active"></div>
+                        <div class="neuron active"></div>
+                        <div class="neuron active"></div>
+                        <div class="layer-label">Input</div>
+                    </div>
+                    <div class="layer-connector"></div>
+                    <div class="layer">
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="layer-label">Hidden</div>
+                    </div>
+                    <div class="layer-connector"></div>
+                    <div class="layer">
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="neuron"></div>
+                        <div class="layer-label">Hidden</div>
+                    </div>
+                    <div class="layer-connector"></div>
+                    <div class="layer">
+                        <div class="neuron"></div>
+                        <div class="layer-label">Output</div>
+                    </div>
+                </div>
+                <div class="param-row">
+                    <span class="param-label">Architecture</span>
+                    <span class="param-value">[3, 4, 4, 1]</span>
+                </div>
+                <div class="param-row">
+                    <span class="param-label">Activation</span>
+                    <span class="param-value">tanh</span>
+                </div>
+                <div class="param-row">
+                    <span class="param-label">Parameters</span>
+                    <span class="param-value" id="paramCount">37</span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Hyperparameters</div>
+                <div class="slider-container">
+                    <label>Learning Rate: <span id="lrValue">0.01</span></label>
+                    <input type="range" id="learningRate" min="-3" max="0" step="0.1" value="-2">
+                </div>
+                <div class="slider-container">
+                    <label>Iterations: <span id="iterValue">200</span></label>
+                    <input type="range" id="iterations" min="50" max="500" step="50" value="200">
+                </div>
+                <div class="slider-container">
+                    <label>Grid Resolution: <span id="resValue">15</span></label>
+                    <input type="range" id="resolution" min="8" max="25" step="1" value="15">
+                </div>
+                <div class="slider-container">
+                    <label>Render Every N Epochs: <span id="renderValue">1</span></label>
+                    <input type="range" id="renderFreq" min="1" max="100" step="1" value="1">
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Training Stats</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="epochStat">0</div>
+                        <div class="stat-label">Epoch</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="lossStat">-</div>
+                        <div class="stat-label">Loss</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="accStat">-</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="timeStat">-</div>
+                        <div class="stat-label">Time (ms)</div>
+                    </div>
+                </div>
+                <div class="loss-chart">
+                    <canvas id="lossCanvas"></canvas>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" id="trainBtn">Train Network</button>
+            <button class="btn btn-secondary" id="resetBtn">Reset Network</button>
+        </aside>
+        
+        <main class="main-content">
+            <header class="header">
+                <h1>3D <span>Decision Boundary</span> Visualizer</h1>
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">Ready</span>
+                </div>
+            </header>
+            
+            <div class="canvas-container">
+                <canvas id="canvas3d"></canvas>
+                
+                <div class="legend">
+                    <div class="legend-title">Classification</div>
+                    <div class="legend-item">
+                        <div class="legend-color positive"></div>
+                        <span>Positive (y = 1)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color negative"></div>
+                        <span>Negative (y = -1)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color uncertain"></div>
+                        <span>Uncertain (conf &lt; 0.25)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color changed"></div>
+                        <span>Changed (boundary shift)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color training"></div>
+                        <span>Training Data (white ring)</span>
+                    </div>
+                </div>
+                
+                <div class="controls-hint">
+                    <kbd>Drag</kbd> to rotate · <kbd>Scroll</kbd> to zoom · <kbd>Shift+Drag</kbd> to pan
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ============================================
+        // MICROGRAD - Automatic Differentiation Engine
+        // Based on Andrej Karpathy's micrograd
+        // ============================================
+        
+        class Value {
+            constructor(data, _children = [], _op = '') {
+                this.data = typeof data === 'number' && isFinite(data) ? data : 0;
+                this.grad = 0;
+                this._backward = () => {};
+                this._prev = new Set(_children);
+                this._op = _op;
+            }
+            
+            // Helper to clamp values and prevent NaN/Infinity
+            static clamp(x, min = -1e10, max = 1e10) {
+                if (!isFinite(x)) return 0;
+                return Math.max(min, Math.min(max, x));
+            }
+            
+            add(other) {
+                other = other instanceof Value ? other : new Value(other);
+                const out = new Value(this.data + other.data, [this, other], '+');
+                out._backward = () => {
+                    this.grad += out.grad;
+                    other.grad += out.grad;
+                };
+                return out;
+            }
+            
+            mul(other) {
+                other = other instanceof Value ? other : new Value(other);
+                const out = new Value(this.data * other.data, [this, other], '*');
+                out._backward = () => {
+                    this.grad += other.data * out.grad;
+                    other.grad += this.data * out.grad;
+                };
+                return out;
+            }
+            
+            pow(other) {
+                const result = Math.pow(this.data, other);
+                const out = new Value(Value.clamp(result), [this], `**${other}`);
+                out._backward = () => {
+                    const grad = other * Math.pow(this.data, other - 1) * out.grad;
+                    this.grad += Value.clamp(grad);
+                };
+                return out;
+            }
+            
+            neg() {
+                return this.mul(-1);
+            }
+            
+            sub(other) {
+                return this.add((other instanceof Value ? other : new Value(other)).neg());
+            }
+            
+            div(other) {
+                return this.mul((other instanceof Value ? other : new Value(other)).pow(-1));
+            }
+            
+            tanh() {
+                // Numerically stable tanh implementation
+                const x = Value.clamp(this.data, -20, 20); // Clamp to prevent overflow
+                let t;
+                if (x >= 0) {
+                    const exp2x = Math.exp(-2 * x);
+                    t = (1 - exp2x) / (1 + exp2x);
+                } else {
+                    const exp2x = Math.exp(2 * x);
+                    t = (exp2x - 1) / (exp2x + 1);
+                }
+                t = Value.clamp(t, -1, 1);
+                const out = new Value(t, [this], 'tanh');
+                out._backward = () => {
+                    this.grad += (1 - t * t) * out.grad;
+                };
+                return out;
+            }
+            
+            relu() {
+                const out = new Value(this.data < 0 ? 0 : this.data, [this], 'ReLU');
+                out._backward = () => {
+                    this.grad += (out.data > 0 ? 1 : 0) * out.grad;
+                };
+                return out;
+            }
+            
+            backward() {
+                const topo = [];
+                const visited = new Set();
+                
+                const buildTopo = (v) => {
+                    if (!visited.has(v)) {
+                        visited.add(v);
+                        for (const child of v._prev) {
+                            buildTopo(child);
+                        }
+                        topo.push(v);
+                    }
+                };
+                
+                buildTopo(this);
+                
+                this.grad = 1;
+                for (const v of topo.reverse()) {
+                    v._backward();
+                }
+            }
+        }
+        
+        // ============================================
+        // Neural Network Components
+        // ============================================
+        
+        class Neuron {
+            constructor(nin, nonlin = true) {
+                // Very small random initialization so initial predictions are near 0 (uncertain)
+                const scale = 0.1;
+                this.w = Array.from({ length: nin }, () => new Value((Math.random() * 2 - 1) * scale));
+                this.b = new Value((Math.random() * 2 - 1) * scale * 0.1);
+                this.nonlin = nonlin;
+            }
+            
+            call(x) {
+                let act = this.b;
+                for (let i = 0; i < this.w.length; i++) {
+                    act = act.add(this.w[i].mul(x[i]));
+                }
+                return this.nonlin ? act.tanh() : act;
+            }
+            
+            parameters() {
+                return [...this.w, this.b];
+            }
+        }
+        
+        class Layer {
+            constructor(nin, nout, nonlin = true) {
+                this.neurons = Array.from({ length: nout }, () => new Neuron(nin, nonlin));
+            }
+            
+            call(x) {
+                const out = this.neurons.map(n => n.call(x));
+                return out.length === 1 ? out[0] : out;
+            }
+            
+            parameters() {
+                return this.neurons.flatMap(n => n.parameters());
+            }
+        }
+        
+        class MLP {
+            constructor(nin, nouts) {
+                const sz = [nin, ...nouts];
+                this.layers = [];
+                for (let i = 0; i < nouts.length; i++) {
+                    this.layers.push(new Layer(sz[i], sz[i + 1], i !== nouts.length - 1));
+                }
+            }
+            
+            call(x) {
+                for (const layer of this.layers) {
+                    x = layer.call(x);
+                }
+                return x;
+            }
+            
+            parameters() {
+                return this.layers.flatMap(l => l.parameters());
+            }
+        }
+        
+        // ============================================
+        // Training Data (from Karpathy's video)
+        // ============================================
+        
+        let trainingData = [
+            { x: [2.0, 3.0, -1.0], y: 1.0 },
+            { x: [3.0, -1.0, 0.5], y: -1.0 },
+            { x: [0.5, 1.0, 1.0], y: -1.0 },
+            { x: [1.0, 1.0, -1.0], y: 1.0 },
+            { x: [-1.0, -1.0, 0.0], y: -1.0 },
+            { x: [2.0, 2.0, 0.5], y: 1.0 },
+            { x: [-0.5, 0.5, -0.5], y: -1.0 },
+            { x: [1.5, 2.5, -0.5], y: 1.0 },
+        ];
+        
+        function randomizeTrainingData() {
+            const numPoints = 8;
+            const range = 3;
+            trainingData = [];
+            
+            for (let i = 0; i < numPoints; i++) {
+                const x = (Math.random() * 2 - 1) * range;
+                const y = (Math.random() * 2 - 1) * range;
+                const z = (Math.random() * 2 - 1) * range;
+                const label = Math.random() > 0.5 ? 1.0 : -1.0;
+                
+                trainingData.push({
+                    x: [x, y, z],
+                    y: label
+                });
+            }
+            
+            // Re-add training points to scene
+            addTrainingPoints();
+        }
+        
+        // ============================================
+        // Three.js 3D Visualization
+        // ============================================
+        
+        let scene, camera, renderer, controls;
+        let pointCloud, trainingPoints;
+        let model;
+        let lossHistory = [];
+        
+        // Camera control variables (global for auto-rotation)
+        let spherical = { radius: 12, theta: Math.PI / 4, phi: Math.PI / 3 };
+        let target;
+        let autoRotate = true;
+        let autoRotateSpeed = 0.003;
+        let updateCameraPosition;
+        
+        function initThreeJS() {
+            const canvas = document.getElementById('canvas3d');
+            const container = canvas.parentElement;
+            
+            scene = new THREE.Scene();
+            
+            camera = new THREE.PerspectiveCamera(
+                60,
+                container.clientWidth / container.clientHeight,
+                0.1,
+                1000
+            );
+            camera.position.set(8, 6, 8);
+            camera.lookAt(0, 0, 0);
+            
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Custom orbit controls
+            let isDragging = false;
+            let isPanning = false;
+            let previousMousePosition = { x: 0, y: 0 };
+            target = new THREE.Vector3(0, 0, 0);
+            
+            updateCameraPosition = () => {
+                camera.position.x = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta) + target.x;
+                camera.position.y = spherical.radius * Math.cos(spherical.phi) + target.y;
+                camera.position.z = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta) + target.z;
+                camera.lookAt(target);
+            };
+            
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                isPanning = e.shiftKey;
+                autoRotate = false; // Stop auto-rotation when user interacts
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+                
+                if (isPanning) {
+                    const panSpeed = 0.01;
+                    const right = new THREE.Vector3();
+                    const up = new THREE.Vector3();
+                    camera.matrix.extractBasis(right, up, new THREE.Vector3());
+                    target.add(right.multiplyScalar(-deltaX * panSpeed));
+                    target.add(up.multiplyScalar(deltaY * panSpeed));
+                } else {
+                    spherical.theta -= deltaX * 0.01;
+                    spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi + deltaY * 0.01));
+                }
+                
+                updateCameraPosition();
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+            
+            canvas.addEventListener('mouseup', () => { 
+                isDragging = false; 
+                autoRotate = true; // Resume auto-rotation when user releases
+            });
+            canvas.addEventListener('mouseleave', () => { 
+                isDragging = false; 
+                autoRotate = true; // Resume auto-rotation when mouse leaves
+            });
+            
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                spherical.radius = Math.max(5, Math.min(30, spherical.radius + e.deltaY * 0.01));
+                updateCameraPosition();
+            });
+            
+            updateCameraPosition();
+            
+            // Add coordinate axes (thick cylinders)
+            const axisLength = 5; // 25% longer than original 4
+            const axisRadius = 0.05; // 5x thicker
+            
+            // X axis (red)
+            const xAxisGeom = new THREE.CylinderGeometry(axisRadius, axisRadius, axisLength, 16);
+            const xAxisMat = new THREE.MeshBasicMaterial({ color: 0xff4444 });
+            const xAxis = new THREE.Mesh(xAxisGeom, xAxisMat);
+            xAxis.rotation.z = -Math.PI / 2;
+            xAxis.position.set(axisLength / 2, 0, 0);
+            scene.add(xAxis);
+            
+            // Y axis (green)
+            const yAxisGeom = new THREE.CylinderGeometry(axisRadius, axisRadius, axisLength, 16);
+            const yAxisMat = new THREE.MeshBasicMaterial({ color: 0x44ff44 });
+            const yAxis = new THREE.Mesh(yAxisGeom, yAxisMat);
+            yAxis.position.set(0, axisLength / 2, 0);
+            scene.add(yAxis);
+            
+            // Z axis (blue)
+            const zAxisGeom = new THREE.CylinderGeometry(axisRadius, axisRadius, axisLength, 16);
+            const zAxisMat = new THREE.MeshBasicMaterial({ color: 0x4444ff });
+            const zAxis = new THREE.Mesh(zAxisGeom, zAxisMat);
+            zAxis.rotation.x = Math.PI / 2;
+            zAxis.position.set(0, 0, axisLength / 2);
+            scene.add(zAxis);
+            
+            // Axis arrow tips (cones)
+            const coneRadius = 0.12;
+            const coneHeight = 0.3;
+            
+            const xConeGeom = new THREE.ConeGeometry(coneRadius, coneHeight, 16);
+            const xCone = new THREE.Mesh(xConeGeom, xAxisMat);
+            xCone.rotation.z = -Math.PI / 2;
+            xCone.position.set(axisLength + coneHeight / 2, 0, 0);
+            scene.add(xCone);
+            
+            const yConeGeom = new THREE.ConeGeometry(coneRadius, coneHeight, 16);
+            const yCone = new THREE.Mesh(yConeGeom, yAxisMat);
+            yCone.position.set(0, axisLength + coneHeight / 2, 0);
+            scene.add(yCone);
+            
+            const zConeGeom = new THREE.ConeGeometry(coneRadius, coneHeight, 16);
+            const zCone = new THREE.Mesh(zConeGeom, zAxisMat);
+            zCone.rotation.x = Math.PI / 2;
+            zCone.position.set(0, 0, axisLength + coneHeight / 2);
+            scene.add(zCone);
+            
+            // Add grid
+            const gridHelper = new THREE.GridHelper(8, 8, 0x2a2a3a, 0x1a1a25);
+            gridHelper.position.y = -2;
+            scene.add(gridHelper);
+            
+            // Add axis labels
+            addAxisLabels();
+            
+            // Add training points
+            addTrainingPoints();
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+            
+            animate();
+        }
+        
+        function addAxisLabels() {
+            // We'll skip text labels for simplicity, axes colors indicate X(red), Y(green), Z(blue)
+        }
+        
+        function addTrainingPoints() {
+            if (trainingPoints) {
+                scene.remove(trainingPoints);
+            }
+            
+            // Remove old spheres if any
+            scene.children = scene.children.filter(child => !child.userData.isTrainingPoint);
+            
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const colors = [];
+            
+            for (const point of trainingData) {
+                positions.push(point.x[0], point.x[1], point.x[2]);
+                // Color based on actual label
+                if (point.y === 1) {
+                    // Cyan for positive
+                    colors.push(0, 0.96, 0.83);
+                } else {
+                    // Magenta for negative
+                    colors.push(0.97, 0.15, 0.52);
+                }
+            }
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            
+            const material = new THREE.PointsMaterial({
+                size: 0.4,
+                vertexColors: true,
+                transparent: true,
+                opacity: 1
+            });
+            
+            trainingPoints = new THREE.Points(geometry, material);
+            scene.add(trainingPoints);
+            
+            // Add spheres for better visibility with label-based colors
+            for (const point of trainingData) {
+                const sphereGeom = new THREE.SphereGeometry(0.18, 16, 16);
+                const color = point.y === 1 ? 0x00f5d4 : 0xf72585;
+                const sphereMat = new THREE.MeshBasicMaterial({ 
+                    color: color,
+                    transparent: true,
+                    opacity: 0.95
+                });
+                const sphere = new THREE.Mesh(sphereGeom, sphereMat);
+                sphere.position.set(point.x[0], point.x[1], point.x[2]);
+                sphere.userData.isTrainingPoint = true;
+                
+                // Add a white outline ring for visibility
+                const ringGeom = new THREE.RingGeometry(0.22, 0.28, 32);
+                const ringMat = new THREE.MeshBasicMaterial({ 
+                    color: 0xffffff,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const ring = new THREE.Mesh(ringGeom, ringMat);
+                ring.position.set(point.x[0], point.x[1], point.x[2]);
+                ring.userData.isTrainingPoint = true;
+                
+                scene.add(sphere);
+                scene.add(ring);
+            }
+        }
+        
+        let previousPredictions = null;
+        
+        function visualizeDecisionBoundary() {
+            if (pointCloud) {
+                scene.remove(pointCloud);
+            }
+            
+            const resolution = parseInt(document.getElementById('resolution').value);
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const colors = [];
+            const currentPredictions = [];
+            
+            const range = 4;
+            const step = (range * 2) / resolution;
+            
+            let pointIndex = 0;
+            for (let x = -range; x <= range; x += step) {
+                for (let y = -range; y <= range; y += step) {
+                    for (let z = -range; z <= range; z += step) {
+                        const input = [new Value(x), new Value(y), new Value(z)];
+                        const output = model.call(input);
+                        let prediction = output.data;
+                        
+                        // Handle NaN or Infinity
+                        if (!isFinite(prediction)) {
+                            prediction = 0;
+                        }
+                        
+                        // Clamp prediction for color intensity
+                        prediction = Math.max(-1, Math.min(1, prediction));
+                        
+                        // Store current prediction
+                        currentPredictions.push(prediction);
+                        
+                        positions.push(x, y, z);
+                        
+                        // Check if this pixel changed class (crossed the 0 boundary)
+                        let changed = false;
+                        if (previousPredictions && previousPredictions.length > pointIndex) {
+                            const prevPred = previousPredictions[pointIndex];
+                            // Changed if sign flipped (crossed decision boundary)
+                            if ((prevPred > 0 && prediction <= 0) || (prevPred <= 0 && prediction > 0)) {
+                                changed = true;
+                            }
+                        }
+                        
+                        if (changed) {
+                            // Highlight changed pixels with bright yellow/white
+                            colors.push(1, 1, 0.4);
+                        } else {
+                            const confidence = Math.abs(prediction);
+                            
+                            if (confidence < 0.25) {
+                                // Grey for uncertain/low confidence
+                                colors.push(0.3, 0.3, 0.35);
+                            } else if (prediction > 0) {
+                                // Cyan for positive (0, 245, 212) -> (0, 0.96, 0.83)
+                                colors.push(0, 0.96, 0.83);
+                            } else {
+                                // Magenta for negative (247, 37, 133) -> (0.97, 0.15, 0.52)
+                                colors.push(0.97, 0.15, 0.52);
+                            }
+                        }
+                        
+                        pointIndex++;
+                    }
+                }
+            }
+            
+            // Store predictions for next comparison
+            previousPredictions = currentPredictions;
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            
+            const material = new THREE.PointsMaterial({
+                size: 0.15,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.85
+            });
+            
+            pointCloud = new THREE.Points(geometry, material);
+            scene.add(pointCloud);
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Auto-rotate camera
+            if (autoRotate && updateCameraPosition) {
+                spherical.theta += autoRotateSpeed;
+                updateCameraPosition();
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        // ============================================
+        // Training Logic
+        // ============================================
+        
+        function initModel() {
+            model = new MLP(3, [4, 4, 1]);
+            document.getElementById('paramCount').textContent = model.parameters().length;
+            lossHistory = [];
+            updateLossChart();
+        }
+        
+        async function train() {
+            const learningRate = Math.pow(10, parseFloat(document.getElementById('learningRate').value));
+            const iterations = parseInt(document.getElementById('iterations').value);
+            const renderFreq = parseInt(document.getElementById('renderFreq').value);
+            
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const trainBtn = document.getElementById('trainBtn');
+            
+            statusDot.classList.add('active');
+            statusText.textContent = 'Training...';
+            trainBtn.disabled = true;
+            
+            const startTime = performance.now();
+            lossHistory = [];
+            
+            // Gradient clipping threshold
+            const gradClip = 1.0;
+            
+            for (let k = 0; k < iterations; k++) {
+                // Forward pass
+                const ypred = trainingData.map(d => model.call(d.x.map(v => new Value(v))));
+                
+                // Compute loss (mean squared error + L2 regularization)
+                let loss = new Value(0);
+                for (let i = 0; i < trainingData.length; i++) {
+                    const diff = ypred[i].sub(trainingData[i].y);
+                    loss = loss.add(diff.mul(diff)); // Use mul instead of pow for stability
+                }
+                
+                // L2 regularization
+                const alpha = 0.0001;
+                let reg = new Value(0);
+                for (const p of model.parameters()) {
+                    reg = reg.add(p.mul(p)); // Use mul instead of pow for stability
+                }
+                loss = loss.add(reg.mul(alpha));
+                
+                // Backward pass
+                for (const p of model.parameters()) {
+                    p.grad = 0;
+                }
+                loss.backward();
+                
+                // Gradient clipping
+                for (const p of model.parameters()) {
+                    if (!isFinite(p.grad)) p.grad = 0;
+                    p.grad = Math.max(-gradClip, Math.min(gradClip, p.grad));
+                }
+                
+                // Update parameters
+                for (const p of model.parameters()) {
+                    p.data -= learningRate * p.grad;
+                    // Clamp weights to prevent explosion
+                    p.data = Math.max(-10, Math.min(10, p.data));
+                }
+                
+                // Calculate accuracy
+                let correct = 0;
+                for (let i = 0; i < trainingData.length; i++) {
+                    const pred = ypred[i].data > 0 ? 1 : -1;
+                    if (pred === trainingData[i].y) correct++;
+                }
+                const accuracy = (correct / trainingData.length * 100).toFixed(0);
+                
+                const lossVal = isFinite(loss.data) ? loss.data : lossHistory[lossHistory.length - 1] || 0;
+                lossHistory.push(lossVal);
+                
+                // Update UI every N iterations based on user setting
+                if (k % renderFreq === 0 || k === iterations - 1) {
+                    document.getElementById('epochStat').textContent = k + 1;
+                    document.getElementById('lossStat').textContent = lossVal.toFixed(4);
+                    document.getElementById('accStat').textContent = accuracy + '%';
+                    document.getElementById('timeStat').textContent = Math.round(performance.now() - startTime);
+                    
+                    updateLossChart();
+                    visualizeDecisionBoundary();
+                    
+                    // Allow UI to update and add delay for visualization
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+            }
+            
+            statusDot.classList.remove('active');
+            statusText.textContent = 'Training Complete';
+            trainBtn.disabled = false;
+        }
+        
+        function updateLossChart() {
+            const canvas = document.getElementById('lossCanvas');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const width = rect.width;
+            const height = rect.height;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            if (lossHistory.length < 2) return;
+            
+            const maxLoss = Math.max(...lossHistory);
+            const minLoss = Math.min(...lossHistory);
+            const range = maxLoss - minLoss || 1;
+            
+            ctx.beginPath();
+            ctx.strokeStyle = '#00f5d4';
+            ctx.lineWidth = 2;
+            
+            for (let i = 0; i < lossHistory.length; i++) {
+                const x = (i / (lossHistory.length - 1)) * width;
+                const y = height - ((lossHistory[i] - minLoss) / range) * (height - 10) - 5;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            
+            ctx.stroke();
+            
+            // Add glow effect
+            ctx.shadowColor = '#00f5d4';
+            ctx.shadowBlur = 10;
+            ctx.stroke();
+        }
+        
+        // ============================================
+        // UI Event Handlers
+        // ============================================
+        
+        document.getElementById('learningRate').addEventListener('input', (e) => {
+            const value = Math.pow(10, parseFloat(e.target.value)).toFixed(4);
+            document.getElementById('lrValue').textContent = value;
+        });
+        
+        document.getElementById('iterations').addEventListener('input', (e) => {
+            document.getElementById('iterValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('resolution').addEventListener('input', (e) => {
+            document.getElementById('resValue').textContent = e.target.value;
+            if (model) visualizeDecisionBoundary();
+        });
+        
+        document.getElementById('renderFreq').addEventListener('input', (e) => {
+            document.getElementById('renderValue').textContent = e.target.value;
+        });
+        
+        document.getElementById('trainBtn').addEventListener('click', train);
+        
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            randomizeTrainingData();
+            initModel();
+            previousPredictions = null; // Reset prediction history
+            document.getElementById('epochStat').textContent = '0';
+            document.getElementById('lossStat').textContent = '-';
+            document.getElementById('accStat').textContent = '-';
+            document.getElementById('timeStat').textContent = '-';
+            document.getElementById('statusText').textContent = 'Ready';
+            visualizeDecisionBoundary();
+        });
+        
+        // Initialize
+        initThreeJS();
+        initModel();
+        visualizeDecisionBoundary();
+    </script>
+</body>
+</html>
