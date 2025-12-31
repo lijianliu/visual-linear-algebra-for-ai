@@ -8,3 +8,4 @@ you can play the visulizer at
 * Derivative Plotter: https://lijianliu.github.io/visual-linear-algebra-for-ai/derivative-plotter.html (Added on 2025-12-29)
 * Micrograd Backpropagation Demo: https://lijianliu.github.io/visual-linear-algebra-for-ai/micrograd-backprop-visualizer.html (Added on 2025-12-30)
 * Micrograd Neural Network Training Demo: https://lijianliu.github.io/visual-linear-algebra-for-ai/micrograd-visualizing-3d-neural-network.html (Added on 2025-12-30)
+* Micrograd MLP(3, [4, 4, 1] ) Neural Network DAG: https://lijianliu.github.io/visual-linear-algebra-for-ai/micrograd-mlp-3-441-visualizer.html (Added on 2025-12-31)
