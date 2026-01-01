@@ -43,59 +43,39 @@
             overflow-x: hidden;
         }
 
-        .header {
-            padding: 20px 30px;
+        .left-panel-header {
+            padding-bottom: 15px;
+            margin-bottom: 15px;
             border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--bg-panel);
         }
         
-        .header-left {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        
-        .header-right {
-            display: flex;
-            align-items: center;
-        }
-        
-        .author-info {
-            font-size: 0.75rem;
-            color: var(--text-dim);
-        }
-        
-        .author-info a {
-            color: var(--accent-cyan);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        
-        .author-info a:hover {
-            color: var(--accent-blue);
-            text-decoration: underline;
-        }
-
-        .header h1 {
+        .left-panel-header h1 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             font-weight: 600;
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
         }
-
-        .header-info {
-            font-size: 0.8rem;
+        
+        .header-subtitle {
+            font-size: 0.65rem;
             color: var(--text-dim);
+        }
+        
+        .header-subtitle a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+        
+        .header-subtitle a:hover {
+            text-decoration: underline;
         }
 
         .container {
             display: flex;
-            height: calc(100vh - 70px);
+            height: 100vh;
         }
 
         .left-panel {
@@ -109,10 +89,18 @@
 
         .right-panel {
             flex: 1;
-            padding: 20px;
-            overflow: auto;
-            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
             background: var(--bg-dark);
+        }
+        
+        .dag-fixed-header {
+            flex-shrink: 0;
+            padding: 15px 20px 10px 20px;
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border);
+            z-index: 10;
         }
 
         .section-title {
@@ -429,8 +417,14 @@
 
         /* DAG Styles */
         .dag-container {
-            min-width: 1200px;
+            flex: 1;
+            overflow: auto;
+            scroll-behavior: smooth;
             padding: 20px;
+        }
+        
+        .dag-container-inner {
+            min-width: 1200px;
         }
 
         .dag-svg {
@@ -1276,18 +1270,12 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-left">
-            <h1>MLP(3, [4, 4, 1]) Visualizer</h1>
-            <div class="header-info">Micrograd Neural Network • Interactive Computation Graph</div>
-        </div>
-        <div class="header-right">
-            <span class="author-info">by <a href="https://lijianliu.github.io/" target="_blank" rel="noopener">Lijian Liu</a></span>
-        </div>
-    </div>
-
     <div class="container">
         <div class="left-panel">
+            <div class="left-panel-header">
+                <h1>MLP(3, [4, 4, 1]) Visualizer</h1>
+                <div class="header-subtitle">Micrograd Neural Network • <a href="https://lijianliu.github.io/" target="_blank" rel="noopener">Lijian Liu</a></div>
+            </div>
             <div class="network-diagram">
                 <div class="section-title">Network Architecture</div>
                 <div class="legend">
@@ -1432,44 +1420,46 @@
         </div>
 
         <div class="right-panel">
-            <div class="dag-header">
-                <div class="section-title">Computation Graph (DAG)</div>
-            </div>
-            <div class="dag-controls-row">
-                <div class="dag-controls-left">
-                    <div class="dag-stat-box">
-                        <span class="dag-stat-label">Loss</span>
-                        <span class="dag-stat-value" id="dag-current-loss">—</span>
+            <div class="dag-fixed-header">
+                <div class="dag-header">
+                    <div class="section-title">Computation Graph (DAG)</div>
+                </div>
+                <div class="dag-controls-row">
+                    <div class="dag-controls-left">
+                        <div class="dag-stat-box">
+                            <span class="dag-stat-label">Loss</span>
+                            <span class="dag-stat-value" id="dag-current-loss">—</span>
+                        </div>
+                        <div class="dag-stat-box">
+                            <span class="dag-stat-label">Iter</span>
+                            <span class="dag-stat-value" id="dag-iteration-count">0</span>
+                        </div>
+                        <button class="training-btn reinit-btn" id="reinit-btn" title="Reinitialize network weights">⟲ Reset</button>
+                        <div class="dag-training-group">
+                            <span class="train-label">Train:</span>
+                            <button class="training-btn" id="train-once-btn" title="Train 1 iteration">1×</button>
+                            <button class="training-btn auto-btn" id="auto-train-btn" title="Train 10 iterations">10×</button>
+                            <button class="training-btn auto-btn" id="auto-train-100-btn" title="Train 100 iterations">100×</button>
+                        </div>
+                        <div class="dag-lr-row">
+                            <label>lr:</label>
+                            <input type="number" id="dag-learning-rate" value="0.01" step="0.01" min="0.001" max="1.0">
+                        </div>
                     </div>
-                    <div class="dag-stat-box">
-                        <span class="dag-stat-label">Iter</span>
-                        <span class="dag-stat-value" id="dag-iteration-count">0</span>
-                    </div>
-                    <button class="training-btn reinit-btn" id="reinit-btn" title="Reinitialize network weights">⟲ Reset</button>
-                    <div class="dag-training-group">
-                        <span class="train-label">Train:</span>
-                        <button class="training-btn" id="train-once-btn" title="Train 1 iteration">1×</button>
-                        <button class="training-btn auto-btn" id="auto-train-btn" title="Train 10 iterations">10×</button>
-                        <button class="training-btn auto-btn" id="auto-train-100-btn" title="Train 100 iterations">100×</button>
-                    </div>
-                    <div class="dag-lr-row">
-                        <label>lr:</label>
-                        <input type="number" id="dag-learning-rate" value="0.01" step="0.01" min="0.001" max="1.0">
+                    <div class="dag-chart-right">
+                        <svg class="dag-loss-chart" id="dag-loss-chart" viewBox="0 0 200 50"></svg>
                     </div>
                 </div>
-                <div class="dag-chart-right">
-                    <svg class="dag-loss-chart" id="dag-loss-chart" viewBox="0 0 200 50"></svg>
+                <div class="scroll-hint" id="scroll-hint" style="cursor: pointer;">
+                    ← Scroll horizontally to see full graph → 
+                    <span id="lock-indicator" style="color: #fbbf24; display: none;">🔒 Click here to unlock</span>
                 </div>
-            </div>
-            <div class="scroll-hint" id="scroll-hint" style="cursor: pointer;">
-                ← Scroll horizontally to see full graph → 
-                <span id="lock-indicator" style="color: #fbbf24; display: none;">🔒 Click here to unlock</span>
-            </div>
-            <div class="dag-legend">
-                <span class="dag-legend-item"><span style="color: #fbbf24;">■</span> Selected</span>
-                <span class="dag-legend-item"><span style="color: #22d3ee;">→</span> Inputs</span>
-                <span class="dag-legend-item"><span style="color: #f472b6;">→</span> Outputs</span>
-                <span class="dag-legend-item" style="margin-left: 10px; opacity: 0.7;">(arrows show data flow)</span>
+                <div class="dag-legend">
+                    <span class="dag-legend-item"><span style="color: #fbbf24;">■</span> Selected</span>
+                    <span class="dag-legend-item"><span style="color: #22d3ee;">→</span> Inputs</span>
+                    <span class="dag-legend-item"><span style="color: #f472b6;">→</span> Outputs</span>
+                    <span class="dag-legend-item" style="margin-left: 10px; opacity: 0.7;">(arrows show data flow)</span>
+                </div>
             </div>
             <div class="dag-container" id="dag-container">
                 <svg class="dag-svg" id="dag-svg"></svg>
@@ -1939,7 +1929,7 @@
                 
                 const yTarget = new Value(ys[sampleIdx], [], '', `S${sampleIdx}.target: y`);
                 const diff = yPred.sub(yTarget);
-                diff.label = `S${sampleIdx}.pred - target`;
+                diff.label = `S${sampleIdx}.diff`;
                 const sampleLoss = diff.pow(2);
                 sampleLoss.label = `S${sampleIdx}.loss (MSE)`;
                 
@@ -1949,8 +1939,14 @@
                     totalLoss = sampleLoss;
                 } else {
                     totalLoss = totalLoss.add(sampleLoss);
-                    totalLoss.label = 'total loss';
+                    // Only label the final sum as 'total loss'
+                    totalLoss.label = `sum(S0..S${sampleIdx})`;
                 }
+            }
+            
+            // Give final loss a clear label
+            if (totalLoss) {
+                totalLoss.label = 'total loss';
             }
             
             lastTotalLoss = totalLoss;
