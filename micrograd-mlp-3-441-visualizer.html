@@ -51,6 +51,33 @@
             justify-content: space-between;
             background: var(--bg-panel);
         }
+        
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-info {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        
+        .author-info a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .author-info a:hover {
+            color: var(--accent-blue);
+            text-decoration: underline;
+        }
 
         .header h1 {
             font-family: 'Space Grotesk', sans-serif;
@@ -225,7 +252,7 @@
         }
 
         .neuron-text {
-            font-size: 8px;
+            font-size: 7px;
             fill: var(--text);
             text-anchor: middle;
             pointer-events: none;
@@ -304,6 +331,33 @@
         .param-grad {
             color: var(--accent-pink);
             font-size: 0.65rem;
+        }
+        
+        /* Dim gradient displays when backprop is not active */
+        body:not(.backprop-active) .param-grad {
+            opacity: 0.3;
+        }
+        
+        body:not(.backprop-active) .dag-node-grad {
+            opacity: 0.3;
+        }
+        
+        /* Backprop step highlight - pulsing yellow border (same as regular highlight) */
+        .dag-node.backprop-current .dag-node-rect {
+            stroke: var(--highlight) !important;
+            stroke-width: 3px !important;
+            animation: backprop-pulse 0.8s ease-in-out infinite;
+        }
+        
+        .dag-node.backprop-current.highlighted .dag-node-rect {
+            stroke: var(--highlight) !important;
+            stroke-width: 3px !important;
+            animation: backprop-pulse 0.8s ease-in-out infinite;
+        }
+        
+        @keyframes backprop-pulse {
+            0%, 100% { stroke-opacity: 1; filter: drop-shadow(0 0 6px var(--highlight)); }
+            50% { stroke-opacity: 0.7; filter: drop-shadow(0 0 12px var(--highlight)); }
         }
 
         .param-breakdown {
@@ -388,6 +442,14 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+        
+        .dag-column-header {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            text-anchor: middle;
+            letter-spacing: 0.5px;
+        }
 
         .dag-node-rect {
             fill: var(--bg-node);
@@ -469,6 +531,26 @@
         .dag-node-grad {
             font-size: 9px;
             fill: var(--accent-pink);
+        }
+        
+        /* Fade intermediate nodes (not w, b, loss, input, output) */
+        .dag-node.node-intermediate {
+            opacity: 0.5;
+        }
+        
+        .dag-node.node-intermediate .dag-node-rect {
+            stroke-opacity: 0.5;
+        }
+        
+        .dag-node.node-intermediate .dag-node-label,
+        .dag-node.node-intermediate .dag-node-data,
+        .dag-node.node-intermediate .dag-node-grad {
+            opacity: 0.7;
+        }
+        
+        /* Keep important nodes fully visible */
+        .dag-node.node-important {
+            opacity: 1;
         }
 
         .dag-op {
@@ -596,7 +678,7 @@
             opacity: 0.08;
         }
         
-        .network-svg.has-highlight .neuron-circle:not(.highlighted) {
+        .network-svg.has-highlight .neuron-circle:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
             opacity: 0.2;
             transition: opacity 0.2s;
         }
@@ -606,15 +688,41 @@
             transition: opacity 0.2s;
         }
         
-        .network-svg.has-highlight g:has(.neuron-circle.highlighted) .neuron-text {
+        .network-svg.has-highlight g:has(.neuron-circle.highlighted) .neuron-text,
+        .network-svg.has-highlight g:has(.neuron-circle.highlighted-input) .neuron-text,
+        .network-svg.has-highlight g:has(.neuron-circle.highlighted-output) .neuron-text {
             opacity: 1;
         }
         
-        .network-svg.has-highlight .connection-line:not(.highlighted) {
+        .network-svg.has-highlight .connection-line:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
             opacity: 0.08;
         }
         
-        .params-list.has-highlight .param-item:not(.highlighted) {
+        /* Input highlight style for network diagram - cyan */
+        .neuron-circle.highlighted-input {
+            stroke: #22d3ee !important;
+            stroke-width: 3px;
+        }
+        
+        /* Output highlight style for network diagram - pink */
+        .neuron-circle.highlighted-output {
+            stroke: #f472b6 !important;
+            stroke-width: 3px;
+        }
+        
+        .connection-line.highlighted-input {
+            stroke: #22d3ee !important;
+            stroke-width: 2.5px;
+            opacity: 1 !important;
+        }
+        
+        .connection-line.highlighted-output {
+            stroke: #f472b6 !important;
+            stroke-width: 2.5px;
+            opacity: 1 !important;
+        }
+        
+        .params-list.has-highlight .param-item:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
             opacity: 0.25;
             transition: opacity 0.2s;
         }
@@ -622,25 +730,333 @@
         .params-list.has-highlight .param-group-title {
             opacity: 0.4;
         }
+        
+        .param-item.highlighted-input {
+            background: rgba(34, 211, 238, 0.15);
+            border-color: #22d3ee;
+        }
+        
+        .param-item.highlighted-output {
+            background: rgba(244, 114, 182, 0.15);
+            border-color: #f472b6;
+        }
 
-        .loss-display {
-            padding: 15px;
+        .training-panel {
             background: var(--bg-node);
             border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
             border: 1px solid var(--border);
-            margin-bottom: 20px;
         }
-
-        .loss-title {
+        
+        .training-step {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            border-left: 3px solid var(--border);
+        }
+        
+        .training-step.active {
+            border-left-color: var(--highlight);
+        }
+        
+        .training-step.completed {
+            border-left-color: var(--accent-green);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        
+        .step-number {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text);
+            font-size: 0.6rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .training-step.active .step-number {
+            background: var(--highlight);
+            color: var(--bg-dark);
+        }
+        
+        .training-step.completed .step-number {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+        }
+        
+        .step-name {
             font-size: 0.7rem;
-            color: var(--text-dim);
-            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+            flex: 1;
         }
-
+        
+        .step-status {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+        }
+        
+        .training-step.completed .step-status {
+            color: var(--accent-green);
+        }
+        
+        .step-content {
+            padding-left: 26px;
+        }
+        
+        .training-btn {
+            padding: 5px 10px;
+            background: var(--bg-node);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.6rem;
+            transition: all 0.2s;
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+        
+        .training-btn:hover:not(:disabled) {
+            background: rgba(34, 211, 238, 0.2);
+        }
+        
+        .training-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .training-btn.small {
+            padding: 3px 6px;
+            font-size: 0.55rem;
+        }
+        
+        .training-btn.step-btn {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
+        }
+        
+        .training-btn.step-btn:hover:not(:disabled) {
+            background: rgba(167, 139, 250, 0.2);
+        }
+        
+        .training-btn.next-btn {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+        
+        .training-btn.next-btn:hover:not(:disabled) {
+            background: rgba(74, 222, 128, 0.2);
+        }
+        
+        .training-btn.complete-btn {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+        
+        .training-btn.complete-btn:hover:not(:disabled) {
+            background: rgba(251, 146, 60, 0.2);
+        }
+        
+        .training-btn.update-btn {
+            border-color: var(--accent-pink);
+            color: var(--accent-pink);
+        }
+        
+        .training-btn.update-btn:hover:not(:disabled) {
+            background: rgba(244, 114, 182, 0.2);
+        }
+        
+        .training-btn.auto-btn {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+        
+        .training-btn.auto-btn:hover:not(:disabled) {
+            background: rgba(251, 146, 60, 0.2);
+        }
+        
+        .sub-step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .sub-step-label {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            min-width: 110px;
+        }
+        
+        .learning-rate-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .learning-rate-row label {
+            font-size: 0.55rem;
+            color: var(--text-dim);
+        }
+        
+        .learning-rate-row input {
+            width: 50px;
+            padding: 2px 4px;
+            background: var(--bg-node);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+        }
+        
+        .learning-rate-row input:focus {
+            outline: none;
+            border-color: var(--accent-pink);
+        }
+        
         .loss-value {
-            font-size: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
             color: var(--accent-orange);
             font-weight: 700;
+        }
+        
+        .iteration-info {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+        
+        .iteration-info strong {
+            color: var(--accent-cyan);
+        }
+        
+        .backprop-step-info {
+            margin: 6px 0;
+            font-size: 0.6rem;
+            color: var(--accent-purple);
+            padding: 6px;
+            background: rgba(167, 139, 250, 0.1);
+            border-radius: 4px;
+            line-height: 1.3;
+        }
+        
+        .backprop-step-controls {
+            margin-bottom: 6px;
+        }
+        
+        .training-status {
+            font-size: 0.6rem;
+            color: var(--accent-green);
+            text-align: center;
+            padding: 4px;
+        }
+        
+        .loss-chart-container {
+            margin-top: 12px;
+            padding: 10px;
+            background: var(--bg-dark);
+            border-radius: 6px;
+        }
+        
+        .loss-chart-title {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .loss-chart {
+            width: 100%;
+            height: 120px;
+        }
+        
+        .loss-chart-axis {
+            stroke: var(--border);
+            stroke-width: 1;
+        }
+        
+        .loss-chart-grid {
+            stroke: var(--border);
+            stroke-width: 0.5;
+            opacity: 0.3;
+        }
+        
+        .loss-chart-line {
+            fill: none;
+            stroke: var(--accent-orange);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .loss-chart-dot {
+            fill: var(--accent-orange);
+        }
+        
+        .loss-chart-label {
+            font-size: 8px;
+            fill: var(--text-dim);
+        }
+        
+        .training-divider {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.6rem;
+            margin: 10px 0;
+            position: relative;
+        }
+        
+        .training-divider span {
+            background: var(--bg-node);
+            padding: 0 10px;
+        }
+        
+        .auto-training {
+            border-left-color: var(--accent-orange) !important;
+        }
+        
+        .auto-training .step-number {
+            background: var(--accent-orange) !important;
+            font-size: 0.7rem;
+        }
+        
+        .loss-display-inline {
+            margin-top: 8px;
+            padding: 8px;
+            background: var(--bg-node);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .loss-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+        }
+        
+        .update-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .prediction-display {
@@ -725,29 +1141,239 @@
             align-items: center;
             gap: 4px;
         }
+        
+        .dag-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .dag-training-stats {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .dag-stat-compact {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+        }
+        
+        .dag-stat-compact strong {
+            color: var(--accent-cyan);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .dag-controls-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: var(--bg-node);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+        
+        .dag-controls-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        
+        .dag-stat-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px 10px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            min-width: 50px;
+        }
+        
+        .dag-stat-label {
+            font-size: 0.5rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        
+        .dag-stat-value {
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-orange);
+        }
+        
+        .dag-stat-box:nth-child(2) .dag-stat-value {
+            color: var(--accent-cyan);
+        }
+        
+        .dag-training-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .dag-training-group .training-btn {
+            padding: 4px 10px;
+            font-size: 0.6rem;
+        }
+        
+        .train-label {
+            font-size: 0.55rem;
+            color: var(--text-dim);
+        }
+        
+        .training-btn.reinit-btn {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
+            padding: 4px 10px;
+            font-size: 0.6rem;
+        }
+        
+        .training-btn.reinit-btn:hover {
+            background: rgba(167, 139, 250, 0.2);
+        }
+        
+        .dag-lr-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.55rem;
+            color: var(--text-dim);
+        }
+        
+        .dag-lr-row input {
+            width: 50px;
+            padding: 4px 6px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+        }
+        
+        .dag-lr-row input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+        
+        .dag-chart-right {
+            flex: 1;
+            min-width: 150px;
+            height: 50px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            padding: 4px;
+        }
+        
+        .dag-loss-chart {
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>MLP(3, [4, 4, 1]) Visualizer</h1>
-        <div class="header-info">Micrograd Neural Network • Interactive Computation Graph</div>
+        <div class="header-left">
+            <h1>MLP(3, [4, 4, 1]) Visualizer</h1>
+            <div class="header-info">Micrograd Neural Network • Interactive Computation Graph</div>
+        </div>
+        <div class="header-right">
+            <span class="author-info">by <a href="https://lijianliu.github.io/" target="_blank" rel="noopener">Lijian Liu</a></span>
+        </div>
     </div>
 
     <div class="container">
         <div class="left-panel">
+            <div class="network-diagram">
+                <div class="section-title">Network Architecture</div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-dot input"></div>Input</div>
+                    <div class="legend-item"><div class="legend-dot layer0"></div>Layer 0</div>
+                    <div class="legend-item"><div class="legend-dot layer1"></div>Layer 1</div>
+                    <div class="legend-item"><div class="legend-dot layer2"></div>Layer 2</div>
+                    <div class="legend-item"><div class="legend-dot loss"></div>Loss</div>
+                    <div class="legend-item"><div class="legend-dot bias"></div>Bias</div>
+                </div>
+                <svg class="network-svg" id="network-svg"></svg>
+            </div>
+
             <div class="input-selector">
                 <div class="section-title">Select Input Samples (click to toggle)</div>
                 <div class="input-buttons">
                     <button class="input-btn active" data-idx="0">x[0]: [2.0, 3.0, -1.0]</button>
-                    <button class="input-btn" data-idx="1">x[1]: [3.0, -1.0, 0.5]</button>
-                    <button class="input-btn" data-idx="2">x[2]: [0.5, 1.0, 1.0]</button>
-                    <button class="input-btn" data-idx="3">x[3]: [1.0, 1.0, -1.0]</button>
+                    <button class="input-btn active" data-idx="1">x[1]: [3.0, -1.0, 0.5]</button>
+                    <button class="input-btn active" data-idx="2">x[2]: [0.5, 1.0, 1.0]</button>
+                    <button class="input-btn active" data-idx="3">x[3]: [1.0, 1.0, -1.0]</button>
                 </div>
             </div>
 
-            <div class="loss-display">
-                <div class="loss-title">Total Loss (MSE)</div>
-                <div class="loss-value" id="loss-value">0.0000</div>
+            <div class="training-panel">
+                <div class="section-title">Training Flow</div>
+                
+                <div class="training-step completed" id="step-init">
+                    <div class="step-header">
+                        <span class="step-number">1</span>
+                        <span class="step-name">Parameter Initialization</span>
+                        <span class="step-status" id="init-status">✓ Done</span>
+                    </div>
+                </div>
+                
+                <div class="training-step" id="step-forward">
+                    <div class="step-header">
+                        <span class="step-number">2</span>
+                        <span class="step-name">Forward Propagation</span>
+                        <span class="step-status" id="forward-status">Ready</span>
+                    </div>
+                    <div class="step-content">
+                        <button class="training-btn" id="forward-btn">Compute Predictions</button>
+                        <div class="loss-display-inline" id="loss-display" style="display:none;">
+                            <span class="loss-label">Loss (MSE):</span>
+                            <span class="loss-value" id="loss-value">—</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="training-step" id="step-backward">
+                    <div class="step-header">
+                        <span class="step-number">3</span>
+                        <span class="step-name">Backpropagation</span>
+                        <span class="step-status" id="backward-status">—</span>
+                    </div>
+                    <div class="step-content">
+                        <div class="sub-step">
+                            <button class="training-btn" id="backward-btn" disabled>Compute Gradients</button>
+                            <button class="training-btn step-btn" id="backward-step-btn" disabled>Step-by-Step</button>
+                        </div>
+                        <div class="backprop-step-controls">
+                            <button class="training-btn small next-btn" id="backprop-next-btn" style="display:none;">Next →</button>
+                            <button class="training-btn small complete-btn" id="backprop-complete-btn" style="display:none;">Complete</button>
+                        </div>
+                        <div class="backprop-step-info" id="backprop-step-info" style="display:none;"></div>
+                    </div>
+                </div>
+                
+                <div class="training-step" id="step-update">
+                    <div class="step-header">
+                        <span class="step-number">4</span>
+                        <span class="step-name">Update Parameters</span>
+                        <span class="step-status" id="update-status">—</span>
+                    </div>
+                    <div class="step-content" id="update-content">
+                        <div class="update-row">
+                            <div class="learning-rate-row">
+                                <label>Learning Rate:</label>
+                                <input type="number" id="learning-rate" value="0.01" step="0.01" min="0.001" max="1.0">
+                            </div>
+                            <button class="training-btn update-btn" id="update-params-btn" disabled>Apply & Continue →</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="training-status" id="training-status"></div>
             </div>
 
             <div class="prediction-display">
@@ -800,29 +1426,44 @@
                 </div>
             </div>
 
-            <div class="network-diagram">
-                <div class="section-title">Network Architecture</div>
-                <div class="legend">
-                    <div class="legend-item"><div class="legend-dot input"></div>Input</div>
-                    <div class="legend-item"><div class="legend-dot layer0"></div>Layer 0</div>
-                    <div class="legend-item"><div class="legend-dot layer1"></div>Layer 1</div>
-                    <div class="legend-item"><div class="legend-dot layer2"></div>Layer 2</div>
-                    <div class="legend-item"><div class="legend-dot loss"></div>Loss</div>
-                    <div class="legend-item"><div class="legend-dot bias"></div>Bias</div>
-                </div>
-                <svg class="network-svg" id="network-svg"></svg>
-            </div>
-
             <div class="params-list" id="params-list">
-                <div class="section-title">Parameters (hover to highlight)</div>
+                <div class="section-title">Parameters (hover to highlight, click to lock)</div>
             </div>
         </div>
 
         <div class="right-panel">
-            <div class="section-title">Computation Graph (DAG)</div>
-            <div class="scroll-hint">
+            <div class="dag-header">
+                <div class="section-title">Computation Graph (DAG)</div>
+            </div>
+            <div class="dag-controls-row">
+                <div class="dag-controls-left">
+                    <div class="dag-stat-box">
+                        <span class="dag-stat-label">Loss</span>
+                        <span class="dag-stat-value" id="dag-current-loss">—</span>
+                    </div>
+                    <div class="dag-stat-box">
+                        <span class="dag-stat-label">Iter</span>
+                        <span class="dag-stat-value" id="dag-iteration-count">0</span>
+                    </div>
+                    <button class="training-btn reinit-btn" id="reinit-btn" title="Reinitialize network weights">⟲ Reset</button>
+                    <div class="dag-training-group">
+                        <span class="train-label">Train:</span>
+                        <button class="training-btn" id="train-once-btn" title="Train 1 iteration">1×</button>
+                        <button class="training-btn auto-btn" id="auto-train-btn" title="Train 10 iterations">10×</button>
+                        <button class="training-btn auto-btn" id="auto-train-100-btn" title="Train 100 iterations">100×</button>
+                    </div>
+                    <div class="dag-lr-row">
+                        <label>lr:</label>
+                        <input type="number" id="dag-learning-rate" value="0.01" step="0.01" min="0.001" max="1.0">
+                    </div>
+                </div>
+                <div class="dag-chart-right">
+                    <svg class="dag-loss-chart" id="dag-loss-chart" viewBox="0 0 200 50"></svg>
+                </div>
+            </div>
+            <div class="scroll-hint" id="scroll-hint" style="cursor: pointer;">
                 ← Scroll horizontally to see full graph → 
-                <span id="lock-indicator" style="color: #fbbf24; display: none;">🔒 Locked</span>
+                <span id="lock-indicator" style="color: #fbbf24; display: none;">🔒 Click here to unlock</span>
             </div>
             <div class="dag-legend">
                 <span class="dag-legend-item"><span style="color: #fbbf24;">■</span> Selected</span>
@@ -1015,7 +1656,7 @@
         }
 
         const rng = seededRandom(42);
-        const mlp = new MLP(3, [4, 4, 1], rng);
+        let mlp = new MLP(3, [4, 4, 1], rng);
 
         const xs = [
             [2.0, 3.0, -1.0],
@@ -1025,11 +1666,242 @@
         ];
         const ys = [1.0, -1.0, -1.0, 1.0];
 
-        let selectedSamples = [0]; // Array of selected sample indices
+        let selectedSamples = [0, 1, 2, 3]; // Array of selected sample indices
+        
+        // Parameter history for sparklines (keyed by parameter label)
+        const paramHistory = new Map();
+        
+        // Node value history for all DAG nodes (keyed by node label)
+        const nodeHistory = new Map();
+        
+        // Loss history for chart
+        let lossHistory = [];
+        
+        function recordParameterValues() {
+            for (const p of mlp.parameters()) {
+                if (p.label) {
+                    if (!paramHistory.has(p.label)) {
+                        paramHistory.set(p.label, []);
+                    }
+                    const history = paramHistory.get(p.label);
+                    history.push(p.data);
+                    // Keep unlimited history until reinitialization
+                }
+            }
+        }
+        
+        function recordAllNodeValues(root) {
+            if (!root) return;
+            
+            // Traverse all nodes in the graph
+            const visited = new Set();
+            const stack = [root];
+            
+            while (stack.length > 0) {
+                const node = stack.pop();
+                if (visited.has(node.id)) continue;
+                visited.add(node.id);
+                
+                if (node.label) {
+                    if (!nodeHistory.has(node.label)) {
+                        nodeHistory.set(node.label, []);
+                    }
+                    const history = nodeHistory.get(node.label);
+                    history.push(node.data);
+                }
+                
+                for (const child of node._prev) {
+                    stack.push(child);
+                }
+            }
+        }
+        
+        function recordLoss(lossValue) {
+            lossHistory.push(lossValue);
+        }
+        
+        function clearParameterHistory() {
+            paramHistory.clear();
+            nodeHistory.clear();
+            lossHistory = [];
+            document.getElementById('dag-iteration-count').textContent = '0';
+            document.getElementById('dag-loss-chart').innerHTML = '';
+            drawDagLossChart(); // Redraw empty chart
+        }
+        
+        function drawLossChart() {
+            // Now just calls drawDagLossChart since we moved the chart to DAG panel
+            drawDagLossChart();
+        }
+        
+        function drawDagLossChart() {
+            const svg = document.getElementById('dag-loss-chart');
+            svg.innerHTML = '';
+            
+            // Update iteration count
+            document.getElementById('dag-iteration-count').textContent = iterationCount;
+            
+            const width = 200;
+            const height = 50;
+            const padding = { top: 5, right: 8, bottom: 12, left: 30 };
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+            
+            // Get current loss value from display
+            const currentLossText = document.getElementById('dag-current-loss').textContent;
+            const currentLoss = parseFloat(currentLossText);
+            
+            // If no loss history and no current loss, show empty chart
+            if (lossHistory.length === 0 && (isNaN(currentLoss) || currentLossText === '—')) {
+                // Draw empty chart with placeholder
+                const placeholderText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                placeholderText.setAttribute('x', width / 2);
+                placeholderText.setAttribute('y', height / 2);
+                placeholderText.setAttribute('text-anchor', 'middle');
+                placeholderText.setAttribute('fill', '#64748b');
+                placeholderText.setAttribute('font-size', '8');
+                placeholderText.textContent = 'Loss History';
+                svg.appendChild(placeholderText);
+                return;
+            }
+            
+            // Build data: use lossHistory if available, otherwise just current loss
+            let data = lossHistory.length > 0 ? [...lossHistory] : [];
+            if (!isNaN(currentLoss) && (data.length === 0 || data[data.length - 1] !== currentLoss)) {
+                // Add current loss if it's different from last recorded
+            }
+            if (data.length === 0 && !isNaN(currentLoss)) {
+                data = [currentLoss];
+            }
+            
+            if (data.length === 0) return;
+            
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            const range = max - min || 1;
+            
+            const yMin = Math.max(0, min - range * 0.1);
+            const yMax = max + range * 0.1;
+            const yRange = yMax - yMin || 1;
+            
+            // Draw y-axis labels (just top and bottom)
+            const topLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            topLabel.setAttribute('x', padding.left - 3);
+            topLabel.setAttribute('y', padding.top + 4);
+            topLabel.setAttribute('text-anchor', 'end');
+            topLabel.setAttribute('fill', '#64748b');
+            topLabel.setAttribute('font-size', '7');
+            topLabel.textContent = yMax.toFixed(1);
+            svg.appendChild(topLabel);
+            
+            const bottomLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            bottomLabel.setAttribute('x', padding.left - 3);
+            bottomLabel.setAttribute('y', height - padding.bottom);
+            bottomLabel.setAttribute('text-anchor', 'end');
+            bottomLabel.setAttribute('fill', '#64748b');
+            bottomLabel.setAttribute('font-size', '7');
+            bottomLabel.textContent = yMin.toFixed(1);
+            svg.appendChild(bottomLabel);
+            
+            // Draw axis line
+            const axisLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            axisLine.setAttribute('x1', padding.left);
+            axisLine.setAttribute('y1', height - padding.bottom);
+            axisLine.setAttribute('x2', width - padding.right);
+            axisLine.setAttribute('y2', height - padding.bottom);
+            axisLine.setAttribute('stroke', '#334155');
+            axisLine.setAttribute('stroke-width', '1');
+            svg.appendChild(axisLine);
+            
+            if (data.length === 1) {
+                // Just one point - draw a dot
+                const x = padding.left + chartWidth / 2;
+                const y = padding.top + ((yMax - data[0]) / yRange) * chartHeight;
+                
+                const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                dot.setAttribute('cx', x);
+                dot.setAttribute('cy', y);
+                dot.setAttribute('r', '4');
+                dot.setAttribute('fill', '#fb923c');
+                svg.appendChild(dot);
+                
+                // Label
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', x);
+                label.setAttribute('y', y - 6);
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('fill', '#fb923c');
+                label.setAttribute('font-size', '8');
+                label.textContent = data[0].toFixed(4);
+                svg.appendChild(label);
+            } else {
+                // Multiple points - draw line
+                const points = data.map((v, i) => {
+                    const x = padding.left + (i / (data.length - 1)) * chartWidth;
+                    const y = padding.top + ((yMax - v) / yRange) * chartHeight;
+                    return `${x},${y}`;
+                });
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                path.setAttribute('points', points.join(' '));
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', '#fb923c');
+                path.setAttribute('stroke-width', '2');
+                path.setAttribute('stroke-linecap', 'round');
+                path.setAttribute('stroke-linejoin', 'round');
+                svg.appendChild(path);
+                
+                // End dot
+                const lastX = padding.left + chartWidth;
+                const lastY = padding.top + ((yMax - data[data.length - 1]) / yRange) * chartHeight;
+                const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                dot.setAttribute('cx', lastX);
+                dot.setAttribute('cy', lastY);
+                dot.setAttribute('r', '3');
+                dot.setAttribute('fill', '#fb923c');
+                svg.appendChild(dot);
+                
+                // Current value label
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', lastX - 2);
+                label.setAttribute('y', lastY - 5);
+                label.setAttribute('text-anchor', 'end');
+                label.setAttribute('fill', '#fb923c');
+                label.setAttribute('font-size', '7');
+                label.textContent = data[data.length - 1].toFixed(4);
+                svg.appendChild(label);
+                
+                // X-axis iteration labels
+                const startLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                startLabel.setAttribute('x', padding.left);
+                startLabel.setAttribute('y', height - 2);
+                startLabel.setAttribute('text-anchor', 'start');
+                startLabel.setAttribute('fill', '#64748b');
+                startLabel.setAttribute('font-size', '7');
+                startLabel.textContent = '1';
+                svg.appendChild(startLabel);
+                
+                const endLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                endLabel.setAttribute('x', width - padding.right);
+                endLabel.setAttribute('y', height - 2);
+                endLabel.setAttribute('text-anchor', 'end');
+                endLabel.setAttribute('fill', '#64748b');
+                endLabel.setAttribute('font-size', '7');
+                endLabel.textContent = data.length.toString();
+                svg.appendChild(endLabel);
+            }
+        }
         
         // Highlight lock state
         let highlightLocked = false;
         let lockedHighlightInfo = null; // { type: 'neuron'|'weight'|'bias'|'dag', params: {...} }
+        
+        // Backprop toggle state
+        let runBackprop = false;
+        let backpropStepMode = false;
+        let backpropTopo = []; // Topological order for step-by-step
+        let backpropStep = 0; // Current step in backprop
+        let currentBackpropNodeID = null; // Currently highlighted node
         
         // DAG element references
         let dagElements = {
@@ -1044,6 +1916,8 @@
         // =============================================
         // COMPUTATION
         // =============================================
+        let lastTotalLoss = null; // Store for step-by-step backprop
+        
         function computeForward() {
             // Don't reset Value.nextId - it causes ID collisions with existing weights!
             // Value.nextId = 0;  // REMOVED - this was causing the bug!
@@ -1079,11 +1953,170 @@
                 }
             }
             
-            if (totalLoss) {
+            lastTotalLoss = totalLoss;
+            
+            // Only run full backward pass if toggle is on and not in step mode
+            if (runBackprop && !backpropStepMode && totalLoss) {
                 totalLoss.backward();
             }
 
             return { results, totalLoss };
+        }
+        
+        function buildBackpropTopo(root) {
+            const topo = [];
+            const visited = new Set();
+            const buildTopo = (v) => {
+                if (!visited.has(v.id)) {
+                    visited.add(v.id);
+                    for (const child of v._prev) {
+                        buildTopo(child);
+                    }
+                    topo.push(v);
+                }
+            };
+            buildTopo(root);
+            return topo.reverse(); // Reverse for backprop order
+        }
+        
+        function startStepBackprop() {
+            if (!lastTotalLoss) return;
+            
+            // Build topological order first
+            backpropTopo = buildBackpropTopo(lastTotalLoss);
+            backpropStep = 0;
+            currentBackpropNodeID = null;
+            
+            // Reset gradients on ALL nodes in the computation graph
+            for (const node of backpropTopo) {
+                node.grad = 0;
+            }
+            
+            // Also reset parameter gradients
+            for (const p of mlp.parameters()) {
+                p.grad = 0;
+            }
+            
+            // Set initial gradient on loss
+            lastTotalLoss.grad = 1.0;
+            
+            // Highlight the loss node
+            currentBackpropNodeID = lastTotalLoss.id;
+            
+            // Temporarily unlock highlights for backprop
+            highlightLocked = false;
+            
+            updateBackpropUI();
+            drawDAG(lastTotalLoss);
+            drawParamsList();
+            
+            // Apply highlight after drawing
+            setTimeout(() => {
+                highlightBackpropNode(currentBackpropNodeID);
+                centerNodeInView(currentBackpropNodeID);
+            }, 50);
+        }
+        
+        function stepBackprop() {
+            if (backpropStep >= backpropTopo.length) return false;
+            
+            const node = backpropTopo[backpropStep];
+            node._backward();
+            backpropStep++;
+            
+            // Highlight the NEXT node to be processed (if any)
+            if (backpropStep < backpropTopo.length) {
+                currentBackpropNodeID = backpropTopo[backpropStep].id;
+            } else {
+                currentBackpropNodeID = null;
+            }
+            
+            // Temporarily unlock highlights for backprop
+            highlightLocked = false;
+            
+            updateBackpropUI();
+            drawDAG(lastTotalLoss);
+            drawParamsList();
+            
+            // Apply highlight after drawing
+            setTimeout(() => {
+                highlightBackpropNode(currentBackpropNodeID);
+                if (currentBackpropNodeID) {
+                    centerNodeInView(currentBackpropNodeID);
+                }
+            }, 50);
+            
+            return backpropStep < backpropTopo.length;
+        }
+        
+        function completeBackprop() {
+            while (backpropStep < backpropTopo.length) {
+                const node = backpropTopo[backpropStep];
+                node._backward();
+                backpropStep++;
+            }
+            currentBackpropNodeID = null;
+            highlightLocked = false;
+            
+            updateBackpropUI();
+            drawDAG(lastTotalLoss);
+            drawParamsList();
+            
+            // Clear all highlights
+            forceClealHighlights();
+            document.querySelectorAll('.backprop-current').forEach(el => {
+                el.classList.remove('backprop-current');
+            });
+        }
+        
+        function highlightBackpropNode(nodeID) {
+            // Clear previous backprop highlights
+            document.querySelectorAll('.backprop-current').forEach(el => {
+                el.classList.remove('backprop-current');
+            });
+            
+            if (nodeID === null) {
+                // Clear all highlights
+                forceClealHighlights();
+                return;
+            }
+            
+            // Use the same highlighting as user click
+            forceClealHighlights();
+            highlightDAGNode(nodeID);
+            
+            // Add the pulsing backprop indicator on top
+            const info = dagElements.nodesByID.get(nodeID);
+            if (info) {
+                info.element.classList.add('backprop-current');
+            }
+        }
+        
+        function updateBackpropUI() {
+            const stepInfo = document.getElementById('backprop-step-info');
+            const nextBtn = document.getElementById('backprop-next-btn');
+            const completeBtn = document.getElementById('backprop-complete-btn');
+            
+            if (backpropStepMode) {
+                stepInfo.style.display = 'block';
+                nextBtn.style.display = 'inline-block';
+                completeBtn.style.display = 'inline-block';
+                
+                if (backpropStep >= backpropTopo.length) {
+                    stepInfo.innerHTML = `Backprop complete! (${backpropTopo.length} nodes)`;
+                    nextBtn.disabled = true;
+                    completeBtn.disabled = true;
+                } else {
+                    const currentNode = backpropTopo[backpropStep];
+                    stepInfo.innerHTML = `Step ${backpropStep + 1}/${backpropTopo.length}: <strong>${currentNode?.label || 'node'}</strong><br><span style="font-size:0.6rem;opacity:0.7;">Press → or Space for next, Enter to complete</span>`;
+                    nextBtn.disabled = false;
+                    completeBtn.disabled = false;
+                }
+            } else {
+                stepInfo.style.display = 'none';
+                nextBtn.style.display = 'none';
+                completeBtn.style.display = 'none';
+            }
         }
 
         function trace(root) {
@@ -1111,6 +2144,7 @@
         function drawNetworkDiagram() {
             const svg = document.getElementById('network-svg');
             svg.innerHTML = '';
+            svg.setAttribute('viewBox', `0 0 360 380`);
 
             const width = 360;
             const height = 380;
@@ -1119,6 +2153,25 @@
             const layerX = [50, 130, 210, 290];
             const nodeRadius = 16;
             const biasRadius = 10;
+
+            // Add transparent background rect to catch clicks for unlock
+            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bgRect.setAttribute('x', '0');
+            bgRect.setAttribute('y', '0');
+            bgRect.setAttribute('width', width);
+            bgRect.setAttribute('height', height);
+            bgRect.setAttribute('fill', 'transparent');
+            bgRect.setAttribute('pointer-events', 'all');
+            bgRect.style.cursor = 'default';
+            bgRect.addEventListener('click', () => {
+                if (highlightLocked) {
+                    highlightLocked = false;
+                    lockedHighlightInfo = null;
+                    document.getElementById('lock-indicator').style.display = 'none';
+                    forceClealHighlights();
+                }
+            });
+            svg.appendChild(bgRect);
 
             // Draw connections (weights)
             for (let l = 0; l < layers.length - 1; l++) {
@@ -1232,7 +2285,7 @@
                     if (l === 0) {
                         text.textContent = `x[${i}]`;
                     } else {
-                        text.textContent = `n${l-1},${i}`;
+                        text.textContent = `L${l-1}.N${i}`;
                     }
 
                     g.appendChild(circle);
@@ -1317,6 +2370,79 @@
         // =============================================
         // DAG DRAWING
         // =============================================
+        function drawSparkline(x, y, width, height, values, opacity = 1.0) {
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            g.setAttribute('class', 'sparkline');
+            g.setAttribute('opacity', opacity);
+            
+            if (values.length < 2) return g;
+            
+            const min = Math.min(...values);
+            const max = Math.max(...values);
+            const range = max - min || 1;
+            
+            // Draw background
+            const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bg.setAttribute('x', x);
+            bg.setAttribute('y', y);
+            bg.setAttribute('width', width);
+            bg.setAttribute('height', height);
+            bg.setAttribute('fill', 'rgba(0,0,0,0.3)');
+            bg.setAttribute('rx', '2');
+            g.appendChild(bg);
+            
+            // Draw zero line if it's in range
+            if (min < 0 && max > 0) {
+                const zeroY = y + height - ((0 - min) / range) * height;
+                const zeroLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                zeroLine.setAttribute('x1', x);
+                zeroLine.setAttribute('y1', zeroY);
+                zeroLine.setAttribute('x2', x + width);
+                zeroLine.setAttribute('y2', zeroY);
+                zeroLine.setAttribute('stroke', 'rgba(255,255,255,0.2)');
+                zeroLine.setAttribute('stroke-width', '0.5');
+                g.appendChild(zeroLine);
+            }
+            
+            // Build path
+            const points = values.map((v, i) => {
+                const px = x + (i / (values.length - 1)) * width;
+                const py = y + height - ((v - min) / range) * height;
+                return `${px},${py}`;
+            });
+            
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            path.setAttribute('points', points.join(' '));
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke-width', '1.5');
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('stroke-linejoin', 'round');
+            
+            // Color based on trend (last value vs first value)
+            const trend = values[values.length - 1] - values[0];
+            if (Math.abs(trend) < 0.001) {
+                path.setAttribute('stroke', '#94a3b8'); // gray - no change
+            } else if (trend > 0) {
+                path.setAttribute('stroke', '#4ade80'); // green - increasing
+            } else {
+                path.setAttribute('stroke', '#f87171'); // red - decreasing
+            }
+            
+            g.appendChild(path);
+            
+            // Draw end point
+            const lastX = x + width;
+            const lastY = y + height - ((values[values.length - 1] - min) / range) * height;
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', lastX);
+            dot.setAttribute('cy', lastY);
+            dot.setAttribute('r', '2');
+            dot.setAttribute('fill', path.getAttribute('stroke'));
+            g.appendChild(dot);
+            
+            return g;
+        }
+
         function drawDAG(root) {
             const { nodes, edges } = trace(root);
             
@@ -1425,7 +2551,8 @@
             const colGap = 155;
             const nodeGap = 52;
             const startX = 50;
-            const startY = 30;
+            const headerY = 15;
+            const startY = 45; // Leave room for headers
 
             // Column order - separate multiply (*) and add (+) operations, loss at the end
             const columns = [
@@ -1435,6 +2562,15 @@
                 'L2_params', 'L2_multiply', 'L2_add', 'L2_out',
                 'other',
                 'loss_target', 'loss_diff', 'loss_final'
+            ];
+            
+            // Column group headers with their span
+            const columnHeaders = [
+                { name: 'Input', startCol: 0, endCol: 0, color: 'var(--layer-input)' },
+                { name: 'Layer 0 (Hidden)', startCol: 1, endCol: 4, color: 'var(--layer-0)' },
+                { name: 'Layer 1 (Hidden)', startCol: 5, endCol: 8, color: 'var(--layer-1)' },
+                { name: 'Layer 2 (Output)', startCol: 9, endCol: 12, color: 'var(--layer-2)' },
+                { name: 'Loss Computation', startCol: 13, endCol: 16, color: 'var(--layer-loss)' },
             ];
 
             // Position nodes
@@ -1456,6 +2592,57 @@
             svg.setAttribute('viewBox', `0 0 ${maxX} ${maxY + nodeHeight + 50}`);
             svg.style.width = maxX + 'px';
             svg.style.height = (maxY + nodeHeight + 50) + 'px';
+
+            // Add transparent background rect to catch clicks for unlock
+            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bgRect.setAttribute('x', '0');
+            bgRect.setAttribute('y', '0');
+            bgRect.setAttribute('width', maxX);
+            bgRect.setAttribute('height', maxY + nodeHeight + 50);
+            bgRect.setAttribute('fill', 'transparent');
+            bgRect.setAttribute('pointer-events', 'all');
+            bgRect.style.cursor = 'default';
+            bgRect.addEventListener('click', () => {
+                if (highlightLocked) {
+                    highlightLocked = false;
+                    lockedHighlightInfo = null;
+                    document.getElementById('lock-indicator').style.display = 'none';
+                    forceClealHighlights();
+                }
+            });
+            svg.appendChild(bgRect);
+
+            // Draw column headers
+            const headersGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            headersGroup.setAttribute('class', 'headers-layer');
+            
+            columnHeaders.forEach(header => {
+                const startColX = startX + header.startCol * colGap;
+                const endColX = startX + header.endCol * colGap + nodeWidth;
+                const centerX = (startColX + endColX) / 2;
+                
+                // Draw header text
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', centerX);
+                text.setAttribute('y', headerY);
+                text.setAttribute('class', 'dag-column-header');
+                text.setAttribute('fill', header.color);
+                text.textContent = header.name;
+                headersGroup.appendChild(text);
+                
+                // Draw underline
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', startColX);
+                line.setAttribute('y1', headerY + 8);
+                line.setAttribute('x2', endColX);
+                line.setAttribute('y2', headerY + 8);
+                line.setAttribute('stroke', header.color);
+                line.setAttribute('stroke-width', '1');
+                line.setAttribute('opacity', '0.3');
+                headersGroup.appendChild(line);
+            });
+            
+            svg.appendChild(headersGroup);
 
             // Add marker definitions for arrows
             const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
@@ -1624,8 +2811,22 @@
                     dagElements.opEdgesByNodeID.set(node.id, line);
                 }
 
+                // Determine if this is an important node (param or loss)
+                // Pure parameter: ends with ": w[N]" or ": b" (not containing + or other ops)
+                const isParam = node.label && (
+                    /: w\[\d+\]$/.test(node.label) || 
+                    /: b$/.test(node.label)
+                );
+                // Loss node: only the final loss value
+                const isLoss = node.label && node.label.includes('loss');
+                // Input nodes
+                const isInput = node.label && node.label.startsWith('input:');
+                const isImportant = isParam || isLoss || isInput;
+                
+                const nodeTypeClass = isImportant ? 'node-important' : 'node-intermediate';
+                
                 const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                g.setAttribute('class', `dag-node ${layerClass}`);
+                g.setAttribute('class', `dag-node ${layerClass} ${nodeTypeClass}`);
 
                 const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                 rect.setAttribute('x', x);
@@ -1656,6 +2857,25 @@
                 g.appendChild(labelText);
                 g.appendChild(dataText);
                 g.appendChild(gradText);
+                
+                // Draw sparkline for all nodes with history
+                if (node.label) {
+                    // Check paramHistory for w and b, nodeHistory for others
+                    let history = null;
+                    if (isParam && paramHistory.has(node.label)) {
+                        history = paramHistory.get(node.label);
+                    } else if (nodeHistory.has(node.label)) {
+                        history = nodeHistory.get(node.label);
+                    }
+                    
+                    if (history && history.length > 1) {
+                        // Full opacity for important nodes, faded for others
+                        const opacity = isImportant ? 1.0 : 0.4;
+                        const sparkline = drawSparkline(x + nodeWidth - 45, y + 5, 40, 20, history, opacity);
+                        g.appendChild(sparkline);
+                    }
+                }
+                
                 nodesGroup.appendChild(g);
                 
                 dagElements.nodesByID.set(node.id, { element: g, node: node });
@@ -1916,11 +3136,80 @@
             highlightEdgesFromLabel(bLabel);
         }
 
+        function highlightNetworkFromLabel(label) {
+            if (!label) return;
+            
+            // Strip sample prefix
+            const cleanLabel = label.replace(/^S\d+\./, '');
+            
+            // Parse the label to find layer and neuron
+            if (cleanLabel.startsWith('input:')) {
+                // Input node - e.g., "input: x[0]"
+                const match = cleanLabel.match(/x\[(\d+)\]/);
+                if (match) {
+                    const idx = parseInt(match[1]);
+                    document.querySelectorAll(`[data-node="layer0-${idx}"] .neuron-circle`).forEach(el => {
+                        el.classList.add('highlighted');
+                    });
+                }
+            } else if (cleanLabel.startsWith('L')) {
+                // Layer node - e.g., "L0.N2: w[1]*in[1]" or "L1.N3: out"
+                const match = cleanLabel.match(/L(\d+)\.N(\d+)/);
+                if (match) {
+                    const layerIdx = parseInt(match[1]);
+                    const neuronIdx = parseInt(match[2]);
+                    // Network diagram layers: 0=input, 1=L0, 2=L1, 3=L2
+                    const diagramLayer = layerIdx + 1;
+                    document.querySelectorAll(`[data-node="layer${diagramLayer}-${neuronIdx}"] .neuron-circle`).forEach(el => {
+                        el.classList.add('highlighted');
+                    });
+                    
+                    // If it's a weight, also highlight the input it connects to
+                    if (cleanLabel.includes('*in[') || (cleanLabel.includes(': w[') && !cleanLabel.includes('*'))) {
+                        const weightMatch = cleanLabel.match(/w\[(\d+)\]/);
+                        if (weightMatch) {
+                            const weightIdx = parseInt(weightMatch[1]);
+                            // Highlight the source node
+                            if (layerIdx === 0) {
+                                // L0 weights connect to input layer
+                                document.querySelectorAll(`[data-node="layer0-${weightIdx}"] .neuron-circle`).forEach(el => {
+                                    el.classList.add('highlighted-input');
+                                });
+                            } else {
+                                // Other layers connect to previous layer
+                                document.querySelectorAll(`[data-node="layer${layerIdx}-${weightIdx}"] .neuron-circle`).forEach(el => {
+                                    el.classList.add('highlighted-input');
+                                });
+                            }
+                            // Highlight the connection line
+                            document.querySelectorAll(`.connection-line[data-weight="w[${layerIdx}][${neuronIdx}][${weightIdx}]"]`).forEach(el => {
+                                el.classList.add('highlighted');
+                            });
+                        }
+                    }
+                    
+                    // If it's a bias, highlight the bias node
+                    if (cleanLabel.includes(': b')) {
+                        document.querySelectorAll(`[data-bias="b[${layerIdx}][${neuronIdx}]"] .neuron-circle`).forEach(el => {
+                            el.classList.add('highlighted');
+                        });
+                    }
+                }
+            }
+        }
+
         function highlightDAGNode(nodeID) {
             setHighlightActive();
             
             // Highlight the main node
             highlightNodeByID(nodeID);
+            
+            // Get node info for network diagram highlighting
+            const info = dagElements.nodesByID.get(nodeID);
+            if (info && info.node.label) {
+                // Highlight corresponding network diagram elements
+                highlightNetworkFromLabel(info.node.label);
+            }
             
             // Highlight incoming edges and input nodes (cyan)
             const inEdges = dagElements.edgesByToID.get(nodeID);
@@ -1931,6 +3220,10 @@
                     const inputInfo = dagElements.nodesByID.get(edge.fromID);
                     if (inputInfo) {
                         inputInfo.element.classList.add('highlighted-input');
+                        // Also highlight in network diagram
+                        if (inputInfo.node.label) {
+                            highlightNetworkFromLabel(inputInfo.node.label);
+                        }
                     }
                 });
             }
@@ -1954,7 +3247,6 @@
             }
             
             // Highlight parameter in params list
-            const info = dagElements.nodesByID.get(nodeID);
             if (info && info.node.label) {
                 document.querySelectorAll(`.param-item[data-label="${info.node.label}"]`).forEach(el => {
                     el.classList.add('highlighted');
@@ -1975,6 +3267,10 @@
             const outputInfo = dagElements.nodesByID.get(nodeID);
             if (outputInfo) {
                 outputInfo.element.classList.add('highlighted-output');
+                // Also highlight in network diagram
+                if (outputInfo.node.label) {
+                    highlightNetworkFromLabel(outputInfo.node.label);
+                }
             }
             
             // Highlight incoming edges and input nodes (cyan)
@@ -1986,6 +3282,10 @@
                     const inputInfo = dagElements.nodesByID.get(edge.fromID);
                     if (inputInfo) {
                         inputInfo.element.classList.add('highlighted-input');
+                        // Also highlight in network diagram
+                        if (inputInfo.node.label) {
+                            highlightNetworkFromLabel(inputInfo.node.label);
+                        }
                     }
                 });
             }
@@ -1993,6 +3293,8 @@
 
         function clearHighlights() {
             if (highlightLocked) return; // Don't clear if locked
+            if (backpropStepMode && currentBackpropNodeID) return; // Don't clear during step-by-step backprop
+            
             document.querySelectorAll('.highlighted, .highlighted-input, .highlighted-output').forEach(el => {
                 el.classList.remove('highlighted', 'highlighted-input', 'highlighted-output');
             });
@@ -2003,8 +3305,8 @@
         }
         
         function forceClealHighlights() {
-            document.querySelectorAll('.highlighted, .highlighted-input, .highlighted-output').forEach(el => {
-                el.classList.remove('highlighted', 'highlighted-input', 'highlighted-output');
+            document.querySelectorAll('.highlighted, .highlighted-input, .highlighted-output, .backprop-current').forEach(el => {
+                el.classList.remove('highlighted', 'highlighted-input', 'highlighted-output', 'backprop-current');
             });
             // Remove has-highlight class from containers
             document.getElementById('dag-svg').classList.remove('has-highlight');
@@ -2089,6 +3391,9 @@
         }
 
         function toggleHighlightLock(type, params) {
+            // Don't allow locking during step-by-step backprop
+            if (backpropStepMode && currentBackpropNodeID) return;
+            
             const lockIndicator = document.getElementById('lock-indicator');
             
             if (highlightLocked && lockedHighlightInfo && 
@@ -2105,13 +3410,27 @@
                 lockedHighlightInfo = { type, params };
                 lockIndicator.style.display = 'inline';
                 forceClealHighlights();
-                // Re-apply highlight
+                // Re-apply highlight and center on relevant DAG node
                 if (type === 'neuron') {
                     highlightNeuron(params.layer, params.idx);
+                    // Center on the output node for this neuron
+                    let centerLabel;
+                    if (params.layer === 0) {
+                        centerLabel = `input: x[${params.idx}]`;
+                    } else {
+                        centerLabel = `L${params.layer - 1}.N${params.idx}: out`;
+                    }
+                    centerOnLabeledNode(centerLabel);
                 } else if (type === 'weight') {
                     highlightWeight(params.layerIdx, params.neuronIdx, params.weightIdx);
+                    // Center on the weight node
+                    const wLabel = `L${params.layerIdx}.N${params.neuronIdx}: w[${params.weightIdx}]`;
+                    centerOnLabeledNode(wLabel);
                 } else if (type === 'bias') {
                     highlightBias(params.layerIdx, params.neuronIdx);
+                    // Center on the bias node
+                    const bLabel = `L${params.layerIdx}.N${params.neuronIdx}: b`;
+                    centerOnLabeledNode(bLabel);
                 } else if (type === 'dag') {
                     highlightDAGNode(params.nodeID);
                     centerNodeInView(params.nodeID);
@@ -2122,14 +3441,47 @@
             }
         }
         
+        function centerOnLabeledNode(label) {
+            // Find node ID by label (check both exact and sample-prefixed versions)
+            for (const [nodeID, info] of dagElements.nodesByID) {
+                if (info.node.label === label) {
+                    centerNodeInView(nodeID);
+                    return;
+                }
+                // Check with sample prefix
+                for (const sampleIdx of selectedSamples) {
+                    if (info.node.label === `S${sampleIdx}.${label}`) {
+                        centerNodeInView(nodeID);
+                        return;
+                    }
+                }
+            }
+        }
+        
         function handleHover(type, params) {
             if (highlightLocked) return; // Don't change highlight if locked
+            if (backpropStepMode && currentBackpropNodeID) return; // Don't change during step-by-step backprop
+            
             if (type === 'neuron') {
                 highlightNeuron(params.layer, params.idx);
+                // Center on the output node for this neuron
+                let centerLabel;
+                if (params.layer === 0) {
+                    centerLabel = `input: x[${params.idx}]`;
+                } else {
+                    centerLabel = `L${params.layer - 1}.N${params.idx}: out`;
+                }
+                centerOnLabeledNode(centerLabel);
             } else if (type === 'weight') {
                 highlightWeight(params.layerIdx, params.neuronIdx, params.weightIdx);
+                // Center on the weight node
+                const wLabel = `L${params.layerIdx}.N${params.neuronIdx}: w[${params.weightIdx}]`;
+                centerOnLabeledNode(wLabel);
             } else if (type === 'bias') {
                 highlightBias(params.layerIdx, params.neuronIdx);
+                // Center on the bias node
+                const bLabel = `L${params.layerIdx}.N${params.neuronIdx}: b`;
+                centerOnLabeledNode(bLabel);
             } else if (type === 'dag') {
                 highlightDAGNode(params.nodeID);
             } else if (type === 'op') {
@@ -2143,13 +3495,16 @@
         function updateUI() {
             if (selectedSamples.length === 0) {
                 document.getElementById('loss-value').textContent = '—';
+                document.getElementById('dag-current-loss').textContent = '—';
                 document.getElementById('predictions-list').innerHTML = '<div class="no-samples">No samples selected</div>';
                 return;
             }
             
             const { results, totalLoss } = computeForward();
             
-            document.getElementById('loss-value').textContent = totalLoss.data.toFixed(4);
+            const lossStr = totalLoss.data.toFixed(4);
+            document.getElementById('loss-value').textContent = lossStr;
+            document.getElementById('dag-current-loss').textContent = lossStr;
             
             // Update predictions list
             const predList = document.getElementById('predictions-list');
@@ -2164,6 +3519,7 @@
             drawNetworkDiagram();
             drawParamsList();
             drawDAG(totalLoss);
+            drawDagLossChart();
         }
 
         // =============================================
@@ -2174,6 +3530,10 @@
                 const sampleIdx = parseInt(btn.getAttribute('data-idx'));
                 
                 if (selectedSamples.includes(sampleIdx)) {
+                    // Don't allow deselecting if it's the last selected sample
+                    if (selectedSamples.length <= 1) {
+                        return; // Keep at least one sample selected
+                    }
                     // Remove from selection
                     selectedSamples = selectedSamples.filter(i => i !== sampleIdx);
                     btn.classList.remove('active');
@@ -2188,12 +3548,412 @@
                 highlightLocked = false;
                 lockedHighlightInfo = null;
                 document.getElementById('lock-indicator').style.display = 'none';
-                updateUI();
+                
+                // Reset step backprop if active
+                if (backpropStepMode) {
+                    updateUI();
+                    startStepBackprop();
+                } else {
+                    updateUI();
+                }
             });
         });
+        
+        // Training state
+        let trainingState = 'init'; // init, forward, backward, update
+        let iterationCount = 0;
+        let forwardDone = false;
+        let backwardDone = false;
+        
+        function setTrainingStep(step) {
+            trainingState = step;
+            document.querySelectorAll('.training-step').forEach(el => {
+                el.classList.remove('active', 'completed');
+            });
+            
+            // Mark completed steps based on current state
+            if (step === 'forward' || step === 'backward' || step === 'update') {
+                document.getElementById('step-init').classList.add('completed');
+            }
+            if (step === 'backward' || step === 'update') {
+                document.getElementById('step-forward').classList.add('completed');
+            }
+            if (step === 'update') {
+                document.getElementById('step-backward').classList.add('completed');
+            }
+            
+            // Mark current step active
+            const stepMap = {
+                'init': 'step-init',
+                'forward': 'step-forward',
+                'backward': 'step-backward',
+                'update': 'step-update'
+            };
+            if (stepMap[step]) {
+                document.getElementById(stepMap[step]).classList.add('active');
+            }
+        }
+        
+        function updateTrainingUI() {
+            // Update step statuses
+            document.getElementById('init-status').textContent = '✓ Done';
+            document.getElementById('forward-status').textContent = forwardDone ? '✓ Done' : 'Ready';
+            document.getElementById('backward-status').textContent = backwardDone ? '✓ Done' : (forwardDone ? 'Ready' : '—');
+            document.getElementById('update-status').textContent = backwardDone ? 'Ready' : '—';
+            
+            // Update iteration count
+            document.getElementById('dag-iteration-count').textContent = iterationCount;
+            
+            // Show/hide loss display
+            document.getElementById('loss-display').style.display = forwardDone ? 'flex' : 'none';
+            
+            // Enable/disable buttons based on state
+            document.getElementById('forward-btn').disabled = false;
+            document.getElementById('backward-btn').disabled = !forwardDone;
+            document.getElementById('backward-step-btn').disabled = !forwardDone;
+            document.getElementById('update-params-btn').disabled = !backwardDone;
+            document.getElementById('train-once-btn').disabled = false;
+            document.getElementById('auto-train-btn').disabled = false;
+            document.getElementById('auto-train-100-btn').disabled = false;
+        }
+        
+        // Reinitialize network
+        document.getElementById('reinit-btn').addEventListener('click', () => {
+            // Reinitialize MLP with new random seed
+            const newRng = seededRandom(Date.now());
+            mlp = new MLP(3, [4, 4, 1], newRng);
+            iterationCount = 0;
+            backwardDone = false;
+            runBackprop = false;
+            backpropStepMode = false;
+            document.body.classList.remove('backprop-active');
+            
+            // Clear parameter history
+            clearParameterHistory();
+            
+            // Run forward pass so DAG is visible
+            forwardDone = true;
+            setTrainingStep('forward');
+            updateUI();
+            updateTrainingUI();
+            
+            document.getElementById('training-status').textContent = 'Network reinitialized → Ready to train';
+        });
+        
+        // Forward pass button
+        document.getElementById('forward-btn').addEventListener('click', () => {
+            forwardDone = true;
+            backwardDone = false;
+            runBackprop = false;
+            backpropStepMode = false;
+            document.body.classList.remove('backprop-active');
+            
+            setTrainingStep('forward');
+            updateUI();
+            updateTrainingUI();
+            document.getElementById('training-status').textContent = 'Forward pass complete → Click "Compute Gradients" to continue';
+        });
+        
+        // Backward pass button (run all at once)
+        document.getElementById('backward-btn').addEventListener('click', () => {
+            if (!forwardDone) return;
+            
+            runBackprop = true;
+            backpropStepMode = false;
+            document.body.classList.add('backprop-active');
+            
+            updateUI();
+            backwardDone = true;
+            
+            setTrainingStep('update');
+            updateTrainingUI();
+            document.getElementById('training-status').textContent = 'Gradients computed → Click "Apply & Continue" to update parameters';
+        });
+        
+        // Step-by-step backprop button
+        document.getElementById('backward-step-btn').addEventListener('click', () => {
+            if (!forwardDone) return;
+            
+            runBackprop = false;
+            backpropStepMode = true;
+            document.body.classList.add('backprop-active');
+            
+            setTrainingStep('backward');
+            updateUI();
+            startStepBackprop();
+            updateTrainingUI();
+            document.getElementById('training-status').textContent = 'Stepping through backprop... Use → or Space to advance';
+        });
+        
+        // Next step button
+        document.getElementById('backprop-next-btn').addEventListener('click', () => {
+            if (backpropStepMode) {
+                const hasMore = stepBackprop();
+                if (!hasMore) {
+                    backwardDone = true;
+                    setTrainingStep('update');
+                    updateTrainingUI();
+                    document.getElementById('training-status').textContent = 'Gradients computed → Click "Apply & Continue" to update parameters';
+                }
+            }
+        });
+        
+        // Complete all button
+        document.getElementById('backprop-complete-btn').addEventListener('click', () => {
+            if (backpropStepMode) {
+                completeBackprop();
+                backwardDone = true;
+                setTrainingStep('update');
+                updateTrainingUI();
+                document.getElementById('training-status').textContent = 'Gradients computed → Click "Apply & Continue" to update parameters';
+            }
+        });
+        
+        // Update parameters button
+        document.getElementById('update-params-btn').addEventListener('click', () => {
+            if (!backwardDone) return;
+            
+            const learningRate = parseFloat(document.getElementById('learning-rate').value);
+            
+            if (isNaN(learningRate) || learningRate <= 0) {
+                document.getElementById('training-status').textContent = 'Invalid learning rate!';
+                return;
+            }
+            
+            // Record current loss before updating
+            if (lastTotalLoss) {
+                recordLoss(lastTotalLoss.data);
+                recordAllNodeValues(lastTotalLoss);
+            }
+            
+            // Update all parameters: param = param - learning_rate * grad
+            for (const p of mlp.parameters()) {
+                p.data -= learningRate * p.grad;
+            }
+            
+            // Record parameter values for sparklines
+            recordParameterValues();
+            
+            iterationCount++;
+            
+            // Reset for next iteration
+            backwardDone = false;
+            runBackprop = false;
+            backpropStepMode = false;
+            document.body.classList.remove('backprop-active');
+            currentBackpropNodeID = null;
+            backpropStep = 0;
+            backpropTopo = [];
+            
+            forceClealHighlights();
+            updateBackpropUI();
+            
+            // Run forward pass with new parameters to show updated DAG
+            forwardDone = true;
+            setTrainingStep('forward');
+            updateUI();
+            updateTrainingUI();
+            drawLossChart();
+            
+            document.getElementById('training-status').textContent = `Iteration ${iterationCount} complete → Continue training or explore updated DAG`;
+        });
+        
+        // Train one step button
+        document.getElementById('train-once-btn').addEventListener('click', () => {
+            const learningRate = parseFloat(document.getElementById('dag-learning-rate').value) || 0.01;
+            
+            // Forward pass + backward pass
+            runBackprop = true;
+            backpropStepMode = false;
+            const { totalLoss } = computeForward();
+            
+            // Record loss and all node values before updating
+            if (totalLoss) {
+                recordLoss(totalLoss.data);
+                recordAllNodeValues(totalLoss);
+            }
+            
+            // Update parameters
+            for (const p of mlp.parameters()) {
+                p.data -= learningRate * p.grad;
+            }
+            
+            // Record parameter values for sparklines
+            recordParameterValues();
+            
+            iterationCount++;
+            
+            // Run forward pass again with updated parameters to show new DAG
+            runBackprop = false;
+            forwardDone = true;
+            backwardDone = false;
+            document.body.classList.remove('backprop-active');
+            
+            setTrainingStep('forward');
+            updateUI(); // This runs forward pass and draws DAG with new values
+            updateTrainingUI();
+            drawLossChart();
+            
+            const lossValue = document.getElementById('loss-value').textContent;
+            document.getElementById('training-status').textContent = `Iteration ${iterationCount}: Loss = ${lossValue}`;
+        });
+        
+        // Auto train 10 steps button
+        document.getElementById('auto-train-btn').addEventListener('click', () => {
+            trainMultipleSteps(10);
+        });
+        
+        // Auto train 100 steps button
+        document.getElementById('auto-train-100-btn').addEventListener('click', () => {
+            trainMultipleSteps(100);
+        });
+        
+        function trainMultipleSteps(numSteps) {
+            const learningRate = parseFloat(document.getElementById('dag-learning-rate').value) || 0.01;
+            
+            for (let i = 0; i < numSteps; i++) {
+                // Forward pass + backward pass
+                runBackprop = true;
+                const { totalLoss } = computeForward();
+                
+                // Record loss and all node values before updating
+                if (totalLoss) {
+                    recordLoss(totalLoss.data);
+                    recordAllNodeValues(totalLoss);
+                }
+                
+                // Update parameters
+                for (const p of mlp.parameters()) {
+                    p.data -= learningRate * p.grad;
+                }
+                
+                // Record parameter values for sparklines
+                recordParameterValues();
+                
+                iterationCount++;
+            }
+            
+            // Run forward pass with updated parameters to show new DAG
+            runBackprop = false;
+            forwardDone = true;
+            backwardDone = false;
+            document.body.classList.remove('backprop-active');
+            
+            setTrainingStep('forward');
+            updateUI(); // This runs forward pass and draws DAG with new values
+            updateTrainingUI();
+            drawLossChart();
+            
+            const lossValue = document.getElementById('loss-value').textContent;
+            document.getElementById('training-status').textContent = `Trained ${numSteps} steps (Total: ${iterationCount} iterations). Loss = ${lossValue}`;
+        }
+        
+        function updatePredictionsDisplay() {
+            const predList = document.getElementById('predictions-list');
+            predList.innerHTML = '';
+            
+            for (const sampleIdx of selectedSamples) {
+                const xValues = xs[sampleIdx].map((v, i) => new Value(v));
+                const yPred = mlp.call(xValues, sampleIdx);
+                const target = ys[sampleIdx];
+                
+                const row = document.createElement('div');
+                row.className = 'pred-row';
+                row.innerHTML = `
+                    <span class="pred-label">Sample ${sampleIdx}:</span>
+                    <span class="pred-value">${yPred.data.toFixed(4)}</span>
+                    <span class="pred-target">→ ${target.toFixed(1)}</span>
+                `;
+                predList.appendChild(row);
+            }
+        }
+        
+        // Keyboard support for stepping
+        document.addEventListener('keydown', (e) => {
+            if (backpropStepMode && backpropStep < backpropTopo.length) {
+                if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'n') {
+                    e.preventDefault();
+                    const hasMore = stepBackprop();
+                    if (!hasMore) {
+                        backwardDone = true;
+                        updateTrainingUI();
+                        document.getElementById('training-status').textContent = 'Gradients computed';
+                    }
+                } else if (e.key === 'Enter' || e.key === 'c') {
+                    e.preventDefault();
+                    completeBackprop();
+                    backwardDone = true;
+                    updateTrainingUI();
+                    document.getElementById('training-status').textContent = 'Gradients computed';
+                }
+            }
+            
+            // Escape key to unlock highlights
+            if (e.key === 'Escape' && highlightLocked) {
+                highlightLocked = false;
+                lockedHighlightInfo = null;
+                document.getElementById('lock-indicator').style.display = 'none';
+                forceClealHighlights();
+            }
+        });
+        
+        // Click anywhere to unlock highlights (fallback for areas outside SVGs)
+        document.querySelector('.container').addEventListener('click', (e) => {
+            const clickTarget = e.target;
+            const isBackground = 
+                clickTarget.classList.contains('container') ||
+                clickTarget.classList.contains('left-panel') ||
+                clickTarget.classList.contains('right-panel') ||
+                clickTarget.classList.contains('dag-container') ||
+                clickTarget.classList.contains('params-list') ||
+                clickTarget.classList.contains('network-diagram') ||
+                clickTarget.classList.contains('section-title') ||
+                clickTarget.classList.contains('scroll-hint');
+            
+            if (highlightLocked && isBackground) {
+                highlightLocked = false;
+                lockedHighlightInfo = null;
+                document.getElementById('lock-indicator').style.display = 'none';
+                forceClealHighlights();
+            }
+        });
+        
+        // Click on header to unlock
+        document.querySelector('.header').addEventListener('click', () => {
+            if (highlightLocked) {
+                highlightLocked = false;
+                lockedHighlightInfo = null;
+                document.getElementById('lock-indicator').style.display = 'none';
+                forceClealHighlights();
+            }
+        });
+        
+        // Click on DAG legend to unlock
+        document.querySelector('.dag-legend').addEventListener('click', () => {
+            if (highlightLocked) {
+                highlightLocked = false;
+                lockedHighlightInfo = null;
+                document.getElementById('lock-indicator').style.display = 'none';
+                forceClealHighlights();
+            }
+        });
+        
+        // Click on scroll hint to unlock
+        document.getElementById('scroll-hint').addEventListener('click', () => {
+            if (highlightLocked) {
+                highlightLocked = false;
+                lockedHighlightInfo = null;
+                document.getElementById('lock-indicator').style.display = 'none';
+                forceClealHighlights();
+            }
+        });
 
-        // Initial render
-        updateUI();
+        // Initial render - start with forward pass complete so DAG is visible
+        forwardDone = true;
+        setTrainingStep('forward');
+        updateTrainingUI();
+        updateUI(); // This runs forward pass and draws DAG
+        document.getElementById('training-status').textContent = 'Ready → Explore the DAG or continue to Backpropagation';
     </script>
 </body>
 </html>
