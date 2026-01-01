@@ -2576,20 +2576,34 @@
                 'input': [],       // input: x[0], x[1], x[2]
                 'L0_params': [],   // L0.N*: w[*], L0.N*: b
                 'L0_multiply': [], // L0.N*: w[*]*in[*]
-                'L0_add': [],      // L0.N*: sum*, L0.N*: pre_act
+                'L0_sum0': [],     // L0.N*: sum0
+                'L0_sum1': [],     // L0.N*: sum1
+                'L0_sum2': [],     // L0.N*: sum2
+                'L0_preact': [],   // L0.N*: pre_act
                 'L0_out': [],      // L0.N*: out
                 'L1_params': [],   // L1.N*: w[*], L1.N*: b
                 'L1_multiply': [], // L1.N*: w[*]*in[*]
-                'L1_add': [],      // L1.N*: sum*, L1.N*: pre_act
+                'L1_sum0': [],     // L1.N*: sum0
+                'L1_sum1': [],     // L1.N*: sum1
+                'L1_sum2': [],     // L1.N*: sum2
+                'L1_sum3': [],     // L1.N*: sum3
+                'L1_preact': [],   // L1.N*: pre_act
                 'L1_out': [],      // L1.N*: out
                 'L2_params': [],   // L2.N*: w[*], L2.N*: b
                 'L2_multiply': [], // L2.N*: w[*]*in[*]
-                'L2_add': [],      // L2.N*: sum*, L2.N*: pre_act
+                'L2_sum0': [],     // L2.N*: sum0
+                'L2_sum1': [],     // L2.N*: sum1
+                'L2_sum2': [],     // L2.N*: sum2
+                'L2_sum3': [],     // L2.N*: sum3
+                'L2_preact': [],   // L2.N*: pre_act
                 'L2_out': [],      // L2.N*: out
+                'loss_target': [], // target values
+                'loss_neg': [],    // -1 constants for negation
+                'loss_diff': [],   // S*.diff (pred - target)
+                'loss_squared': [],// S*.loss (MSE) - individual sample losses
+                'loss_sum': [],    // sum(S0..S*) - partial sums
+                'loss_final': [],  // total loss
                 'other': [],       // any uncategorized nodes
-                'loss_target': [], // target values, neg, -1
-                'loss_diff': [],   // pred - target
-                'loss_final': [],  // loss (MSE), total loss
             };
 
             // Categorize each node
@@ -2610,8 +2624,16 @@
                         layerGroups['L0_multiply'].push(node);
                     } else if (cleanLabel.includes(': out')) {
                         layerGroups['L0_out'].push(node);
+                    } else if (cleanLabel.includes('pre_act')) {
+                        layerGroups['L0_preact'].push(node);
+                    } else if (cleanLabel.includes('sum0')) {
+                        layerGroups['L0_sum0'].push(node);
+                    } else if (cleanLabel.includes('sum1')) {
+                        layerGroups['L0_sum1'].push(node);
+                    } else if (cleanLabel.includes('sum2')) {
+                        layerGroups['L0_sum2'].push(node);
                     } else {
-                        layerGroups['L0_add'].push(node);
+                        layerGroups['L0_sum0'].push(node); // default
                     }
                 } else if (cleanLabel.startsWith('L1.')) {
                     if (cleanLabel.includes(': w[') && !cleanLabel.includes('*')) {
@@ -2622,8 +2644,18 @@
                         layerGroups['L1_multiply'].push(node);
                     } else if (cleanLabel.includes(': out')) {
                         layerGroups['L1_out'].push(node);
+                    } else if (cleanLabel.includes('pre_act')) {
+                        layerGroups['L1_preact'].push(node);
+                    } else if (cleanLabel.includes('sum0')) {
+                        layerGroups['L1_sum0'].push(node);
+                    } else if (cleanLabel.includes('sum1')) {
+                        layerGroups['L1_sum1'].push(node);
+                    } else if (cleanLabel.includes('sum2')) {
+                        layerGroups['L1_sum2'].push(node);
+                    } else if (cleanLabel.includes('sum3')) {
+                        layerGroups['L1_sum3'].push(node);
                     } else {
-                        layerGroups['L1_add'].push(node);
+                        layerGroups['L1_sum0'].push(node); // default
                     }
                 } else if (cleanLabel.startsWith('L2.')) {
                     if (cleanLabel.includes(': w[') && !cleanLabel.includes('*')) {
@@ -2634,15 +2666,31 @@
                         layerGroups['L2_multiply'].push(node);
                     } else if (cleanLabel.includes(': out')) {
                         layerGroups['L2_out'].push(node);
+                    } else if (cleanLabel.includes('pre_act')) {
+                        layerGroups['L2_preact'].push(node);
+                    } else if (cleanLabel.includes('sum0')) {
+                        layerGroups['L2_sum0'].push(node);
+                    } else if (cleanLabel.includes('sum1')) {
+                        layerGroups['L2_sum1'].push(node);
+                    } else if (cleanLabel.includes('sum2')) {
+                        layerGroups['L2_sum2'].push(node);
+                    } else if (cleanLabel.includes('sum3')) {
+                        layerGroups['L2_sum3'].push(node);
                     } else {
-                        layerGroups['L2_add'].push(node);
+                        layerGroups['L2_sum0'].push(node); // default
                     }
-                } else if (cleanLabel.includes('loss') || cleanLabel === 'total loss') {
+                } else if (label === 'total loss') {
                     layerGroups['loss_final'].push(node);
-                } else if (cleanLabel.includes('pred') && cleanLabel.includes('target')) {
+                } else if (label.startsWith('sum(S')) {
+                    layerGroups['loss_sum'].push(node);
+                } else if (cleanLabel.includes('loss') || cleanLabel.includes('(MSE)')) {
+                    layerGroups['loss_squared'].push(node);
+                } else if (cleanLabel.includes('diff')) {
                     layerGroups['loss_diff'].push(node);
-                } else if (cleanLabel.includes('target') || cleanLabel.startsWith('-') || cleanLabel === '-1' || cleanLabel.startsWith('neg')) {
+                } else if (cleanLabel.includes('target')) {
                     layerGroups['loss_target'].push(node);
+                } else if (cleanLabel === '-1' || label === '-1') {
+                    layerGroups['loss_neg'].push(node);
                 } else {
                     layerGroups['other'].push(node);
                 }
@@ -2661,47 +2709,44 @@
             const nodeWidth = 120;
             const nodeHeight = 44;
             const opRadius = 14;
-            const colGap = 155;
+            const colGap = 220;
             const nodeGap = 52;
             const startX = 50;
             const headerY = 15;
             const startY = 45; // Leave room for headers
 
-            // Column order - separate multiply (*) and add (+) operations, loss at the end
+            // Column order - separate each sum stage
             const columns = [
                 'input',
-                'L0_params', 'L0_multiply', 'L0_add', 'L0_out',
-                'L1_params', 'L1_multiply', 'L1_add', 'L1_out',
-                'L2_params', 'L2_multiply', 'L2_add', 'L2_out',
-                'other',
-                'loss_target', 'loss_diff', 'loss_final'
-            ];
-            
-            // Column group headers with their span
-            const columnHeaders = [
-                { name: 'Input', startCol: 0, endCol: 0, color: 'var(--layer-input)' },
-                { name: 'Layer 0 (Hidden)', startCol: 1, endCol: 4, color: 'var(--layer-0)' },
-                { name: 'Layer 1 (Hidden)', startCol: 5, endCol: 8, color: 'var(--layer-1)' },
-                { name: 'Layer 2 (Output)', startCol: 9, endCol: 12, color: 'var(--layer-2)' },
-                { name: 'Loss Computation', startCol: 13, endCol: 16, color: 'var(--layer-loss)' },
+                'L0_params', 'L0_multiply', 'L0_sum0', 'L0_sum1', 'L0_sum2', 'L0_preact', 'L0_out',
+                'L1_params', 'L1_multiply', 'L1_sum0', 'L1_sum1', 'L1_sum2', 'L1_sum3', 'L1_preact', 'L1_out',
+                'L2_params', 'L2_multiply', 'L2_sum0', 'L2_sum1', 'L2_sum2', 'L2_sum3', 'L2_preact', 'L2_out',
+                'loss_target', 'loss_neg', 'loss_diff', 'loss_squared', 'loss_sum', 'loss_final',
+                'other'
             ];
 
-            // Position nodes
+            // Position nodes - skip empty columns to avoid gaps
             const nodeMap = new Map();
             let maxY = 0;
+            let currentColX = startX;
 
             columns.forEach((colName, colIndex) => {
                 const nodesInCol = layerGroups[colName];
-                const x = startX + colIndex * colGap;
+                
+                // Skip empty columns
+                if (nodesInCol.length === 0) return;
                 
                 nodesInCol.forEach((node, rowIndex) => {
                     const y = startY + rowIndex * nodeGap;
-                    nodeMap.set(node.id, { node, x, y });
+                    nodeMap.set(node.id, { node, x: currentColX, y });
                     maxY = Math.max(maxY, y);
                 });
+                
+                // Move to next column position
+                currentColX += colGap;
             });
 
-            const maxX = startX + (columns.length + 1) * colGap;
+            const maxX = currentColX + colGap;
             svg.setAttribute('viewBox', `0 0 ${maxX} ${maxY + nodeHeight + 50}`);
             svg.style.width = maxX + 'px';
             svg.style.height = (maxY + nodeHeight + 50) + 'px';
@@ -2725,31 +2770,58 @@
             });
             svg.appendChild(bgRect);
 
-            // Draw column headers
+            // Draw column headers based on actual node positions
             const headersGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             headersGroup.setAttribute('class', 'headers-layer');
             
-            columnHeaders.forEach(header => {
-                const startColX = startX + header.startCol * colGap;
-                const endColX = startX + header.endCol * colGap + nodeWidth;
-                const centerX = (startColX + endColX) / 2;
+            // Find min/max X for each layer group
+            const layerBounds = {
+                'Input': { minX: Infinity, maxX: -Infinity, color: 'var(--layer-input)' },
+                'Layer 0 (Hidden)': { minX: Infinity, maxX: -Infinity, color: 'var(--layer-0)' },
+                'Layer 1 (Hidden)': { minX: Infinity, maxX: -Infinity, color: 'var(--layer-1)' },
+                'Layer 2 (Output)': { minX: Infinity, maxX: -Infinity, color: 'var(--layer-2)' },
+                'Loss Computation': { minX: Infinity, maxX: -Infinity, color: 'var(--layer-loss)' },
+            };
+            
+            for (const [id, info] of nodeMap) {
+                const label = info.node.label || '';
+                const cleanLabel = label.replace(/^S\d+\./, '');
+                let layerName = null;
+                
+                if (cleanLabel.startsWith('input:')) layerName = 'Input';
+                else if (cleanLabel.startsWith('L0.')) layerName = 'Layer 0 (Hidden)';
+                else if (cleanLabel.startsWith('L1.')) layerName = 'Layer 1 (Hidden)';
+                else if (cleanLabel.startsWith('L2.')) layerName = 'Layer 2 (Output)';
+                else if (cleanLabel.includes('loss') || cleanLabel.includes('target') || cleanLabel.includes('diff') || label.startsWith('sum(S') || label === 'total loss' || label === '-1') layerName = 'Loss Computation';
+                
+                if (layerName && layerBounds[layerName]) {
+                    layerBounds[layerName].minX = Math.min(layerBounds[layerName].minX, info.x);
+                    layerBounds[layerName].maxX = Math.max(layerBounds[layerName].maxX, info.x + nodeWidth);
+                }
+            }
+            
+            // Draw headers for layers that have nodes
+            Object.entries(layerBounds).forEach(([name, bounds]) => {
+                if (bounds.minX === Infinity) return; // Skip empty layers
+                
+                const centerX = (bounds.minX + bounds.maxX) / 2;
                 
                 // Draw header text
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 text.setAttribute('x', centerX);
                 text.setAttribute('y', headerY);
                 text.setAttribute('class', 'dag-column-header');
-                text.setAttribute('fill', header.color);
-                text.textContent = header.name;
+                text.setAttribute('fill', bounds.color);
+                text.textContent = name;
                 headersGroup.appendChild(text);
                 
                 // Draw underline
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', startColX);
+                line.setAttribute('x1', bounds.minX);
                 line.setAttribute('y1', headerY + 8);
-                line.setAttribute('x2', endColX);
+                line.setAttribute('x2', bounds.maxX);
                 line.setAttribute('y2', headerY + 8);
-                line.setAttribute('stroke', header.color);
+                line.setAttribute('stroke', bounds.color);
                 line.setAttribute('stroke-width', '1');
                 line.setAttribute('opacity', '0.3');
                 headersGroup.appendChild(line);
@@ -2827,22 +2899,63 @@
                 
                 if (!fromInfo || !toInfo) continue;
                 
-                const x1 = fromInfo.x + nodeWidth;
-                const y1 = fromInfo.y + nodeHeight / 2;
-                const x2 = toInfo.x - opRadius * 2 - 10;
-                const y2 = toInfo.y + nodeHeight / 2;
+                // Calculate the op circle center position (must match the drawing position)
+                const opX = toInfo.x - 80; // Match drawing position
+                const opY = toInfo.y + nodeHeight / 2;
+                
+                // Calculate center points
+                const fromCenterY = fromInfo.y + nodeHeight / 2;
+                const fromRightX = fromInfo.x + nodeWidth;
+                
+                // Calculate distances
+                const horizontalDist = opX - fromRightX; // Distance from right edge to op
+                const verticalDist = Math.abs(opY - fromCenterY);
+                
+                let x1, y1, x2, y2;
+                
+                // Determine if source is above or below target
+                const isAbove = fromCenterY < opY;
+                
+                // Determine connection type based on geometry
+                // Use vertical start ONLY when the source is almost directly above/below the target
+                // (i.e., horizontal distance is small compared to vertical distance)
+                const useVerticalStart = verticalDist > nodeHeight && horizontalDist < nodeWidth * 0.5;
+                
+                if (useVerticalStart) {
+                    if (isAbove) {
+                        // Source is ABOVE target - start from bottom of source, end at top of circle
+                        x1 = fromInfo.x + nodeWidth / 2;
+                        y1 = fromInfo.y + nodeHeight;
+                        x2 = opX;
+                        y2 = opY - opRadius - 2;
+                    } else {
+                        // Source is BELOW target - start from top of source, end at bottom of circle
+                        x1 = fromInfo.x + nodeWidth / 2;
+                        y1 = fromInfo.y;
+                        x2 = opX;
+                        y2 = opY + opRadius + 2;
+                    }
+                } else {
+                    // Horizontal connection - from right of source to left of circle
+                    x1 = fromInfo.x + nodeWidth;
+                    y1 = fromInfo.y + nodeHeight / 2;
+                    x2 = opX - opRadius - 2;
+                    y2 = opY;
+                }
 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 
-                // Handle different edge directions
-                if (x1 < x2) {
-                    // Normal left-to-right edge
+                // Draw appropriate curve - the second control point determines arrow direction
+                if (useVerticalStart) {
+                    // For vertical connections, use S-curve that arrives vertically
+                    const midY = (y1 + y2) / 2;
+                    // First control: same X as start, Y toward middle
+                    // Second control: same X as end, Y toward middle (arrow will point vertically)
+                    path.setAttribute('d', `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`);
+                } else {
+                    // Horizontal S-curve - arrow points horizontally
                     const midX = (x1 + x2) / 2;
                     path.setAttribute('d', `M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`);
-                } else {
-                    // Edge going backwards or same column - curve around
-                    const offset = 30;
-                    path.setAttribute('d', `M ${x1} ${y1} C ${x1 + offset} ${y1}, ${x1 + offset} ${y2}, ${x2} ${y2}`);
                 }
                 
                 path.setAttribute('class', 'dag-edge');
@@ -2883,7 +2996,8 @@
                 }
 
                 if (node._op) {
-                    const opX = x - opRadius - 5;
+                    // Position op circle with more gap on left side
+                    const opX = x - 80; // 15px closer to result = more gap on left
                     const opY = y + nodeHeight / 2;
 
                     const opG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -2914,9 +3028,9 @@
                     opG.style.cursor = 'pointer';
 
                     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', opX + opRadius);
+                    line.setAttribute('x1', opX + opRadius + 2);
                     line.setAttribute('y1', opY);
-                    line.setAttribute('x2', x);
+                    line.setAttribute('x2', x - 2);
                     line.setAttribute('y2', y + nodeHeight / 2);
                     line.setAttribute('class', 'dag-edge');
                     opsGroup.appendChild(line);
