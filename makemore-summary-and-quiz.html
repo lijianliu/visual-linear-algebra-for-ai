@@ -1062,548 +1062,8 @@ loss = F.cross_entropy(logits, ys)</code></pre>
             }
         </style>
         
-        <!-- Question 1 -->
         <div class="quiz-question">
-            <h4>Q1. <span class="lang-zh">Makemore 使用的数据集 names.txt 大约包含多少个名字？</span><span class="lang-en">How many names does the names.txt dataset used by Makemore contain approximately?</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. ~3,200</div>
-                <div class="quiz-option" data-index="1">B. ~10,000</div>
-                <div class="quiz-option" data-index="2">C. ~32,000</div>
-                <div class="quiz-option" data-index="3">D. ~320,000</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">数据集包含约 32,033 个名字，来自政府网站。</span><span class="lang-en">The dataset contains approximately 32,033 names from a government website.</span></div>
-        </div>
-        
-        <!-- Question 2 -->
-        <div class="quiz-question">
-            <h4>Q2. <span class="lang-zh">在 bigram 模型中，"emma" 这个词包含多少个训练样本？</span><span class="lang-en">In a bigram model, how many training examples does the word "emma" contain?</span> <a href="https://youtu.be/PaCmpygFfXo?t=481" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~8:01</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. 3</div>
-                <div class="quiz-option" data-index="1">B. 4</div>
-                <div class="quiz-option" data-index="2">C. 5</div>
-                <div class="quiz-option" data-index="3">D. 6</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">".emma." 包含 5 个 bigrams: .e, em, mm, ma, a.</span><span class="lang-en">".emma." contains 5 bigrams: .e, em, mm, ma, a.</span></div>
-        </div>
-        
-        <!-- Question 3 -->
-        <div class="quiz-question">
-            <h4>Q3. <span class="lang-zh">为什么使用单一特殊标记 "." 而不是分开的 &lt;S&gt; 和 &lt;E&gt;？</span><span class="lang-en">Why use a single special token "." instead of separate &lt;S&gt; and &lt;E&gt;?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1262" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~21:02</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">避免矩阵中出现无用的零行/列</span><span class="lang-en">Avoid useless zero rows/columns in matrix</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">PyTorch 的要求</span><span class="lang-en">PyTorch requirement</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">更容易调试</span><span class="lang-en">Easier to debug</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">&lt;S&gt; 永远不会是第二个字符，&lt;E&gt; 永远不会是第一个字符，导致矩阵中有整行/列的零。</span><span class="lang-en">&lt;S&gt; never appears as second char, &lt;E&gt; never as first, causing entire rows/columns of zeros in the matrix.</span></div>
-        </div>
-        
-        <!-- Question 4 -->
-        <div class="quiz-question">
-            <h4>Q4. <span class="lang-zh">计数矩阵 N 的形状是什么？</span><span class="lang-en">What is the shape of the count matrix N?</span> <a href="https://youtu.be/PaCmpygFfXo?t=833" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~13:53</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. (26, 26)</div>
-                <div class="quiz-option" data-index="1">B. (27, 27)</div>
-                <div class="quiz-option" data-index="2">C. (28, 28)</div>
-                <div class="quiz-option" data-index="3">D. (32, 32)</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">26个字母 + 1个特殊标记 = 27。矩阵是 27×27。</span><span class="lang-en">26 letters + 1 special token = 27. Matrix is 27×27.</span></div>
-        </div>
-        
-        <!-- Question 5 -->
-        <div class="quiz-question">
-            <h4>Q5. <span class="lang-zh"><code>torch.tensor</code> 和 <code>torch.Tensor</code> 的主要区别是什么？</span><span class="lang-en">What is the main difference between <code>torch.tensor</code> and <code>torch.Tensor</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4074" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:07:54</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">小写版本自动推断数据类型</span><span class="lang-en">Lowercase auto-infers dtype</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">大写版本更快</span><span class="lang-en">Uppercase is faster</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">它们完全相同</span><span class="lang-en">They are identical</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">小写版本只支持整数</span><span class="lang-en">Lowercase only supports integers</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh"><code>torch.tensor</code> 会根据输入数据自动判断数据类型（整数→int64，小数→float32），而 <code>torch.Tensor</code> 总是返回 float32。</span><span class="lang-en"><code>torch.tensor</code> automatically detects the data type from your input (integers → int64, decimals → float32), while <code>torch.Tensor</code> always returns float32.</span></div>
-        </div>
-        
-        <!-- Question 6 -->
-        <div class="quiz-question">
-            <h4>Q6. <span class="lang-zh"><code>F.one_hot()</code> 返回什么数据类型？</span><span class="lang-en">What dtype does <code>F.one_hot()</code> return?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4375" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:12:55</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. float32</div>
-                <div class="quiz-option" data-index="1">B. float64</div>
-                <div class="quiz-option" data-index="2">C. int64</div>
-                <div class="quiz-option" data-index="3">D. bool</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh"><code>one_hot</code> 返回与输入相同的数据类型（整数索引→整数输出），需要手动调用 <code>.float()</code>。</span><span class="lang-en"><code>one_hot</code> returns the same dtype as input (integer indices → integer output), requiring manual <code>.float()</code> call.</span></div>
-        </div>
-        
-        <!-- Question 7 -->
-        <div class="quiz-question">
-            <h4>Q7. <span class="lang-zh">不使用 <code>keepdim=True</code> 会导致什么问题？</span><span class="lang-en">What problem occurs without <code>keepdim=True</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=2665" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~44:25</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">运行时错误</span><span class="lang-en">Runtime error</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">按列归一化而不是按行</span><span class="lang-en">Column normalization instead of row</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">结果全为零</span><span class="lang-en">Results are all zeros</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">梯度消失</span><span class="lang-en">Vanishing gradients</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">不使用 <code>keepdim=True</code>，(27,) 会广播为 (1, 27)，导致按列归一化。</span><span class="lang-en">Without <code>keepdim=True</code>, (27,) broadcasts to (1, 27), causing column normalization.</span></div>
-        </div>
-        
-        <!-- Question 8 -->
-        <div class="quiz-question">
-            <h4>Q8. <span class="lang-zh">Softmax 的第一步是什么？</span><span class="lang-en">What is the first step of Softmax?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">对 logits 取指数</span><span class="lang-en">Exponentiate logits</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">对 logits 取对数</span><span class="lang-en">Take log of logits</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">对 logits 归一化</span><span class="lang-en">Normalize logits</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">对 logits 取绝对值</span><span class="lang-en">Take absolute value of logits</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">Softmax: exp(logits) → 归一化。指数化确保所有值为正。</span><span class="lang-en">Softmax: exp(logits) → normalize. Exponentiation ensures all values are positive.</span></div>
-        </div>
-        
-        <!-- Question 9 -->
-        <div class="quiz-question">
-            <h4>Q9. <span class="lang-zh">为什么使用负对数似然作为损失函数？</span><span class="lang-en">Why use negative log likelihood as loss function?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster to compute</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">梯度更稳定</span><span class="lang-en">More stable gradients</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">使"越低越好"的语义成立</span><span class="lang-en">Makes "lower is better" semantics work</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">PyTorch 的默认选择</span><span class="lang-en">PyTorch default choice</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">对数似然是负数，取负使其变正，这样最小化损失 = 最大化似然。</span><span class="lang-en">Log likelihood is negative; negating it makes it positive, so minimizing loss = maximizing likelihood.</span></div>
-        </div>
-        
-        <!-- Question 10 -->
-        <div class="quiz-question">
-            <h4>Q10. <span class="lang-zh">训练好的 bigram 模型的平均损失大约是多少？</span><span class="lang-en">What is the approximate average loss of a trained bigram model?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3600" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:00</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. ~0.45</div>
-                <div class="quiz-option" data-index="1">B. ~2.45</div>
-                <div class="quiz-option" data-index="2">C. ~4.50</div>
-                <div class="quiz-option" data-index="3">D. ~24.5</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">统计方法和神经网络方法都达到约 2.45 的损失。</span><span class="lang-en">Both statistical and neural network methods achieve approximately 2.45 loss.</span></div>
-        </div>
-        
-        <!-- Question 11 -->
-        <div class="quiz-question">
-            <h4>Q11. <span class="lang-zh"><code>requires_grad=True</code> 的作用是什么？</span><span class="lang-en">What does <code>requires_grad=True</code> do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5954" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:39:14</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">使张量不可变</span><span class="lang-en">Makes tensor immutable</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">告诉 PyTorch 跟踪此张量的梯度</span><span class="lang-en">Tells PyTorch to track gradients for this tensor</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">加速计算</span><span class="lang-en">Speeds up computation</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">将张量移到 GPU</span><span class="lang-en">Moves tensor to GPU</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">如果想通过反向传播优化张量，必须设置 <code>requires_grad=True</code>。</span><span class="lang-en">To optimize a tensor via backpropagation, you must set <code>requires_grad=True</code>.</span></div>
-        </div>
-        
-        <!-- Question 12 -->
-        <div class="quiz-question">
-            <h4>Q12. <span class="lang-zh">为什么每次迭代前要设置 <code>W.grad = None</code>？</span><span class="lang-en">Why set <code>W.grad = None</code> before each iteration?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">PyTorch 默认累积梯度</span><span class="lang-en">PyTorch accumulates gradients by default</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">节省内存</span><span class="lang-en">Save memory</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">防止过拟合</span><span class="lang-en">Prevent overfitting</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">加速反向传播</span><span class="lang-en">Speed up backpropagation</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">PyTorch 累积梯度（用于梯度累积技术），不重置会导致错误更新。</span><span class="lang-en">PyTorch accumulates gradients (for gradient accumulation), not resetting causes wrong updates.</span></div>
-        </div>
-        
-        <!-- Question 13 -->
-        <div class="quiz-question">
-            <h4>Q13. <span class="lang-zh">为什么用 <code>W.data += ...</code> 而不是 <code>W += ...</code>？</span><span class="lang-en">Why use <code>W.data += ...</code> instead of <code>W += ...</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6100" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:41:40</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">更快</span><span class="lang-en">Faster</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">更节省内存</span><span class="lang-en">More memory efficient</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">避免被计算图跟踪</span><span class="lang-en">Avoid being tracked by computation graph</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">PyTorch 语法要求</span><span class="lang-en">PyTorch syntax requirement</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh"><code>W.data</code> 表示纯数据操作，不会被跟踪到计算图中。</span><span class="lang-en"><code>W.data</code> indicates pure data operation, won't be tracked in computation graph.</span></div>
-        </div>
-        
-        <!-- Question 14 -->
-        <div class="quiz-question">
-            <h4>Q14. <span class="lang-zh">one-hot 编码乘以权重矩阵 W 本质上是什么操作？</span><span class="lang-en">What operation is one-hot encoding multiplied by weight matrix W essentially?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">矩阵求逆</span><span class="lang-en">Matrix inversion</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">行查找（索引）</span><span class="lang-en">Row lookup (indexing)</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">矩阵转置</span><span class="lang-en">Matrix transpose</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">元素求和</span><span class="lang-en">Element-wise sum</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">one-hot × W 等价于提取 W 的对应行，这就是查表操作。</span><span class="lang-en">one-hot × W is equivalent to extracting the corresponding row of W, which is table lookup.</span></div>
-        </div>
-        
-        <!-- Question 15 -->
-        <div class="quiz-question">
-            <h4>Q15. <span class="lang-zh">神经网络的 W 矩阵对应统计方法中的什么？</span><span class="lang-en">What does the neural network's W matrix correspond to in the statistical method?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">概率矩阵 P</span><span class="lang-en">Probability matrix P</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">计数矩阵 N</span><span class="lang-en">Count matrix N</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">对数计数矩阵 log(N)</span><span class="lang-en">Log count matrix log(N)</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">无对应</span><span class="lang-en">No correspondence</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">exp(W) ≈ N，所以 W ≈ log(N)。神经网络学习的是对数计数。</span><span class="lang-en">exp(W) ≈ N, so W ≈ log(N). Neural network learns log counts.</span></div>
-        </div>
-        
-        <!-- Question 16 -->
-        <div class="quiz-question">
-            <h4>Q16. <span class="lang-zh">正则化项 <code>0.01 * (W**2).mean()</code> 的作用类似于什么？</span><span class="lang-en">What is the regularization term <code>0.01 * (W**2).mean()</code> similar to?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">统计方法中的平滑</span><span class="lang-en">Smoothing in statistical method</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">学习率调整</span><span class="lang-en">Learning rate adjustment</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">批归一化</span><span class="lang-en">Batch normalization</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">丢弃法</span><span class="lang-en">Dropout</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">正则化把 W 拉向零，使概率更均匀，类似于添加假计数的平滑。</span><span class="lang-en">Regularization pulls W toward zero, making probabilities more uniform, similar to smoothing with fake counts.</span></div>
-        </div>
-        
-        <!-- Question 17 -->
-        <div class="quiz-question">
-            <h4>Q17. <span class="lang-zh"><code>torch.multinomial</code> 的 <code>replacement</code> 参数默认值是什么？</span><span class="lang-en">What is the default value of <code>replacement</code> in <code>torch.multinomial</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1702" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~28:22</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. False</div>
-                <div class="quiz-option" data-index="1">B. True</div>
-                <div class="quiz-option" data-index="2">C. None</div>
-                <div class="quiz-option" data-index="3">D. 1</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">默认是 False（不放回），但语言模型需要 True（有放回）。</span><span class="lang-en">Default is False (without replacement), but language models need True (with replacement).</span></div>
-        </div>
-        
-        <!-- Question 18 -->
-        <div class="quiz-question">
-            <h4>Q18. <span class="lang-zh">如果某个 bigram 从未出现过，其概率会导致什么问题？</span><span class="lang-en">If a bigram never appeared, what problem does its probability cause?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3650" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:50</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">损失为 0</span><span class="lang-en">Loss is 0</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">损失为无穷大</span><span class="lang-en">Loss is infinity</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">梯度为 0</span><span class="lang-en">Gradient is 0</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">模型崩溃</span><span class="lang-en">Model crashes</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">log(0) = -inf，所以 -log(0) = inf。需要用平滑解决。</span><span class="lang-en">log(0) = -inf, so -log(0) = inf. Need smoothing to solve this.</span></div>
-        </div>
-        
-        <!-- Question 19 -->
-        <div class="quiz-question">
-            <h4>Q19. <span class="lang-zh">Karpathy 说统计方法的主要问题是什么？</span><span class="lang-en">What is the main problem with the statistical method according to Karpathy?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算太慢</span><span class="lang-en">Too slow</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">精度不够</span><span class="lang-en">Not accurate enough</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">无法扩展到更长的上下文</span><span class="lang-en">Doesn't scale to longer context</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">需要太多内存</span><span class="lang-en">Requires too much memory</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">参数随上下文长度指数增长：27^2, 27^3, ... 27^10 是不可能的。</span><span class="lang-en">Parameters grow exponentially with context: 27^2, 27^3, ... 27^10 is impossible.</span></div>
-        </div>
-        
-        <!-- Question 20 -->
-        <div class="quiz-question">
-            <h4>Q20. <span class="lang-zh"><code>.item()</code> 方法的作用是什么？</span><span class="lang-en">What does the <code>.item()</code> method do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1217" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~20:17</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">从单元素张量提取 Python 标量</span><span class="lang-en">Extract Python scalar from single-element tensor</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">获取张量的第一个元素</span><span class="lang-en">Get first element of tensor</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">将张量转换为列表</span><span class="lang-en">Convert tensor to list</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">删除张量的维度</span><span class="lang-en">Remove tensor dimensions</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">索引后的张量仍是张量对象，<code>.item()</code> 提取实际的 Python 数值。</span><span class="lang-en">Indexed tensor is still a tensor object, <code>.item()</code> extracts the actual Python number.</span></div>
-        </div>
-        
-        <!-- Question 21-30 -->
-        <div class="quiz-question">
-            <h4>Q21. <span class="lang-zh"><code>zip(w, w[1:])</code> 产生什么？</span><span class="lang-en">What does <code>zip(w, w[1:])</code> produce?</span> <a href="https://youtu.be/PaCmpygFfXo?t=409" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~6:49</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">所有字符对（包括重复）</span><span class="lang-en">All character pairs (including repeats)</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">所有连续字符对</span><span class="lang-en">All consecutive character pairs</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">交替字符对</span><span class="lang-en">Alternating character pairs</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">首尾字符对</span><span class="lang-en">First and last character pairs</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">将原字符串和偏移1的字符串配对，得到连续字符对。</span><span class="lang-en">Pairs original string with offset-1 string, producing consecutive pairs.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q22. <span class="lang-zh"><code>dict.get(key, default)</code> 的作用是什么？</span><span class="lang-en">What does <code>dict.get(key, default)</code> do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=604" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~10:04</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">总是返回默认值</span><span class="lang-en">Always returns default</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">如果键存在则返回默认值</span><span class="lang-en">Returns default if key exists</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">如果键不存在则返回默认值</span><span class="lang-en">Returns default if key doesn't exist</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">删除键并返回值</span><span class="lang-en">Deletes key and returns value</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">避免 KeyError，在键不存在时返回默认值（如0）。</span><span class="lang-en">Avoids KeyError, returns default (e.g., 0) when key doesn't exist.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q23. <span class="lang-zh">按字典值排序需要什么？</span><span class="lang-en">What is needed to sort dictionary by value?</span> <a href="https://youtu.be/PaCmpygFfXo?t=709" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~11:49</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh"><code>sorted(d.values())</code></span><span class="lang-en"><code>sorted(d.values())</code></span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh"><code>sorted(d.items(), key=lambda kv: kv[1])</code></span><span class="lang-en"><code>sorted(d.items(), key=lambda kv: kv[1])</code></span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh"><code>sorted(d.keys())</code></span><span class="lang-en"><code>sorted(d.keys())</code></span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh"><code>d.sort()</code></span><span class="lang-en"><code>d.sort()</code></span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">用 lambda 函数指定按元组的第二个元素（值）排序。</span><span class="lang-en">Use lambda function to specify sorting by second element (value) of tuple.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q24. <span class="lang-zh">生成器（Generator）的作用是什么？</span><span class="lang-en">What is the purpose of Generator?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1632" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~27:12</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">加速计算</span><span class="lang-en">Speed up computation</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">节省内存</span><span class="lang-en">Save memory</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">确保结果可复现</span><span class="lang-en">Ensure reproducibility</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">生成更多数据</span><span class="lang-en">Generate more data</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">使用固定种子的生成器，每次运行会得到相同的随机数。</span><span class="lang-en">Using a generator with fixed seed, you get the same random numbers each run.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q25. <span class="lang-zh">对数似然的取值范围是什么？</span><span class="lang-en">What is the range of log likelihood?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3240" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~54:00</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. (-∞, 0]</div>
-                <div class="quiz-option" data-index="1">B. [0, ∞)</div>
-                <div class="quiz-option" data-index="2">C. [-1, 1]</div>
-                <div class="quiz-option" data-index="3">D. [0, 1]</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">概率范围是 [0,1]，log 后范围是 (-∞, 0]。概率=1时，log=0。</span><span class="lang-en">Probability range is [0,1], after log it's (-∞, 0]. When prob=1, log=0.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q26. <span class="lang-zh">为什么用 mean() 而不是 sum() 计算损失？</span><span class="lang-en">Why use mean() instead of sum() for loss?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">使损失不依赖于数据集大小</span><span class="lang-en">Makes loss independent of dataset size</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">梯度更稳定</span><span class="lang-en">More stable gradients</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">PyTorch 要求</span><span class="lang-en">PyTorch requirement</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">平均损失在不同大小的数据集上可比较。</span><span class="lang-en">Average loss is comparable across different dataset sizes.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q27. <span class="lang-zh">从 32,000 个名字中提取了多少个 bigram 样本？</span><span class="lang-en">How many bigram samples were extracted from 32,000 names?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3909" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:05:09</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. ~32,000</div>
-                <div class="quiz-option" data-index="1">B. ~128,000</div>
-                <div class="quiz-option" data-index="2">C. ~228,000</div>
-                <div class="quiz-option" data-index="3">D. ~328,000</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">每个名字平均贡献约 7 个 bigram，总共约 228,146 个。</span><span class="lang-en">Each name contributes about 7 bigrams on average, totaling about 228,146.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q28. <span class="lang-zh">在神经网络中，每个"神经元"计算什么？</span><span class="lang-en">In the neural network, what does each "neuron" compute?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">输入的加权和（点积）</span><span class="lang-en">Weighted sum of inputs (dot product)</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">输入的最大值</span><span class="lang-en">Maximum of inputs</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">输入的平均值</span><span class="lang-en">Average of inputs</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">输入的乘积</span><span class="lang-en">Product of inputs</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">每个神经元计算其权重向量与输入的点积。</span><span class="lang-en">Each neuron computes dot product of its weight vector with input.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q29. <span class="lang-zh">Karpathy 演示的最大学习率是多少？</span><span class="lang-en">What was the maximum learning rate Karpathy demonstrated?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6248" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:44:08</a></h4>
-            <div class="quiz-options" data-correct="3">
-                <div class="quiz-option" data-index="0">A. 0.1</div>
-                <div class="quiz-option" data-index="1">B. 1.0</div>
-                <div class="quiz-option" data-index="2">C. 10.0</div>
-                <div class="quiz-option" data-index="3">D. 50.0</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">在这个简单例子中，学习率 50 也能正常工作。</span><span class="lang-en">In this simple example, learning rate of 50 also works fine.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q30. <span class="lang-zh"><code>F.cross_entropy</code> 相比手动实现有什么优势？</span><span class="lang-en">What advantage does <code>F.cross_entropy</code> have over manual implementation?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5670" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:34:30</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">代码更短</span><span class="lang-en">Shorter code</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">更容易理解</span><span class="lang-en">Easier to understand</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">更高效且数值稳定</span><span class="lang-en">More efficient and numerically stable</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">支持更多功能</span><span class="lang-en">Supports more features</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">PyTorch 内置函数经过优化，避免数值溢出问题。</span><span class="lang-en">PyTorch built-in function is optimized and avoids numerical overflow issues.</span></div>
-        </div>
-        
-        <!-- Questions 31-40 -->
-        <div class="quiz-question">
-            <h4>Q31. <span class="lang-zh">在矩阵乘法 (5,27) @ (27,27) 中，输出形状是什么？</span><span class="lang-en">In matrix multiplication (5,27) @ (27,27), what is the output shape?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4510" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:15:10</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. (5, 27)</div>
-                <div class="quiz-option" data-index="1">B. (27, 5)</div>
-                <div class="quiz-option" data-index="2">C. (5, 5)</div>
-                <div class="quiz-option" data-index="3">D. (27, 27)</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">矩阵乘法：(m,n) @ (n,p) = (m,p)，所以 (5,27) @ (27,27) = (5,27)。</span><span class="lang-en">Matrix multiplication: (m,n) @ (n,p) = (m,p), so (5,27) @ (27,27) = (5,27).</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q32. <span class="lang-zh">数据集中名字的最短长度是多少？</span><span class="lang-en">What is the shortest name length in the dataset?</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. 1</div>
-                <div class="quiz-option" data-index="1">B. 2</div>
-                <div class="quiz-option" data-index="2">C. 3</div>
-                <div class="quiz-option" data-index="3">D. 4</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">最短名字长度为 2，最长为 15。</span><span class="lang-en">Shortest name length is 2, longest is 15.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q33. <span class="lang-zh">为什么 Softmax 使用指数函数？</span><span class="lang-en">Why does Softmax use exponential function?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">确保所有值为正</span><span class="lang-en">Ensure all values are positive</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">减少内存使用</span><span class="lang-en">Reduce memory usage</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">历史惯例</span><span class="lang-en">Historical convention</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">exp(x) 总是正数，无论 x 是正是负，满足概率必须≥0的要求。</span><span class="lang-en">exp(x) is always positive regardless of x being positive or negative, satisfying prob ≥ 0 requirement.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q34. <span class="lang-zh">当 W 全为零时，概率分布是什么样的？</span><span class="lang-en">When W is all zeros, what does the probability distribution look like?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">均匀分布</span><span class="lang-en">Uniform distribution</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">全为零</span><span class="lang-en">All zeros</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">全为一</span><span class="lang-en">All ones</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">随机分布</span><span class="lang-en">Random distribution</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">exp(0) = 1，所有值相等，归一化后得到均匀分布 1/27。</span><span class="lang-en">exp(0) = 1, all values equal, normalized to uniform 1/27.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q35. <span class="lang-zh">平滑时添加的假计数通常是多少？</span><span class="lang-en">How many fake counts are typically added for smoothing?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3709" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:01:49</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. 1</div>
-                <div class="quiz-option" data-index="1">B. 10</div>
-                <div class="quiz-option" data-index="2">C. 100</div>
-                <div class="quiz-option" data-index="3">D. 1000</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">拉普拉斯平滑通常添加 1，即 N = N + 1。</span><span class="lang-en">Laplace smoothing typically adds 1, i.e., N = N + 1.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q36. <span class="lang-zh">梯度的正负号意味着什么？</span><span class="lang-en">What does the sign of gradient mean?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6043" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:40:43</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">正 = 增加参数会减少损失</span><span class="lang-en">Positive = increasing param decreases loss</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">负 = 增加参数会增加损失</span><span class="lang-en">Negative = increasing param increases loss</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">正 = 增加参数会增加损失</span><span class="lang-en">Positive = increasing param increases loss</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">符号无意义</span><span class="lang-en">Sign has no meaning</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">梯度指向损失增加最快的方向，所以我们沿负梯度方向更新。</span><span class="lang-en">Gradient points in direction of fastest loss increase, so we update in negative gradient direction.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q37. <span class="lang-zh"><code>probs[torch.arange(n), ys]</code> 返回什么？</span><span class="lang-en">What does <code>probs[torch.arange(n), ys]</code> return?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">所有概率</span><span class="lang-en">All probabilities</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">每个样本在正确标签处的概率</span><span class="lang-en">Probability at correct label for each sample</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">最大概率</span><span class="lang-en">Maximum probabilities</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">概率之和</span><span class="lang-en">Sum of probabilities</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">高级索引：probs[0,ys[0]], probs[1,ys[1]], ... 提取正确类别的概率。</span><span class="lang-en">Advanced indexing: probs[0,ys[0]], probs[1,ys[1]], ... extracts correct class probabilities.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q38. <span class="lang-zh">Bigram 模型为什么被称为"非常简单和弱"？</span><span class="lang-en">Why is the bigram model called "very simple and weak"?</span> <a href="https://youtu.be/PaCmpygFfXo?t=351" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~5:51</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">只考虑前一个字符</span><span class="lang-en">Only considers previous character</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">没有使用神经网络</span><span class="lang-en">Doesn't use neural network</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">训练数据太少</span><span class="lang-en">Too little training data</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">计算太慢</span><span class="lang-en">Too slow to compute</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">只看前1个字符无法捕捉更长的模式。GPT 看前数千个字符。</span><span class="lang-en">Looking at only 1 previous character can't capture longer patterns. GPT looks at thousands.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q39. <span class="lang-zh">正则化强度太大会发生什么？</span><span class="lang-en">What happens if regularization strength is too high?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">过拟合</span><span class="lang-en">Overfitting</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">模型无法学习，预测变成均匀分布</span><span class="lang-en">Model can't learn, predictions become uniform</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">训练变慢</span><span class="lang-en">Training slows down</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">梯度爆炸</span><span class="lang-en">Gradient explosion</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">正则化把 W 拉向零，太强则 W ≈ 0，所有概率相等。</span><span class="lang-en">Regularization pulls W toward zero; too strong means W ≈ 0, all probabilities equal.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q40. <span class="lang-zh">Makemore 系列最终会达到什么级别的模型？</span><span class="lang-en">What level of model will the Makemore series eventually reach?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7200" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~2:00:00</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. RNN</div>
-                <div class="quiz-option" data-index="1">B. LSTM</div>
-                <div class="quiz-option" data-index="2">C. Transformer / GPT-2</div>
-                <div class="quiz-option" data-index="3">D. CNN</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">系列从 bigram → MLP → RNN → Transformer，最终实现 GPT-2。</span><span class="lang-en">Series progresses from bigram → MLP → RNN → Transformer, eventually implementing GPT-2.</span></div>
-        </div>
-        
-        <!-- Questions 41-50 -->
-        <div class="quiz-question">
-            <h4>Q41. <span class="lang-zh">trigram 模型需要多少参数？</span><span class="lang-en">How many parameters does a trigram model need?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. 729</div>
-                <div class="quiz-option" data-index="1">B. 19,683</div>
-                <div class="quiz-option" data-index="2">C. 531,441</div>
-                <div class="quiz-option" data-index="3">D. 14,348,907</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">27^3 = 19,683。这就是统计方法不可扩展的原因。</span><span class="lang-en">27^3 = 19,683. This is why the statistical method doesn't scale.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q42. <span class="lang-zh">完美预测时，负对数似然是多少？</span><span class="lang-en">What is the negative log likelihood for a perfect prediction?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. 0</div>
-                <div class="quiz-option" data-index="1">B. 1</div>
-                <div class="quiz-option" data-index="2">C. -1</div>
-                <div class="quiz-option" data-index="3">D. ∞</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">完美预测概率 = 1，log(1) = 0，-log(1) = 0。</span><span class="lang-en">Perfect prediction prob = 1, log(1) = 0, -log(1) = 0.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q43. <span class="lang-zh">采样循环何时终止？</span><span class="lang-en">When does the sampling loop terminate?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1960" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~32:40</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">生成固定数量的字符后</span><span class="lang-en">After generating fixed number of characters</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">采样到结束标记（索引0）时</span><span class="lang-en">When end token (index 0) is sampled</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">概率低于阈值时</span><span class="lang-en">When probability falls below threshold</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">随机决定</span><span class="lang-en">Randomly decided</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">当采样到特殊结束标记（与开始标记相同，索引0）时停止。</span><span class="lang-en">Stops when special end token (same as start, index 0) is sampled.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q44. <span class="lang-zh">为什么 Karpathy 把 W 的值称为 "log counts"？</span><span class="lang-en">Why does Karpathy call W values "log counts"?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
-            <div class="quiz-options" data-correct="2">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">因为用 log 初始化</span><span class="lang-en">Because initialized with log</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">因为计算用到 log</span><span class="lang-en">Because computation uses log</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">因为 exp(W) ≈ 计数矩阵</span><span class="lang-en">Because exp(W) ≈ count matrix</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">这只是一个比喻</span><span class="lang-en">It's just a metaphor</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">既然 exp(W) ≈ N（计数矩阵），那么 W ≈ log(N)。</span><span class="lang-en">Since exp(W) ≈ N (count matrix), then W ≈ log(N).</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q45. <span class="lang-zh">logits 的取值范围是什么？</span><span class="lang-en">What is the range of logits?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. (-∞, +∞)</div>
-                <div class="quiz-option" data-index="1">B. [0, 1]</div>
-                <div class="quiz-option" data-index="2">C. [0, +∞)</div>
-                <div class="quiz-option" data-index="3">D. [-1, 1]</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">Logits 可以是任意实数，Softmax 将其转换为概率。</span><span class="lang-en">Logits can be any real number, Softmax converts them to probabilities.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q46. <span class="lang-zh">进行除法归一化前为什么要转换为浮点数？</span><span class="lang-en">Why convert to float before division normalization?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1531" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~25:31</a></h4>
-            <div class="quiz-options" data-correct="1">
-                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
-                <div class="quiz-option" data-index="1">B. <span class="lang-zh">整数除法会丢失小数</span><span class="lang-en">Integer division loses decimals</span></div>
-                <div class="quiz-option" data-index="2">C. <span class="lang-zh">PyTorch 要求</span><span class="lang-en">PyTorch requirement</span></div>
-                <div class="quiz-option" data-index="3">D. <span class="lang-zh">节省内存</span><span class="lang-en">Save memory</span></div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">整数除法会丢失小数部分，概率需要是小数。</span><span class="lang-en">Integer division loses decimal part, probabilities need to be decimals.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q47. <span class="lang-zh">在这个教程中，"神经网络"有多少层？</span><span class="lang-en">How many layers does the "neural network" in this tutorial have?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
-            <div class="quiz-options" data-correct="0">
-                <div class="quiz-option" data-index="0">A. 1</div>
-                <div class="quiz-option" data-index="1">B. 2</div>
-                <div class="quiz-option" data-index="2">C. 3</div>
-                <div class="quiz-option" data-index="3">D. 0</div>
-            </div>
-            <div class="quiz-explanation"><span class="lang-zh">只有一个线性层：xenc @ W，没有非线性激活。</span><span class="lang-en">Only one linear layer: xenc @ W, no nonlinear activation.</span></div>
-        </div>
-        
-        <div class="quiz-question">
-            <h4>Q48. <span class="lang-zh">下列哪个不是本教程提到的 Karpathy 之前的视频？</span><span class="lang-en">Which is NOT a previous Karpathy video mentioned in this tutorial?</span> <a href="https://youtu.be/PaCmpygFfXo?t=60" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00</a></h4>
+            <h4>Q1. <span class="lang-zh">下列哪个不是本教程提到的 Karpathy 之前的视频？</span><span class="lang-en">Which is NOT a previous Karpathy video mentioned in this tutorial?</span> <a href="https://youtu.be/PaCmpygFfXo?t=60" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. micrograd</div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">反向传播讲解</span><span class="lang-en">Backpropagation lecture</span></div>
@@ -1614,7 +1074,411 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q49. <span class="lang-zh"><code>W.grad.zero_()</code> 和 <code>W.grad = None</code> 哪个更高效？</span><span class="lang-en">Which is more efficient: <code>W.grad.zero_()</code> or <code>W.grad = None</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></h4>
+            <h4>Q2. <span class="lang-zh">Makemore 使用的数据集 names.txt 大约包含多少个名字？</span><span class="lang-en">How many names does the names.txt dataset used by Makemore contain approximately?</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. ~3,200</div>
+                <div class="quiz-option" data-index="1">B. ~10,000</div>
+                <div class="quiz-option" data-index="2">C. ~32,000</div>
+                <div class="quiz-option" data-index="3">D. ~320,000</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">数据集包含约 32,033 个名字，来自政府网站。</span><span class="lang-en">The dataset contains approximately 32,033 names from a government website.</span></div>
+        </div>
+        
+        <!-- Question 2 -->
+        
+        <div class="quiz-question">
+            <h4>Q3. <span class="lang-zh">数据集中名字的最短长度是多少？</span><span class="lang-en">What is the shortest name length in the dataset?</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. 1</div>
+                <div class="quiz-option" data-index="1">B. 2</div>
+                <div class="quiz-option" data-index="2">C. 3</div>
+                <div class="quiz-option" data-index="3">D. 4</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">最短名字长度为 2，最长为 15。</span><span class="lang-en">Shortest name length is 2, longest is 15.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q4. <span class="lang-zh">Bigram 模型为什么被称为"非常简单和弱"？</span><span class="lang-en">Why is the bigram model called "very simple and weak"?</span> <a href="https://youtu.be/PaCmpygFfXo?t=351" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~5:51</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">只考虑前一个字符</span><span class="lang-en">Only considers previous character</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">没有使用神经网络</span><span class="lang-en">Doesn't use neural network</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">训练数据太少</span><span class="lang-en">Too little training data</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">计算太慢</span><span class="lang-en">Too slow to compute</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">只看前1个字符无法捕捉更长的模式。GPT 看前数千个字符。</span><span class="lang-en">Looking at only 1 previous character can't capture longer patterns. GPT looks at thousands.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q5. <span class="lang-zh"><code>zip(w, w[1:])</code> 产生什么？</span><span class="lang-en">What does <code>zip(w, w[1:])</code> produce?</span> <a href="https://youtu.be/PaCmpygFfXo?t=409" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~6:49</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">所有字符对（包括重复）</span><span class="lang-en">All character pairs (including repeats)</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">所有连续字符对</span><span class="lang-en">All consecutive character pairs</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">交替字符对</span><span class="lang-en">Alternating character pairs</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">首尾字符对</span><span class="lang-en">First and last character pairs</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">将原字符串和偏移1的字符串配对，得到连续字符对。</span><span class="lang-en">Pairs original string with offset-1 string, producing consecutive pairs.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q6. <span class="lang-zh">在 bigram 模型中，"emma" 这个词包含多少个训练样本？</span><span class="lang-en">In a bigram model, how many training examples does the word "emma" contain?</span> <a href="https://youtu.be/PaCmpygFfXo?t=481" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~8:01</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. 3</div>
+                <div class="quiz-option" data-index="1">B. 4</div>
+                <div class="quiz-option" data-index="2">C. 5</div>
+                <div class="quiz-option" data-index="3">D. 6</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">".emma." 包含 5 个 bigrams: .e, em, mm, ma, a.</span><span class="lang-en">".emma." contains 5 bigrams: .e, em, mm, ma, a.</span></div>
+        </div>
+        
+        <!-- Question 3 -->
+        
+        <div class="quiz-question">
+            <h4>Q7. <span class="lang-zh"><code>dict.get(key, default)</code> 的作用是什么？</span><span class="lang-en">What does <code>dict.get(key, default)</code> do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=604" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~10:04</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">总是返回默认值</span><span class="lang-en">Always returns default</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">如果键存在则返回默认值</span><span class="lang-en">Returns default if key exists</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">如果键不存在则返回默认值</span><span class="lang-en">Returns default if key doesn't exist</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">删除键并返回值</span><span class="lang-en">Deletes key and returns value</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">避免 KeyError，在键不存在时返回默认值（如0）。</span><span class="lang-en">Avoids KeyError, returns default (e.g., 0) when key doesn't exist.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q8. <span class="lang-zh">按字典值排序需要什么？</span><span class="lang-en">What is needed to sort dictionary by value?</span> <a href="https://youtu.be/PaCmpygFfXo?t=709" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~11:49</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh"><code>sorted(d.values())</code></span><span class="lang-en"><code>sorted(d.values())</code></span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh"><code>sorted(d.items(), key=lambda kv: kv[1])</code></span><span class="lang-en"><code>sorted(d.items(), key=lambda kv: kv[1])</code></span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh"><code>sorted(d.keys())</code></span><span class="lang-en"><code>sorted(d.keys())</code></span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh"><code>d.sort()</code></span><span class="lang-en"><code>d.sort()</code></span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">用 lambda 函数指定按元组的第二个元素（值）排序。</span><span class="lang-en">Use lambda function to specify sorting by second element (value) of tuple.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q9. <span class="lang-zh">计数矩阵 N 的形状是什么？</span><span class="lang-en">What is the shape of the count matrix N?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1018" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~16:58</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. (26, 26)</div>
+                <div class="quiz-option" data-index="1">B. (27, 27)</div>
+                <div class="quiz-option" data-index="2">C. (28, 28)</div>
+                <div class="quiz-option" data-index="3">D. (32, 32)</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">26个字母 + 1个特殊标记 = 27。矩阵是 27×27。</span><span class="lang-en">26 letters + 1 special token = 27. Matrix is 27×27.</span></div>
+        </div>
+        
+        <!-- Question 5 -->
+        
+        <div class="quiz-question">
+            <h4>Q10. <span class="lang-zh"><code>.item()</code> 方法的作用是什么？</span><span class="lang-en">What does the <code>.item()</code> method do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1217" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~20:17</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">从单元素张量提取 Python 标量</span><span class="lang-en">Extract Python scalar from single-element tensor</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">获取张量的第一个元素</span><span class="lang-en">Get first element of tensor</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">将张量转换为列表</span><span class="lang-en">Convert tensor to list</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">删除张量的维度</span><span class="lang-en">Remove tensor dimensions</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">索引后的张量仍是张量对象，<code>.item()</code> 提取实际的 Python 数值。</span><span class="lang-en">Indexed tensor is still a tensor object, <code>.item()</code> extracts the actual Python number.</span></div>
+        </div>
+        
+        <!-- Question 21-30 -->
+        
+        <div class="quiz-question">
+            <h4>Q11. <span class="lang-zh">为什么使用单一特殊标记 "." 而不是分开的 &lt;S&gt; 和 &lt;E&gt;？</span><span class="lang-en">Why use a single special token "." instead of separate &lt;S&gt; and &lt;E&gt;?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1262" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~21:02</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">避免矩阵中出现无用的零行/列</span><span class="lang-en">Avoid useless zero rows/columns in matrix</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">PyTorch 的要求</span><span class="lang-en">PyTorch requirement</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">更容易调试</span><span class="lang-en">Easier to debug</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">&lt;S&gt; 永远不会是第二个字符，&lt;E&gt; 永远不会是第一个字符，导致矩阵中有整行/列的零。</span><span class="lang-en">&lt;S&gt; never appears as second char, &lt;E&gt; never as first, causing entire rows/columns of zeros in the matrix.</span></div>
+        </div>
+        
+        <!-- Question 4 -->
+        
+        <div class="quiz-question">
+            <h4>Q12. <span class="lang-zh">进行除法归一化前为什么要转换为浮点数？</span><span class="lang-en">Why convert to float before division normalization?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1531" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~25:31</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">整数除法会丢失小数</span><span class="lang-en">Integer division loses decimals</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">PyTorch 要求</span><span class="lang-en">PyTorch requirement</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">节省内存</span><span class="lang-en">Save memory</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">整数除法会丢失小数部分，概率需要是小数。</span><span class="lang-en">Integer division loses decimal part, probabilities need to be decimals.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q13. <span class="lang-zh">生成器（Generator）的作用是什么？</span><span class="lang-en">What is the purpose of Generator?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1632" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~27:12</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">加速计算</span><span class="lang-en">Speed up computation</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">节省内存</span><span class="lang-en">Save memory</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">确保结果可复现</span><span class="lang-en">Ensure reproducibility</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">生成更多数据</span><span class="lang-en">Generate more data</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">使用固定种子的生成器，每次运行会得到相同的随机数。</span><span class="lang-en">Using a generator with fixed seed, you get the same random numbers each run.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q14. <span class="lang-zh"><code>torch.multinomial</code> 的 <code>replacement</code> 参数默认值是什么？</span><span class="lang-en">What is the default value of <code>replacement</code> in <code>torch.multinomial</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1702" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~28:22</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. False</div>
+                <div class="quiz-option" data-index="1">B. True</div>
+                <div class="quiz-option" data-index="2">C. None</div>
+                <div class="quiz-option" data-index="3">D. 1</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">默认是 False（不放回），但语言模型需要 True（有放回）。</span><span class="lang-en">Default is False (without replacement), but language models need True (with replacement).</span></div>
+        </div>
+        
+        <!-- Question 18 -->
+        
+        <div class="quiz-question">
+            <h4>Q15. <span class="lang-zh">采样循环何时终止？</span><span class="lang-en">When does the sampling loop terminate?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1960" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~32:40</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">生成固定数量的字符后</span><span class="lang-en">After generating fixed number of characters</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">采样到结束标记（索引0）时</span><span class="lang-en">When end token (index 0) is sampled</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">概率低于阈值时</span><span class="lang-en">When probability falls below threshold</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">随机决定</span><span class="lang-en">Randomly decided</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">当采样到特殊结束标记（与开始标记相同，索引0）时停止。</span><span class="lang-en">Stops when special end token (same as start, index 0) is sampled.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q16. <span class="lang-zh">不使用 <code>keepdim=True</code> 会导致什么问题？</span><span class="lang-en">What problem occurs without <code>keepdim=True</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=2665" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~44:25</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">运行时错误</span><span class="lang-en">Runtime error</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">按列归一化而不是按行</span><span class="lang-en">Column normalization instead of row</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">结果全为零</span><span class="lang-en">Results are all zeros</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">梯度消失</span><span class="lang-en">Vanishing gradients</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">不使用 <code>keepdim=True</code>，(27,) 会广播为 (1, 27)，导致按列归一化。</span><span class="lang-en">Without <code>keepdim=True</code>, (27,) broadcasts to (1, 27), causing column normalization.</span></div>
+        </div>
+        
+        <!-- Question 8 -->
+        
+        <div class="quiz-question">
+            <h4>Q17. <span class="lang-zh">为什么使用负对数似然作为损失函数？</span><span class="lang-en">Why use negative log likelihood as loss function?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster to compute</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">梯度更稳定</span><span class="lang-en">More stable gradients</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">使"越低越好"的语义成立</span><span class="lang-en">Makes "lower is better" semantics work</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">PyTorch 的默认选择</span><span class="lang-en">PyTorch default choice</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">对数似然是负数，取负使其变正，这样最小化损失 = 最大化似然。</span><span class="lang-en">Log likelihood is negative; negating it makes it positive, so minimizing loss = maximizing likelihood.</span></div>
+        </div>
+        
+        <!-- Question 10 -->
+        
+        <div class="quiz-question">
+            <h4>Q18. <span class="lang-zh">完美预测时，负对数似然是多少？</span><span class="lang-en">What is the negative log likelihood for a perfect prediction?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. 0</div>
+                <div class="quiz-option" data-index="1">B. 1</div>
+                <div class="quiz-option" data-index="2">C. -1</div>
+                <div class="quiz-option" data-index="3">D. ∞</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">完美预测概率 = 1，log(1) = 0，-log(1) = 0。</span><span class="lang-en">Perfect prediction prob = 1, log(1) = 0, -log(1) = 0.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q19. <span class="lang-zh">对数似然的取值范围是什么？</span><span class="lang-en">What is the range of log likelihood?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3240" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~54:00</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. (-∞, 0]</div>
+                <div class="quiz-option" data-index="1">B. [0, ∞)</div>
+                <div class="quiz-option" data-index="2">C. [-1, 1]</div>
+                <div class="quiz-option" data-index="3">D. [0, 1]</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">概率范围是 [0,1]，log 后范围是 (-∞, 0]。概率=1时，log=0。</span><span class="lang-en">Probability range is [0,1], after log it's (-∞, 0]. When prob=1, log=0.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q20. <span class="lang-zh">训练好的 bigram 模型的平均损失大约是多少？</span><span class="lang-en">What is the approximate average loss of a trained bigram model?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3600" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:00</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. ~0.45</div>
+                <div class="quiz-option" data-index="1">B. ~2.45</div>
+                <div class="quiz-option" data-index="2">C. ~4.50</div>
+                <div class="quiz-option" data-index="3">D. ~24.5</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">统计方法和神经网络方法都达到约 2.45 的损失。</span><span class="lang-en">Both statistical and neural network methods achieve approximately 2.45 loss.</span></div>
+        </div>
+        
+        <!-- Question 11 -->
+        
+        <div class="quiz-question">
+            <h4>Q21. <span class="lang-zh">如果某个 bigram 从未出现过，其概率会导致什么问题？</span><span class="lang-en">If a bigram never appeared, what problem does its probability cause?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3650" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:50</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">损失为 0</span><span class="lang-en">Loss is 0</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">损失为无穷大</span><span class="lang-en">Loss is infinity</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">梯度为 0</span><span class="lang-en">Gradient is 0</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">模型崩溃</span><span class="lang-en">Model crashes</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">log(0) = -inf，所以 -log(0) = inf。需要用平滑解决。</span><span class="lang-en">log(0) = -inf, so -log(0) = inf. Need smoothing to solve this.</span></div>
+        </div>
+        
+        <!-- Question 19 -->
+        
+        <div class="quiz-question">
+            <h4>Q22. <span class="lang-zh">平滑时添加的假计数通常是多少？</span><span class="lang-en">How many fake counts are typically added for smoothing?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3709" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:01:49</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. 1</div>
+                <div class="quiz-option" data-index="1">B. 10</div>
+                <div class="quiz-option" data-index="2">C. 100</div>
+                <div class="quiz-option" data-index="3">D. 1000</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">拉普拉斯平滑通常添加 1，即 N = N + 1。</span><span class="lang-en">Laplace smoothing typically adds 1, i.e., N = N + 1.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q23. <span class="lang-zh">从 32,000 个名字中提取了多少个 bigram 样本？</span><span class="lang-en">How many bigram samples were extracted from 32,000 names?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3909" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:05:09</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. ~32,000</div>
+                <div class="quiz-option" data-index="1">B. ~128,000</div>
+                <div class="quiz-option" data-index="2">C. ~228,000</div>
+                <div class="quiz-option" data-index="3">D. ~328,000</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">每个名字平均贡献约 7 个 bigram，总共约 228,146 个。</span><span class="lang-en">Each name contributes about 7 bigrams on average, totaling about 228,146.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q24. <span class="lang-zh"><code>torch.tensor</code> 和 <code>torch.Tensor</code> 的主要区别是什么？</span><span class="lang-en">What is the main difference between <code>torch.tensor</code> and <code>torch.Tensor</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4074" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:07:54</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">小写版本自动推断数据类型</span><span class="lang-en">Lowercase auto-infers dtype</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">大写版本更快</span><span class="lang-en">Uppercase is faster</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">它们完全相同</span><span class="lang-en">They are identical</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">小写版本只支持整数</span><span class="lang-en">Lowercase only supports integers</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh"><code>torch.tensor</code> 会根据输入数据自动判断数据类型（整数→int64，小数→float32），而 <code>torch.Tensor</code> 总是返回 float32。</span><span class="lang-en"><code>torch.tensor</code> automatically detects the data type from your input (integers → int64, decimals → float32), while <code>torch.Tensor</code> always returns float32.</span></div>
+        </div>
+        
+        <!-- Question 6 -->
+        
+        <div class="quiz-question">
+            <h4>Q25. <span class="lang-zh"><code>F.one_hot()</code> 返回什么数据类型？</span><span class="lang-en">What dtype does <code>F.one_hot()</code> return?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4375" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:12:55</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. float32</div>
+                <div class="quiz-option" data-index="1">B. float64</div>
+                <div class="quiz-option" data-index="2">C. int64</div>
+                <div class="quiz-option" data-index="3">D. bool</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh"><code>one_hot</code> 返回与输入相同的数据类型（整数索引→整数输出），需要手动调用 <code>.float()</code>。</span><span class="lang-en"><code>one_hot</code> returns the same dtype as input (integer indices → integer output), requiring manual <code>.float()</code> call.</span></div>
+        </div>
+        
+        <!-- Question 7 -->
+        
+        <div class="quiz-question">
+            <h4>Q26. <span class="lang-zh">在矩阵乘法 (5,27) @ (27,27) 中，输出形状是什么？</span><span class="lang-en">In matrix multiplication (5,27) @ (27,27), what is the output shape?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4510" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:15:10</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. (5, 27)</div>
+                <div class="quiz-option" data-index="1">B. (27, 5)</div>
+                <div class="quiz-option" data-index="2">C. (5, 5)</div>
+                <div class="quiz-option" data-index="3">D. (27, 27)</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">矩阵乘法：(m,n) @ (n,p) = (m,p)，所以 (5,27) @ (27,27) = (5,27)。</span><span class="lang-en">Matrix multiplication: (m,n) @ (n,p) = (m,p), so (5,27) @ (27,27) = (5,27).</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q27. <span class="lang-zh">在神经网络中，每个"神经元"计算什么？</span><span class="lang-en">In the neural network, what does each "neuron" compute?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">输入的加权和（点积）</span><span class="lang-en">Weighted sum of inputs (dot product)</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">输入的最大值</span><span class="lang-en">Maximum of inputs</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">输入的平均值</span><span class="lang-en">Average of inputs</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">输入的乘积</span><span class="lang-en">Product of inputs</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">每个神经元计算其权重向量与输入的点积。</span><span class="lang-en">Each neuron computes dot product of its weight vector with input.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q28. <span class="lang-zh">在这个教程中，"神经网络"有多少层？</span><span class="lang-en">How many layers does the "neural network" in this tutorial have?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. 1</div>
+                <div class="quiz-option" data-index="1">B. 2</div>
+                <div class="quiz-option" data-index="2">C. 3</div>
+                <div class="quiz-option" data-index="3">D. 0</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">只有一个线性层：xenc @ W，没有非线性激活。</span><span class="lang-en">Only one linear layer: xenc @ W, no nonlinear activation.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q29. <span class="lang-zh">Softmax 的第一步是什么？</span><span class="lang-en">What is the first step of Softmax?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">对 logits 取指数</span><span class="lang-en">Exponentiate logits</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">对 logits 取对数</span><span class="lang-en">Take log of logits</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">对 logits 归一化</span><span class="lang-en">Normalize logits</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">对 logits 取绝对值</span><span class="lang-en">Take absolute value of logits</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">Softmax: exp(logits) → 归一化。指数化确保所有值为正。</span><span class="lang-en">Softmax: exp(logits) → normalize. Exponentiation ensures all values are positive.</span></div>
+        </div>
+        
+        <!-- Question 9 -->
+        
+        <div class="quiz-question">
+            <h4>Q30. <span class="lang-zh">为什么 Softmax 使用指数函数？</span><span class="lang-en">Why does Softmax use exponential function?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">确保所有值为正</span><span class="lang-en">Ensure all values are positive</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">减少内存使用</span><span class="lang-en">Reduce memory usage</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">历史惯例</span><span class="lang-en">Historical convention</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">exp(x) 总是正数，无论 x 是正是负，满足概率必须≥0的要求。</span><span class="lang-en">exp(x) is always positive regardless of x being positive or negative, satisfying prob ≥ 0 requirement.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q31. <span class="lang-zh">logits 的取值范围是什么？</span><span class="lang-en">What is the range of logits?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. (-∞, +∞)</div>
+                <div class="quiz-option" data-index="1">B. [0, 1]</div>
+                <div class="quiz-option" data-index="2">C. [0, +∞)</div>
+                <div class="quiz-option" data-index="3">D. [-1, 1]</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">Logits 可以是任意实数，Softmax 将其转换为概率。</span><span class="lang-en">Logits can be any real number, Softmax converts them to probabilities.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q32. <span class="lang-zh"><code>F.cross_entropy</code> 相比手动实现有什么优势？</span><span class="lang-en">What advantage does <code>F.cross_entropy</code> have over manual implementation?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5670" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:34:30</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">代码更短</span><span class="lang-en">Shorter code</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">更容易理解</span><span class="lang-en">Easier to understand</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">更高效且数值稳定</span><span class="lang-en">More efficient and numerically stable</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">支持更多功能</span><span class="lang-en">Supports more features</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">PyTorch 内置函数经过优化，避免数值溢出问题。</span><span class="lang-en">PyTorch built-in function is optimized and avoids numerical overflow issues.</span></div>
+        </div>
+        
+        <!-- Questions 31-40 -->
+        
+        <div class="quiz-question">
+            <h4>Q33. <span class="lang-zh">为什么用 mean() 而不是 sum() 计算损失？</span><span class="lang-en">Why use mean() instead of sum() for loss?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">使损失不依赖于数据集大小</span><span class="lang-en">Makes loss independent of dataset size</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">梯度更稳定</span><span class="lang-en">More stable gradients</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">PyTorch 要求</span><span class="lang-en">PyTorch requirement</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">平均损失在不同大小的数据集上可比较。</span><span class="lang-en">Average loss is comparable across different dataset sizes.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q34. <span class="lang-zh"><code>probs[torch.arange(n), ys]</code> 返回什么？</span><span class="lang-en">What does <code>probs[torch.arange(n), ys]</code> return?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">所有概率</span><span class="lang-en">All probabilities</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">每个样本在正确标签处的概率</span><span class="lang-en">Probability at correct label for each sample</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">最大概率</span><span class="lang-en">Maximum probabilities</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">概率之和</span><span class="lang-en">Sum of probabilities</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">高级索引：probs[0,ys[0]], probs[1,ys[1]], ... 提取正确类别的概率。</span><span class="lang-en">Advanced indexing: probs[0,ys[0]], probs[1,ys[1]], ... extracts correct class probabilities.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q35. <span class="lang-zh">为什么每次迭代前要设置 <code>W.grad = None</code>？</span><span class="lang-en">Why set <code>W.grad = None</code> before each iteration?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">PyTorch 默认累积梯度</span><span class="lang-en">PyTorch accumulates gradients by default</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">节省内存</span><span class="lang-en">Save memory</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">防止过拟合</span><span class="lang-en">Prevent overfitting</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">加速反向传播</span><span class="lang-en">Speed up backpropagation</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">PyTorch 累积梯度（用于梯度累积技术），不重置会导致错误更新。</span><span class="lang-en">PyTorch accumulates gradients (for gradient accumulation), not resetting causes wrong updates.</span></div>
+        </div>
+        
+        <!-- Question 13 -->
+        
+        <div class="quiz-question">
+            <h4>Q36. <span class="lang-zh"><code>W.grad.zero_()</code> 和 <code>W.grad = None</code> 哪个更高效？</span><span class="lang-en">Which is more efficient: <code>W.grad.zero_()</code> or <code>W.grad = None</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <code>W.grad.zero_()</code></div>
                 <div class="quiz-option" data-index="1">B. <code>W.grad = None</code></div>
@@ -1625,7 +1489,151 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q50. <span class="lang-zh">这个教程的核心结论是什么？</span><span class="lang-en">What is the core conclusion of this tutorial?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
+            <h4>Q37. <span class="lang-zh"><code>requires_grad=True</code> 的作用是什么？</span><span class="lang-en">What does <code>requires_grad=True</code> do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5954" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:39:14</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">使张量不可变</span><span class="lang-en">Makes tensor immutable</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">告诉 PyTorch 跟踪此张量的梯度</span><span class="lang-en">Tells PyTorch to track gradients for this tensor</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">加速计算</span><span class="lang-en">Speeds up computation</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">将张量移到 GPU</span><span class="lang-en">Moves tensor to GPU</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">如果想通过反向传播优化张量，必须设置 <code>requires_grad=True</code>。</span><span class="lang-en">To optimize a tensor via backpropagation, you must set <code>requires_grad=True</code>.</span></div>
+        </div>
+        
+        <!-- Question 12 -->
+        
+        <div class="quiz-question">
+            <h4>Q38. <span class="lang-zh">梯度的正负号意味着什么？</span><span class="lang-en">What does the sign of gradient mean?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6043" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:40:43</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">正 = 增加参数会减少损失</span><span class="lang-en">Positive = increasing param decreases loss</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">负 = 增加参数会增加损失</span><span class="lang-en">Negative = increasing param increases loss</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">正 = 增加参数会增加损失</span><span class="lang-en">Positive = increasing param increases loss</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">符号无意义</span><span class="lang-en">Sign has no meaning</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">梯度指向损失增加最快的方向，所以我们沿负梯度方向更新。</span><span class="lang-en">Gradient points in direction of fastest loss increase, so we update in negative gradient direction.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q39. <span class="lang-zh">为什么用 <code>W.data += ...</code> 而不是 <code>W += ...</code>？</span><span class="lang-en">Why use <code>W.data += ...</code> instead of <code>W += ...</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6100" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:41:40</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">更快</span><span class="lang-en">Faster</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">更节省内存</span><span class="lang-en">More memory efficient</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">避免被计算图跟踪</span><span class="lang-en">Avoid being tracked by computation graph</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">PyTorch 语法要求</span><span class="lang-en">PyTorch syntax requirement</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh"><code>W.data</code> 表示纯数据操作，不会被跟踪到计算图中。</span><span class="lang-en"><code>W.data</code> indicates pure data operation, won't be tracked in computation graph.</span></div>
+        </div>
+        
+        <!-- Question 14 -->
+        
+        <div class="quiz-question">
+            <h4>Q40. <span class="lang-zh">Karpathy 演示的最大学习率是多少？</span><span class="lang-en">What was the maximum learning rate Karpathy demonstrated?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6248" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:44:08</a></h4>
+            <div class="quiz-options" data-correct="3">
+                <div class="quiz-option" data-index="0">A. 0.1</div>
+                <div class="quiz-option" data-index="1">B. 1.0</div>
+                <div class="quiz-option" data-index="2">C. 10.0</div>
+                <div class="quiz-option" data-index="3">D. 50.0</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">在这个简单例子中，学习率 50 也能正常工作。</span><span class="lang-en">In this simple example, learning rate of 50 also works fine.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q41. <span class="lang-zh">one-hot 编码乘以权重矩阵 W 本质上是什么操作？</span><span class="lang-en">What operation is one-hot encoding multiplied by weight matrix W essentially?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">矩阵求逆</span><span class="lang-en">Matrix inversion</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">行查找（索引）</span><span class="lang-en">Row lookup (indexing)</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">矩阵转置</span><span class="lang-en">Matrix transpose</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">元素求和</span><span class="lang-en">Element-wise sum</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">one-hot × W 等价于提取 W 的对应行，这就是查表操作。</span><span class="lang-en">one-hot × W is equivalent to extracting the corresponding row of W, which is table lookup.</span></div>
+        </div>
+        
+        <!-- Question 15 -->
+        
+        <div class="quiz-question">
+            <h4>Q42. <span class="lang-zh">神经网络的 W 矩阵对应统计方法中的什么？</span><span class="lang-en">What does the neural network's W matrix correspond to in the statistical method?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">概率矩阵 P</span><span class="lang-en">Probability matrix P</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">计数矩阵 N</span><span class="lang-en">Count matrix N</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">对数计数矩阵 log(N)</span><span class="lang-en">Log count matrix log(N)</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">无对应</span><span class="lang-en">No correspondence</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">exp(W) ≈ N，所以 W ≈ log(N)。神经网络学习的是对数计数。</span><span class="lang-en">exp(W) ≈ N, so W ≈ log(N). Neural network learns log counts.</span></div>
+        </div>
+        
+        <!-- Question 16 -->
+        
+        <div class="quiz-question">
+            <h4>Q43. <span class="lang-zh">为什么 Karpathy 把 W 的值称为 "log counts"？</span><span class="lang-en">Why does Karpathy call W values "log counts"?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">因为用 log 初始化</span><span class="lang-en">Because initialized with log</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">因为计算用到 log</span><span class="lang-en">Because computation uses log</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">因为 exp(W) ≈ 计数矩阵</span><span class="lang-en">Because exp(W) ≈ count matrix</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">这只是一个比喻</span><span class="lang-en">It's just a metaphor</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">既然 exp(W) ≈ N（计数矩阵），那么 W ≈ log(N)。</span><span class="lang-en">Since exp(W) ≈ N (count matrix), then W ≈ log(N).</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q44. <span class="lang-zh">正则化项 <code>0.01 * (W**2).mean()</code> 的作用类似于什么？</span><span class="lang-en">What is the regularization term <code>0.01 * (W**2).mean()</code> similar to?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">统计方法中的平滑</span><span class="lang-en">Smoothing in statistical method</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">学习率调整</span><span class="lang-en">Learning rate adjustment</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">批归一化</span><span class="lang-en">Batch normalization</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">丢弃法</span><span class="lang-en">Dropout</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">正则化把 W 拉向零，使概率更均匀，类似于添加假计数的平滑。</span><span class="lang-en">Regularization pulls W toward zero, making probabilities more uniform, similar to smoothing with fake counts.</span></div>
+        </div>
+        
+        <!-- Question 17 -->
+        
+        <div class="quiz-question">
+            <h4>Q45. <span class="lang-zh">当 W 全为零时，概率分布是什么样的？</span><span class="lang-en">When W is all zeros, what does the probability distribution look like?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
+            <div class="quiz-options" data-correct="0">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">均匀分布</span><span class="lang-en">Uniform distribution</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">全为零</span><span class="lang-en">All zeros</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">全为一</span><span class="lang-en">All ones</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">随机分布</span><span class="lang-en">Random distribution</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">exp(0) = 1，所有值相等，归一化后得到均匀分布 1/27。</span><span class="lang-en">exp(0) = 1, all values equal, normalized to uniform 1/27.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q46. <span class="lang-zh">正则化强度太大会发生什么？</span><span class="lang-en">What happens if regularization strength is too high?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">过拟合</span><span class="lang-en">Overfitting</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">模型无法学习，预测变成均匀分布</span><span class="lang-en">Model can't learn, predictions become uniform</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">训练变慢</span><span class="lang-en">Training slows down</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">梯度爆炸</span><span class="lang-en">Gradient explosion</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">正则化把 W 拉向零，太强则 W ≈ 0，所有概率相等。</span><span class="lang-en">Regularization pulls W toward zero; too strong means W ≈ 0, all probabilities equal.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q47. <span class="lang-zh">Karpathy 说统计方法的主要问题是什么？</span><span class="lang-en">What is the main problem with the statistical method according to Karpathy?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算太慢</span><span class="lang-en">Too slow</span></div>
+                <div class="quiz-option" data-index="1">B. <span class="lang-zh">精度不够</span><span class="lang-en">Not accurate enough</span></div>
+                <div class="quiz-option" data-index="2">C. <span class="lang-zh">无法扩展到更长的上下文</span><span class="lang-en">Doesn't scale to longer context</span></div>
+                <div class="quiz-option" data-index="3">D. <span class="lang-zh">需要太多内存</span><span class="lang-en">Requires too much memory</span></div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">参数随上下文长度指数增长：27^2, 27^3, ... 27^10 是不可能的。</span><span class="lang-en">Parameters grow exponentially with context: 27^2, 27^3, ... 27^10 is impossible.</span></div>
+        </div>
+        
+        <!-- Question 20 -->
+        
+        <div class="quiz-question">
+            <h4>Q48. <span class="lang-zh">trigram 模型需要多少参数？</span><span class="lang-en">How many parameters does a trigram model need?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
+            <div class="quiz-options" data-correct="1">
+                <div class="quiz-option" data-index="0">A. 729</div>
+                <div class="quiz-option" data-index="1">B. 19,683</div>
+                <div class="quiz-option" data-index="2">C. 531,441</div>
+                <div class="quiz-option" data-index="3">D. 14,348,907</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">27^3 = 19,683。这就是统计方法不可扩展的原因。</span><span class="lang-en">27^3 = 19,683. This is why the statistical method doesn't scale.</span></div>
+        </div>
+        
+        <div class="quiz-question">
+            <h4>Q49. <span class="lang-zh">这个教程的核心结论是什么？</span><span class="lang-en">What is the core conclusion of this tutorial?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
             <div class="quiz-options" data-correct="3">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">统计方法比神经网络好</span><span class="lang-en">Statistical method is better than neural network</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">神经网络比统计方法好</span><span class="lang-en">Neural network is better than statistical method</span></div>
@@ -1634,6 +1642,19 @@ loss = F.cross_entropy(logits, ys)</code></pre>
             </div>
             <div class="quiz-explanation"><span class="lang-zh">统计方法和神经网络得到相同的结果，但神经网络可以扩展到任意上下文长度。</span><span class="lang-en">Statistical and neural network methods get same results, but neural network scales to arbitrary context length.</span></div>
         </div>
+        
+        <div class="quiz-question">
+            <h4>Q50. <span class="lang-zh">Makemore 系列最终会达到什么级别的模型？</span><span class="lang-en">What level of model will the Makemore series eventually reach?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7200" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~2:00:00</a></h4>
+            <div class="quiz-options" data-correct="2">
+                <div class="quiz-option" data-index="0">A. RNN</div>
+                <div class="quiz-option" data-index="1">B. LSTM</div>
+                <div class="quiz-option" data-index="2">C. Transformer / GPT-2</div>
+                <div class="quiz-option" data-index="3">D. CNN</div>
+            </div>
+            <div class="quiz-explanation"><span class="lang-zh">系列从 bigram → MLP → RNN → Transformer，最终实现 GPT-2。</span><span class="lang-en">Series progresses from bigram → MLP → RNN → Transformer, eventually implementing GPT-2.</span></div>
+        </div>
+        
+        <!-- Questions 41-50 -->
         
         <script>
             // Score tracking
