@@ -1205,7 +1205,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q13. <span class="lang-zh">生成器（Generator）的作用是什么？</span><span class="lang-en">What is the purpose of Generator?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1632" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~27:12</a></h4>
+            <h4>Q13. <span class="lang-zh">固定种子生成器（Generator）的作用是什么？</span><span class="lang-en">What is the purpose of a fixed seed Generator?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1632" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~27:12</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">加速计算</span><span class="lang-en">Speed up computation</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">节省内存</span><span class="lang-en">Save memory</span></div>
@@ -1240,7 +1240,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q16. <span class="lang-zh">不使用 <code>keepdim=True</code> 会导致什么问题？</span><span class="lang-en">What problem occurs without <code>keepdim=True</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=2665" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~44:25</a></h4>
+            <h4>Q16. <span class="lang-zh">在 <code>.sum(1, keepdim=True)</code> 中不使用 <code>keepdim=True</code> 会导致什么问题？</span><span class="lang-en">What problem occurs without <code>keepdim=True</code> in <code>.sum(1, keepdim=True)</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=2665" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~44:25</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">运行时错误</span><span class="lang-en">Runtime error</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">按列归一化而不是按行</span><span class="lang-en">Column normalization instead of row</span></div>
@@ -1277,14 +1277,14 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q19. <span class="lang-zh">对数似然的取值范围是什么？</span><span class="lang-en">What is the range of log likelihood?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3240" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~54:00</a></h4>
+            <h4>Q19. <span class="lang-zh">当概率在 [0, 1] 范围内时，对数概率（log probability）的取值范围是什么？</span><span class="lang-en">What is the range of log probability when probability is in [0, 1]?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3240" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~54:00</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. (-∞, 0]</div>
                 <div class="quiz-option" data-index="1">B. [0, ∞)</div>
                 <div class="quiz-option" data-index="2">C. [-1, 1]</div>
                 <div class="quiz-option" data-index="3">D. [0, 1]</div>
             </div>
-            <div class="quiz-explanation"><span class="lang-zh">概率范围是 [0,1]，log 后范围是 (-∞, 0]。概率=1时，log=0。</span><span class="lang-en">Probability range is [0,1], after log it's (-∞, 0]. When prob=1, log=0.</span></div>
+            <div class="quiz-explanation"><span class="lang-zh">概率范围是 [0,1]，取对数后范围是 (-∞, 0]。当概率=1时，log(1)=0；当概率→0时，log→-∞。</span><span class="lang-en">Probability range is [0,1], after log it's (-∞, 0]. When prob=1, log(1)=0; when prob→0, log→-∞.</span></div>
         </div>
         
         <div class="quiz-question">
@@ -1301,7 +1301,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         <!-- Question 11 -->
         
         <div class="quiz-question">
-            <h4>Q21. <span class="lang-zh">如果某个 bigram 从未出现过，其概率会导致什么问题？</span><span class="lang-en">If a bigram never appeared, what problem does its probability cause?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3650" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:50</a></h4>
+            <h4>Q21. <span class="lang-zh">如果某个 bigram 在训练数据中从未出现，计算负对数似然损失时会发生什么问题？</span><span class="lang-en">If a bigram never appeared in training data, what problem occurs when computing negative log likelihood loss?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3650" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:50</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">损失为 0</span><span class="lang-en">Loss is 0</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">损失为无穷大</span><span class="lang-en">Loss is infinity</span></div>
@@ -1373,14 +1373,14 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q27. <span class="lang-zh">在神经网络中，每个"神经元"计算什么？</span><span class="lang-en">In the neural network, what does each "neuron" compute?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
+            <h4>Q27. <span class="lang-zh">在这个单层神经网络（无隐藏层激活函数）中，每个神经元对 27 维 one-hot 输入计算什么？</span><span class="lang-en">In this single-layer neural network (no hidden activation), what does each neuron compute on the 27-dimensional one-hot input?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">输入的加权和（点积）</span><span class="lang-en">Weighted sum of inputs (dot product)</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">输入的最大值</span><span class="lang-en">Maximum of inputs</span></div>
                 <div class="quiz-option" data-index="2">C. <span class="lang-zh">输入的平均值</span><span class="lang-en">Average of inputs</span></div>
                 <div class="quiz-option" data-index="3">D. <span class="lang-zh">输入的乘积</span><span class="lang-en">Product of inputs</span></div>
             </div>
-            <div class="quiz-explanation"><span class="lang-zh">每个神经元计算其权重向量与输入的点积。</span><span class="lang-en">Each neuron computes dot product of its weight vector with input.</span></div>
+            <div class="quiz-explanation"><span class="lang-zh">每个神经元计算其权重向量与输入的点积（加权和）。没有隐藏层激活函数，softmax 只在输出层用于转换为概率。</span><span class="lang-en">Each neuron computes dot product (weighted sum) of its weight vector with input. No hidden activation; softmax is only applied at output to convert to probabilities.</span></div>
         </div>
         
         <div class="quiz-question">
