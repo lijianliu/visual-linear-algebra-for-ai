@@ -359,12 +359,12 @@
             </button>
         </div>
         
-        <h1><a href="https://www.youtube.com/watch?v=PaCmpygFfXo&list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ&index=2" target="_blank">Makemore <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a> <span class="lang-zh">教程总结</span><span class="lang-en">Tutorial Summary</span></h1>
+        <h1><a href="https://www.youtube.com/watch?v=PaCmpygFfXo&list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ&index=2" target="yt-tab">Makemore <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a> <span class="lang-zh">教程总结</span><span class="lang-en">Tutorial Summary</span></h1>
         <p class="subtitle">
             <span class="lang-zh">Andrej Karpathy 的字符级语言模型教程</span>
             <span class="lang-en">Andrej Karpathy's Character-Level Language Model Tutorial</span>
         </p>
-        <p style="text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px;"><span class="lang-zh">本文档由 <a href="https://lijianliu.github.io/" target="_blank" style="color: #667eea; text-decoration: none;">Lijian Liu</a> 整理编辑，使用 Claude Opus 4.5 AI 辅助完成</span><span class="lang-en">Document curated and edited by <a href="https://lijianliu.github.io/" target="_blank" style="color: #667eea; text-decoration: none;">Lijian Liu</a> with Claude Opus 4.5 AI assistance</span></p>
+        <p style="text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px;"><span class="lang-zh">本文档由 <a href="https://lijianliu.github.io/" target="yt-tab" style="color: #667eea; text-decoration: none;">Lijian Liu</a> 整理编辑，使用 Claude Opus 4.5 AI 辅助完成</span><span class="lang-en">Document curated and edited by <a href="https://lijianliu.github.io/" target="yt-tab" style="color: #667eea; text-decoration: none;">Lijian Liu</a> with Claude Opus 4.5 AI assistance</span></p>
         
         <!-- Table of Contents -->
         <div class="highlight-box" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
@@ -443,33 +443,33 @@
         
         <h3 id="key-concepts"><span class="emoji">🔑</span> <span class="lang-zh">关键概念解释</span><span class="lang-en">Key Concepts Explained</span></h3>
         
-        <h3><span class="lang-zh">1. 数据加载与探索</span><span class="lang-en">1. Data Loading & Exploration</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h3>
+        <h3><span class="lang-zh">1. 数据加载与探索</span><span class="lang-en">1. Data Loading & Exploration</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h3>
         <pre><code>words = open('names.txt', 'r').read().splitlines()
 len(words)      <span class="comment"># 32033 <span class="lang-zh">个名字</span><span class="lang-en">names</span></span>
 min(len(w) for w in words)  <span class="comment"># 2 <span class="lang-zh">（最短）</span><span class="lang-en">(shortest)</span></span>
 max(len(w) for w in words)  <span class="comment"># 15 <span class="lang-zh">（最长）</span><span class="lang-en">(longest)</span></span></code></pre>
         
-        <h3><span class="lang-zh">2. Bigram 的概念</span><span class="lang-en">2. Bigram Concept</span> <a href="https://youtu.be/PaCmpygFfXo?t=351" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~5:51</a></h3>
+        <h3><span class="lang-zh">2. Bigram 的概念</span><span class="lang-en">2. Bigram Concept</span> <a href="https://youtu.be/PaCmpygFfXo?t=351" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~5:51</a></h3>
         <p><span class="lang-zh">Bigram 模型只看前一个字符来预测下一个字符。虽然简单（"very simple and weak"），但是一个很好的起点。</span><span class="lang-en">Bigram model only looks at the previous character to predict the next one. While simple ("very simple and weak"), it's a great place to start.</span></p>
         <pre><code><span class="comment"># "emma" <span class="lang-zh">包含的 bigrams</span><span class="lang-en">contains these bigrams</span>:</span>
 .e, em, mm, ma, a.  <span class="comment"># 5 <span class="lang-zh">个示例！</span><span class="lang-en">examples!</span></span></code></pre>
         
-        <h3><span class="lang-zh">3. 构建计数矩阵</span><span class="lang-en">3. Building Count Matrix</span> <a href="https://youtu.be/PaCmpygFfXo?t=793" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~13:13</a></h3>
+        <h3><span class="lang-zh">3. 构建计数矩阵</span><span class="lang-en">3. Building Count Matrix</span> <a href="https://youtu.be/PaCmpygFfXo?t=793" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~13:13</a></h3>
         <pre><code>N = torch.zeros((27, 27), dtype=torch.int32)
 <span class="comment"># <span class="lang-zh">行 = 第一个字符，列 = 第二个字符</span><span class="lang-en">Row = first char, Column = second char</span></span>
 N[s2i[ch1], s2i[ch2]] += 1</code></pre>
         
-        <h3><span class="lang-zh">4. 从计数到概率</span><span class="lang-en">4. From Counts to Probabilities</span> <a href="https://youtu.be/PaCmpygFfXo?t=1531" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~25:31</a></h3>
+        <h3><span class="lang-zh">4. 从计数到概率</span><span class="lang-en">4. From Counts to Probabilities</span> <a href="https://youtu.be/PaCmpygFfXo?t=1531" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~25:31</a></h3>
         <pre><code>p = N[0].float()  <span class="comment"># <span class="lang-zh">获取第一行（计数）</span><span class="lang-en">Get first row (counts)</span></span>
 p = p / p.sum()   <span class="comment"># <span class="lang-zh">归一化为概率分布</span><span class="lang-en">Normalize to probability distribution</span></span>
 p.sum()           <span class="comment"># 1.0 ✅</span></code></pre>
         
-        <h3><span class="lang-zh">5. 使用生成器确保可复现性</span><span class="lang-en">5. Using Generator for Reproducibility</span> <a href="https://youtu.be/PaCmpygFfXo?t=1632" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~27:12</a></h3>
+        <h3><span class="lang-zh">5. 使用生成器确保可复现性</span><span class="lang-en">5. Using Generator for Reproducibility</span> <a href="https://youtu.be/PaCmpygFfXo?t=1632" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~27:12</a></h3>
         <pre><code>g = torch.Generator().manual_seed(2147483647)
 torch.rand(3, generator=g)  <span class="comment"># <span class="lang-zh">每次运行结果相同</span><span class="lang-en">Same result every run</span></span>
 torch.multinomial(p, num_samples=1, generator=g)</code></pre>
         
-        <h3><span class="lang-zh">6. 广播机制 (Broadcasting)</span><span class="lang-en">6. Broadcasting</span> <a href="https://youtu.be/PaCmpygFfXo?t=2280" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~38:00</a></h3>
+        <h3><span class="lang-zh">6. 广播机制 (Broadcasting)</span><span class="lang-en">6. Broadcasting</span> <a href="https://youtu.be/PaCmpygFfXo?t=2280" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~38:00</a></h3>
         <p><span class="lang-zh">在归一化概率矩阵时，我们需要理解 PyTorch 的广播规则：</span><span class="lang-en">When normalizing probability matrices, we need to understand PyTorch's broadcasting rules:</span></p>
         <pre><code>P.shape  <span class="comment"># (27, 27)</span>
 
@@ -479,7 +479,7 @@ P.sum(1, keepdim=True).shape  <span class="comment"># (27, 1) <span class="lang-
 <span class="comment"># <span class="lang-zh">广播：(27, 27) / (27, 1) → 每行除以自己的和</span><span class="lang-en">Broadcast: (27, 27) / (27, 1) → each row divided by its sum</span></span>
 P = P / P.sum(1, keepdim=True)  <span class="comment"># ✅ <span class="lang-zh">正确归一化行</span><span class="lang-en">Correctly normalizes rows</span></span></code></pre>
         
-        <h3><span class="lang-zh">7. 似然与损失函数</span><span class="lang-en">7. Likelihood & Loss Function</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h3>
+        <h3><span class="lang-zh">7. 似然与损失函数</span><span class="lang-en">7. Likelihood & Loss Function</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h3>
         <div class="highlight-box">
             <ul>
                 <li><strong><span class="lang-zh">似然 (Likelihood)</span><span class="lang-en">Likelihood</span></strong> = <span class="lang-zh">所有正确预测概率的乘积</span><span class="lang-en">Product of all correct prediction probabilities</span></li>
@@ -498,19 +498,19 @@ n = 0
 nll = -log_likelihood  <span class="comment"># <span class="lang-zh">负对数似然</span><span class="lang-en">Negative log likelihood</span></span>
 loss = nll / n         <span class="comment"># <span class="lang-zh">平均损失 ≈ 2.45</span><span class="lang-en">Average loss ≈ 2.45</span></span></code></pre>
         
-        <h3><span class="lang-zh">8. 模型平滑 (Smoothing)</span><span class="lang-en">8. Model Smoothing</span> <a href="https://youtu.be/PaCmpygFfXo?t=3709" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:01:49</a></h3>
+        <h3><span class="lang-zh">8. 模型平滑 (Smoothing)</span><span class="lang-en">8. Model Smoothing</span> <a href="https://youtu.be/PaCmpygFfXo?t=3709" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:01:49</a></h3>
         <pre><code><span class="comment"># <span class="lang-zh">添加假计数，避免零概率</span><span class="lang-en">Add fake counts to avoid zero probability</span></span>
 P = (N + 1).float()  <span class="comment"># <span class="lang-zh">拉普拉斯平滑</span><span class="lang-en">Laplace smoothing</span></span>
 P = P / P.sum(1, keepdim=True)</code></pre>
         
-        <h3><span class="lang-zh">9. One-Hot 编码</span><span class="lang-en">9. One-Hot Encoding</span> <a href="https://youtu.be/PaCmpygFfXo?t=4210" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:10:10</a></h3>
+        <h3><span class="lang-zh">9. One-Hot 编码</span><span class="lang-en">9. One-Hot Encoding</span> <a href="https://youtu.be/PaCmpygFfXo?t=4210" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:10:10</a></h3>
         <pre><code><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F
 
 xenc = F.one_hot(xs, num_classes=27).float()
 <span class="comment"># xs = [0, 5, 13, 13, 1]</span>
 <span class="comment"># xenc.shape = (5, 27) <span class="lang-zh">- 每行只有一个1，其余为0</span><span class="lang-en">- each row has one 1, rest are 0</span></span></code></pre>
         
-        <h3><span class="lang-zh">10. Logits 与 Softmax</span><span class="lang-en">10. Logits & Softmax</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h3>
+        <h3><span class="lang-zh">10. Logits 与 Softmax</span><span class="lang-en">10. Logits & Softmax</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h3>
         <pre><code>logits = xenc @ W           <span class="comment"># <span class="lang-zh">可正可负的"对数计数"</span><span class="lang-en">"log counts" - can be +/-</span></span>
 counts = logits.exp()       <span class="comment"># <span class="lang-zh">指数化 → 总是正数</span><span class="lang-en">Exponentiate → always positive</span></span>
 probs = counts / counts.sum(1, keepdim=True)  <span class="comment"># <span class="lang-zh">归一化 → 概率</span><span class="lang-en">Normalize → probabilities</span></span>
@@ -518,7 +518,7 @@ probs = counts / counts.sum(1, keepdim=True)  <span class="comment"># <span clas
 <span class="comment"># <span class="lang-zh">这就是 Softmax！将任意数值转换为概率分布</span><span class="lang-en">This is Softmax! Converts any values to probability distribution</span></span></code></pre>
         <p><span class="lang-zh"><strong>Softmax 的作用：</strong>将神经网络的任意输出（可正可负）转换为有效的概率分布（总是正数，和为1）。Karpathy 说这是"非常常用的"（very often used）。</span><span class="lang-en"><strong>What Softmax does:</strong> Converts arbitrary neural network outputs (can be positive or negative) into a valid probability distribution (always positive, sums to 1). Karpathy says this is "very often used".</span></p>
         
-        <h3><span class="lang-zh">11. 向量化损失计算</span><span class="lang-en">11. Vectorized Loss Calculation</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h3>
+        <h3><span class="lang-zh">11. 向量化损失计算</span><span class="lang-en">11. Vectorized Loss Calculation</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h3>
         <pre><code><span class="comment"># <span class="lang-zh">不用循环，一行搞定！</span><span class="lang-en">No loop needed, one line!</span></span>
 loss = -probs[torch.arange(n), ys].log().mean()
 
@@ -527,21 +527,21 @@ loss = -probs[torch.arange(n), ys].log().mean()
 <span class="comment"># probs[1, ys[1]] → <span class="lang-zh">第1个样本在正确标签处的概率</span><span class="lang-en">Prob of sample 1 at correct label</span></span>
 <span class="comment"># ...</span></code></pre>
         
-        <h3><span class="lang-zh">12. 梯度的含义</span><span class="lang-en">12. Gradient Meaning</span> <a href="https://youtu.be/PaCmpygFfXo?t=6043" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:40:43</a></h3>
+        <h3><span class="lang-zh">12. 梯度的含义</span><span class="lang-en">12. Gradient Meaning</span> <a href="https://youtu.be/PaCmpygFfXo?t=6043" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:40:43</a></h3>
         <pre><code>W.grad.shape  <span class="comment"># (27, 27) <span class="lang-zh">- 与 W 形状相同</span><span class="lang-en">- same shape as W</span></span>
 
 <span class="comment"># <span class="lang-zh">梯度告诉我们每个权重对损失的影响：</span><span class="lang-en">Gradient tells us each weight's influence on loss:</span></span>
 <span class="comment"># W.grad[i,j] > 0 → <span class="lang-zh">增加 W[i,j] 会增加 loss</span><span class="lang-en">Increasing W[i,j] increases loss</span></span>
 <span class="comment"># W.grad[i,j] < 0 → <span class="lang-zh">增加 W[i,j] 会减少 loss</span><span class="lang-en">Increasing W[i,j] decreases loss</span></span></code></pre>
         
-        <h3><span class="lang-zh">13. 学习率调优</span><span class="lang-en">13. Learning Rate Tuning</span> <a href="https://youtu.be/PaCmpygFfXo?t=6248" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:44:08</a></h3>
+        <h3><span class="lang-zh">13. 学习率调优</span><span class="lang-en">13. Learning Rate Tuning</span> <a href="https://youtu.be/PaCmpygFfXo?t=6248" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:44:08</a></h3>
         <p><span class="lang-zh">Karpathy 演示了学习率可以从很小调到很大：</span><span class="lang-en">Karpathy demonstrates learning rate can be tuned from small to large:</span></p>
         <pre><code>lr = 0.1   <span class="comment"># <span class="lang-zh">保守</span><span class="lang-en">Conservative</span></span>
 lr = 1.0   <span class="comment"># <span class="lang-zh">更激进</span><span class="lang-en">More aggressive</span></span>
 lr = 10.0  <span class="comment"># <span class="lang-zh">更快收敛</span><span class="lang-en">Faster convergence</span></span>
 lr = 50.0  <span class="comment"># <span class="lang-zh">在这个简单例子中也能工作！</span><span class="lang-en">Works even for this simple example!</span></span></code></pre>
         
-        <h3 id="gradient-descent"><span class="emoji">🔄</span> <span class="lang-zh">梯度下降流程</span><span class="lang-en">Gradient Descent Flow</span> <a href="https://youtu.be/PaCmpygFfXo?t=5700" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:35:00</a></h3>
+        <h3 id="gradient-descent"><span class="emoji">🔄</span> <span class="lang-zh">梯度下降流程</span><span class="lang-en">Gradient Descent Flow</span> <a href="https://youtu.be/PaCmpygFfXo?t=5700" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:35:00</a></h3>
         <pre><code><span class="keyword">for</span> i <span class="keyword">in</span> range(100):
     <span class="comment"># <span class="lang-zh">前向传播</span><span class="lang-en">Forward pass</span></span>
     xenc = F.one_hot(xs, num_classes=27).float()
@@ -557,7 +557,7 @@ lr = 50.0  <span class="comment"># <span class="lang-zh">在这个简单例子�
     <span class="comment"># <span class="lang-zh">更新权重</span><span class="lang-en">Update weights</span></span>
     W.data -= 0.1 * W.grad</code></pre>
         
-        <h3 id="regularization"><span class="emoji">🛡️</span> <span class="lang-zh">正则化 (Regularization)</span><span class="lang-en">Regularization</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h3>
+        <h3 id="regularization"><span class="emoji">🛡️</span> <span class="lang-zh">正则化 (Regularization)</span><span class="lang-en">Regularization</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h3>
         <p><span class="lang-zh">相当于统计方法中的"平滑"：</span><span class="lang-en">Equivalent to "smoothing" in statistical methods:</span></p>
         <pre><code>loss = loss + 0.01 * (W**2).mean()</code></pre>
         <ul>
@@ -621,7 +621,7 @@ lr = 50.0  <span class="comment"># <span class="lang-zh">在这个简单例子�
         
         <!-- Warning 1: zip() trick ~6:49 -->
         <div class="warning-box">
-            <div class="title">1. <span class="lang-zh">使用 <code>zip()</code> 遍历连续字符对</span><span class="lang-en">Using <code>zip()</code> to Iterate Consecutive Character Pairs</span> <a href="https://youtu.be/PaCmpygFfXo?t=409" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~6:49</a></div>
+            <div class="title">1. <span class="lang-zh">使用 <code>zip()</code> 遍历连续字符对</span><span class="lang-en">Using <code>zip()</code> to Iterate Consecutive Character Pairs</span> <a href="https://youtu.be/PaCmpygFfXo?t=409" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~6:49</a></div>
             <pre><code>w = "emma"
 <span class="keyword">for</span> ch1, ch2 <span class="keyword">in</span> zip(w, w[1:]):
     print(ch1, ch2)
@@ -633,7 +633,7 @@ lr = 50.0  <span class="comment"># <span class="lang-zh">在这个简单例子�
         
         <!-- Warning 2: Start/End tokens ~8:01 -->
         <div class="warning-box">
-            <div class="title">2. <span class="lang-zh">必须处理开始和结束标记</span><span class="lang-en">Must Handle Start and End Tokens</span> <a href="https://youtu.be/PaCmpygFfXo?t=481" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~8:01</a></div>
+            <div class="title">2. <span class="lang-zh">必须处理开始和结束标记</span><span class="lang-en">Must Handle Start and End Tokens</span> <a href="https://youtu.be/PaCmpygFfXo?t=481" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~8:01</a></div>
             <pre><code><span class="comment"># ❌ <span class="lang-zh">不完整：丢失了重要信息</span><span class="lang-en">Incomplete: loses important information</span></span>
 <span class="keyword">for</span> ch1, ch2 <span class="keyword">in</span> zip(w, w[1:]):  <span class="comment"># <span class="lang-zh">只有 em, mm, ma</span><span class="lang-en">Only em, mm, ma</span></span>
 
@@ -645,7 +645,7 @@ chs = ['.'] + list(w) + ['.']  <span class="comment"># ['.', 'e', 'm', 'm', 'a',
         
         <!-- Warning 3: dict.get() default value ~10:04 -->
         <div class="warning-box">
-            <div class="title">3. <span class="lang-zh">使用 <code>dict.get()</code> 处理不存在的键</span><span class="lang-en">Using <code>dict.get()</code> to Handle Missing Keys</span> <a href="https://youtu.be/PaCmpygFfXo?t=604" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~10:04</a></div>
+            <div class="title">3. <span class="lang-zh">使用 <code>dict.get()</code> 处理不存在的键</span><span class="lang-en">Using <code>dict.get()</code> to Handle Missing Keys</span> <a href="https://youtu.be/PaCmpygFfXo?t=604" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~10:04</a></div>
             <pre><code><span class="comment"># ❌ <span class="lang-zh">如果键不存在会报错</span><span class="lang-en">Raises error if key doesn't exist</span></span>
 b[bigram] = b[bigram] + 1  <span class="comment"># KeyError!</span>
 
@@ -656,7 +656,7 @@ b[bigram] = b.get(bigram, 0) + 1  <span class="comment"># <span class="lang-zh">
         
         <!-- Warning 4: Sorting by value with lambda ~11:49 -->
         <div class="warning-box">
-            <div class="title">4. <span class="lang-zh">按值排序字典（使用 lambda）</span><span class="lang-en">Sorting Dictionary by Value (Using Lambda)</span> <a href="https://youtu.be/PaCmpygFfXo?t=709" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~11:49</a></div>
+            <div class="title">4. <span class="lang-zh">按值排序字典（使用 lambda）</span><span class="lang-en">Sorting Dictionary by Value (Using Lambda)</span> <a href="https://youtu.be/PaCmpygFfXo?t=709" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~11:49</a></div>
             <pre><code><span class="comment"># <span class="lang-zh">默认按键（第一个元素）排序</span><span class="lang-en">Default sorts by key (first element)</span></span>
 sorted(b.items())
 
@@ -668,7 +668,7 @@ sorted(b.items(), key=<span class="keyword">lambda</span> kv: kv[1], reverse=Tru
         
         <!-- Warning 5: torch.zeros dtype ~13:53 -->
         <div class="warning-box">
-            <div class="title">5. <span class="lang-zh">创建张量时指定 <code>dtype</code></span><span class="lang-en">Specifying <code>dtype</code> When Creating Tensors</span> <a href="https://youtu.be/PaCmpygFfXo?t=833" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~13:53</a></div>
+            <div class="title">5. <span class="lang-zh">创建张量时指定 <code>dtype</code></span><span class="lang-en">Specifying <code>dtype</code> When Creating Tensors</span> <a href="https://youtu.be/PaCmpygFfXo?t=833" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~13:53</a></div>
             <pre><code><span class="comment"># <span class="lang-zh">默认是 float32</span><span class="lang-en">Default is float32</span></span>
 a = torch.zeros((3, 5))
 a.dtype  <span class="comment"># torch.float32</span>
@@ -680,7 +680,7 @@ N = torch.zeros((27, 27), dtype=torch.int32)</code></pre>
         
         <!-- Warning 6: enumerate for mapping ~16:58 -->
         <div class="warning-box">
-            <div class="title">6. <span class="lang-zh">使用 <code>enumerate()</code> 创建字符映射</span><span class="lang-en">Using <code>enumerate()</code> to Create Character Mapping</span> <a href="https://youtu.be/PaCmpygFfXo?t=1018" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~16:58</a></div>
+            <div class="title">6. <span class="lang-zh">使用 <code>enumerate()</code> 创建字符映射</span><span class="lang-en">Using <code>enumerate()</code> to Create Character Mapping</span> <a href="https://youtu.be/PaCmpygFfXo?t=1018" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~16:58</a></div>
             <pre><code>chars = sorted(list(set(''.join(words))))  <span class="comment"># ['a', 'b', ..., 'z']</span>
 s2i = {s: i+1 <span class="keyword">for</span> i, s <span class="keyword">in</span> enumerate(chars)}
 s2i['.'] = 0  <span class="comment"># <span class="lang-zh">特殊标记放在索引0</span><span class="lang-en">Special token at index 0</span></span>
@@ -691,7 +691,7 @@ i2s = {i: s <span class="keyword">for</span> s, i <span class="keyword">in</span
         
         <!-- Warning 7: .item() ~20:17 -->
         <div class="warning-box">
-            <div class="title">7. <span class="lang-zh">使用 <code>.item()</code> 提取 Python 标量</span><span class="lang-en">Use <code>.item()</code> to Extract Python Scalar</span> <a href="https://youtu.be/PaCmpygFfXo?t=1217" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~20:17</a></div>
+            <div class="title">7. <span class="lang-zh">使用 <code>.item()</code> 提取 Python 标量</span><span class="lang-en">Use <code>.item()</code> to Extract Python Scalar</span> <a href="https://youtu.be/PaCmpygFfXo?t=1217" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~20:17</a></div>
             <pre><code>N[0, 5]       <span class="comment"># tensor(149) <span class="lang-zh">- 还是张量！</span><span class="lang-en">- still a tensor!</span></span>
 type(N[0, 5]) <span class="comment"># torch.Tensor</span>
 
@@ -702,7 +702,7 @@ type(N[0, 5].item()) <span class="comment"># int</span></code></pre>
         
         <!-- Warning 8: Special tokens ~21:02-22:03 -->
         <div class="warning-box">
-            <div class="title">8. <span class="lang-zh">特殊标记的设计选择</span><span class="lang-en">Special Token Design Choice</span> <a href="https://youtu.be/PaCmpygFfXo?t=1262" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~21:02</a></div>
+            <div class="title">8. <span class="lang-zh">特殊标记的设计选择</span><span class="lang-en">Special Token Design Choice</span> <a href="https://youtu.be/PaCmpygFfXo?t=1262" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~21:02</a></div>
             <pre><code><span class="comment"># ❌ <span class="lang-zh">最初设计：两个特殊标记</span><span class="lang-en">Initial design: two special tokens</span></span>
 &lt;S&gt; = 26  <span class="comment"># <span class="lang-zh">开始标记</span><span class="lang-en">Start token</span></span>
 &lt;E&gt; = 27  <span class="comment"># <span class="lang-zh">结束标记</span><span class="lang-en">End token</span></span>
@@ -715,7 +715,7 @@ type(N[0, 5].item()) <span class="comment"># int</span></code></pre>
         
         <!-- Warning 9: multinomial replacement ~26:00-30:00 -->
         <div class="warning-box">
-            <div class="title">9. <code>torch.multinomial</code> <span class="lang-zh">的 <code>replacement</code> 参数</span><span class="lang-en"><code>replacement</code> Parameter</span> <a href="https://youtu.be/PaCmpygFfXo?t=1702" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~28:22</a></div>
+            <div class="title">9. <code>torch.multinomial</code> <span class="lang-zh">的 <code>replacement</code> 参数</span><span class="lang-en"><code>replacement</code> Parameter</span> <a href="https://youtu.be/PaCmpygFfXo?t=1702" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~28:22</a></div>
             <pre><code><span class="comment"># ❌ <span class="lang-zh">默认 replacement=False，抽样后不放回</span><span class="lang-en">Default replacement=False, sampling without replacement</span></span>
 torch.multinomial(probs, num_samples=20)  <span class="comment"># <span class="lang-zh">可能报错或结果不对</span><span class="lang-en">May error or give wrong results</span></span>
 
@@ -726,7 +726,7 @@ torch.multinomial(probs, num_samples=20, replacement=True)</code></pre>
         
         <!-- Warning 10: Broadcasting with keepdim ~37:00-49:00 -->
         <div class="warning-box">
-            <div class="title">10. <span class="lang-zh">广播机制中的 <code>keepdim=True</code> 陷阱</span><span class="lang-en">Broadcasting <code>keepdim=True</code> Trap</span> <a href="https://youtu.be/PaCmpygFfXo?t=2665" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~44:25</a></div>
+            <div class="title">10. <span class="lang-zh">广播机制中的 <code>keepdim=True</code> 陷阱</span><span class="lang-en">Broadcasting <code>keepdim=True</code> Trap</span> <a href="https://youtu.be/PaCmpygFfXo?t=2665" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~44:25</a></div>
             <p><span class="lang-zh">这是一个非常微妙且难以发现的 bug，Karpathy 说这应该"吓到你"：</span><span class="lang-en">This is a very subtle and hard-to-find bug, Karpathy says this should "scare you":</span></p>
             <pre><code>P.shape  <span class="comment"># (27, 27)</span>
 
@@ -740,7 +740,7 @@ P = N / N.sum(1, keepdim=True)  <span class="comment"># <span class="lang-zh">�
         
         <!-- Warning 11: In-place operations ~49:51 -->
         <div class="warning-box">
-            <div class="title">11. <span class="lang-zh">使用原地操作提高效率</span><span class="lang-en">Use In-place Operations for Efficiency</span> <a href="https://youtu.be/PaCmpygFfXo?t=2991" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~49:51</a></div>
+            <div class="title">11. <span class="lang-zh">使用原地操作提高效率</span><span class="lang-en">Use In-place Operations for Efficiency</span> <a href="https://youtu.be/PaCmpygFfXo?t=2991" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~49:51</a></div>
             <pre><code><span class="comment"># ❌ <span class="lang-zh">创建新张量，浪费内存</span><span class="lang-en">Creates new tensor, wastes memory</span></span>
 P = P / P.sum(1, keepdim=True)
 
@@ -751,7 +751,7 @@ P /= P.sum(1, keepdim=True)</code></pre>
         
         <!-- Warning 12: Log of zero ~1:00:30-1:02:30 -->
         <div class="warning-box">
-            <div class="title">12. <span class="lang-zh">零概率导致无穷大损失</span><span class="lang-en">Zero Probability Causes Infinite Loss</span> <a href="https://youtu.be/PaCmpygFfXo?t=3650" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:50</a></div>
+            <div class="title">12. <span class="lang-zh">零概率导致无穷大损失</span><span class="lang-en">Zero Probability Causes Infinite Loss</span> <a href="https://youtu.be/PaCmpygFfXo?t=3650" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:50</a></div>
             <pre><code><span class="comment"># <span class="lang-zh">如果某个 bigram 从未出现过（如 "jq"）</span><span class="lang-en">If a bigram never appeared (e.g., "jq")</span></span>
 prob = 0.0
 torch.log(torch.tensor(prob))  <span class="comment"># tensor(-inf)</span>
@@ -765,7 +765,7 @@ N = N + 1  <span class="comment"># <span class="lang-zh">给每个计数加1</sp
         
         <!-- Warning 13: torch.tensor vs torch.Tensor ~1:07:54-1:10:01 -->
         <div class="warning-box">
-            <div class="title">13. <code>torch.tensor</code> vs <code>torch.Tensor</code> <a href="https://youtu.be/PaCmpygFfXo?t=4074" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:07:54</a></div>
+            <div class="title">13. <code>torch.tensor</code> vs <code>torch.Tensor</code> <a href="https://youtu.be/PaCmpygFfXo?t=4074" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:07:54</a></div>
             <p><span class="lang-zh">PyTorch 有两种创建张量的方式，Karpathy 说这"一点也不令人困惑"（讽刺），文档也"不清楚"：</span><span class="lang-en">PyTorch has two ways to create tensors, Karpathy says this is "not confusing at all" (sarcastically), and the docs are "not clear":</span></p>
             <pre><code><span class="comment"># ✅ <span class="lang-zh">推荐：小写 tensor - 自动推断数据类型</span><span class="lang-en">Recommended: lowercase tensor - auto-infers dtype</span></span>
 xs = torch.tensor([1, 2, 3])    <span class="comment"># dtype = torch.int64</span>
@@ -777,7 +777,7 @@ xs = torch.Tensor([1, 2, 3])    <span class="comment"># dtype = torch.float32</s
         
         <!-- Warning 14: one_hot dtype ~1:11:03-1:13:00 -->
         <div class="warning-box">
-            <div class="title">14. <code>F.one_hot()</code> <span class="lang-zh">返回整数类型</span><span class="lang-en">Returns Integer Type</span> <a href="https://youtu.be/PaCmpygFfXo?t=4375" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:12:55</a></div>
+            <div class="title">14. <code>F.one_hot()</code> <span class="lang-zh">返回整数类型</span><span class="lang-en">Returns Integer Type</span> <a href="https://youtu.be/PaCmpygFfXo?t=4375" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:12:55</a></div>
             <pre><code>xenc = F.one_hot(xs, num_classes=27)
 xenc.dtype  <span class="comment"># torch.int64 <span class="lang-zh">（64位整数！）</span><span class="lang-en">(64-bit integer!)</span></span>
 
@@ -788,7 +788,7 @@ xenc = F.one_hot(xs, num_classes=27).float()  <span class="comment"># ✅</span>
         
         <!-- Warning 15: Matrix multiplication dimensions ~1:15:10-1:18:04 -->
         <div class="warning-box">
-            <div class="title">15. <span class="lang-zh">矩阵乘法维度匹配</span><span class="lang-en">Matrix Multiplication Dimension Matching</span> <a href="https://youtu.be/PaCmpygFfXo?t=4510" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:15:10</a></div>
+            <div class="title">15. <span class="lang-zh">矩阵乘法维度匹配</span><span class="lang-en">Matrix Multiplication Dimension Matching</span> <a href="https://youtu.be/PaCmpygFfXo?t=4510" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:15:10</a></div>
             <pre><code><span class="comment"># (batch, input_dim) @ (input_dim, output_dim) = (batch, output_dim)</span>
 xenc.shape    <span class="comment"># (5, 27) <span class="lang-zh">- 5个样本，每个27维</span><span class="lang-en">- 5 samples, each 27-dim</span></span>
 W.shape       <span class="comment"># (27, 27) <span class="lang-zh">- 27个输入，27个神经元</span><span class="lang-en">- 27 inputs, 27 neurons</span></span>
@@ -798,7 +798,7 @@ W.shape       <span class="comment"># (27, 27) <span class="lang-zh">- 27个输�
         
         <!-- Warning 16: requires_grad ~1:39:01 -->
         <div class="warning-box">
-            <div class="title">16. <span class="lang-zh">必须设置 <code>requires_grad=True</code></span><span class="lang-en">Must Set <code>requires_grad=True</code></span> <a href="https://youtu.be/PaCmpygFfXo?t=5954" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:39:14</a></div>
+            <div class="title">16. <span class="lang-zh">必须设置 <code>requires_grad=True</code></span><span class="lang-en">Must Set <code>requires_grad=True</code></span> <a href="https://youtu.be/PaCmpygFfXo?t=5954" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:39:14</a></div>
             <pre><code><span class="comment"># ❌ <span class="lang-zh">默认情况下，叶子张量不计算梯度</span><span class="lang-en">By default, leaf tensors don't compute gradients</span></span>
 W = torch.randn((27, 27))
 W.requires_grad  <span class="comment"># False</span>
@@ -810,7 +810,7 @@ W = torch.randn((27, 27), requires_grad=True)</code></pre>
         
         <!-- Warning 17: Gradient reset ~1:38:48 -->
         <div class="warning-box">
-            <div class="title">17. <span class="lang-zh">每次迭代前必须重置梯度</span><span class="lang-en">Must Reset Gradients Before Each Iteration</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></div>
+            <div class="title">17. <span class="lang-zh">每次迭代前必须重置梯度</span><span class="lang-en">Must Reset Gradients Before Each Iteration</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></div>
             <pre><code><span class="keyword">for</span> i <span class="keyword">in</span> range(100):
     <span class="comment"># <span class="lang-zh">前向传播...</span><span class="lang-en">Forward pass...</span></span>
     
@@ -825,7 +825,7 @@ W = torch.randn((27, 27), requires_grad=True)</code></pre>
         
         <!-- Warning 18: W.data ~1:41:32 -->
         <div class="warning-box">
-            <div class="title">18. <span class="lang-zh">更新权重时使用 <code>W.data</code></span><span class="lang-en">Use <code>W.data</code> When Updating Weights</span> <a href="https://youtu.be/PaCmpygFfXo?t=6100" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:41:40</a></div>
+            <div class="title">18. <span class="lang-zh">更新权重时使用 <code>W.data</code></span><span class="lang-en">Use <code>W.data</code> When Updating Weights</span> <a href="https://youtu.be/PaCmpygFfXo?t=6100" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:41:40</a></div>
             <pre><code><span class="comment"># ✅ <span class="lang-zh">正确：直接修改底层数据</span><span class="lang-en">Correct: directly modify underlying data</span></span>
 W.data += -0.1 * W.grad
 
@@ -836,7 +836,7 @@ W += -0.1 * W.grad</code></pre>
         
         <!-- Warning 19: One-hot is just lookup ~1:47:54 -->
         <div class="warning-box">
-            <div class="title">19. <span class="lang-zh">One-hot 编码本质上是查表</span><span class="lang-en">One-hot Encoding is Essentially Table Lookup</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></div>
+            <div class="title">19. <span class="lang-zh">One-hot 编码本质上是查表</span><span class="lang-en">One-hot Encoding is Essentially Table Lookup</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></div>
             <pre><code><span class="comment"># <span class="lang-zh">表面上：矩阵乘法</span><span class="lang-en">On the surface: matrix multiplication</span></span>
 xenc = [0, 0, 0, 0, 0, 1, 0, ...]  <span class="comment"># <span class="lang-zh">第5位是1</span><span class="lang-en">5th position is 1</span></span>
 logits = xenc @ W
@@ -848,7 +848,7 @@ logits = W[5]  <span class="comment"># <span class="lang-zh">完全等价</span>
         
         <!-- Warning 20: Regularization = Smoothing ~1:50:20 -->
         <div class="warning-box">
-            <div class="title">20. <span class="lang-zh">正则化 = 平滑</span><span class="lang-en">Regularization = Smoothing</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></div>
+            <div class="title">20. <span class="lang-zh">正则化 = 平滑</span><span class="lang-en">Regularization = Smoothing</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></div>
             <pre><code><span class="comment"># <span class="lang-zh">统计方法中的平滑</span><span class="lang-en">Smoothing in statistical method</span></span>
 N = N + 1  <span class="comment"># <span class="lang-zh">添加假计数</span><span class="lang-en">Add fake counts</span></span>
 
@@ -859,7 +859,7 @@ loss = loss + 0.01 * (W**2).mean()</code></pre>
         
         <!-- Warning 21: Sampling loop structure ~32:40 -->
         <div class="warning-box">
-            <div class="title">21. <span class="lang-zh">采样循环的结构</span><span class="lang-en">Sampling Loop Structure</span> <a href="https://youtu.be/PaCmpygFfXo?t=1960" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~32:40</a></div>
+            <div class="title">21. <span class="lang-zh">采样循环的结构</span><span class="lang-en">Sampling Loop Structure</span> <a href="https://youtu.be/PaCmpygFfXo?t=1960" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~32:40</a></div>
             <pre><code>ix = 0  <span class="comment"># <span class="lang-zh">从特殊标记开始</span><span class="lang-en">Start with special token</span></span>
 <span class="keyword">while</span> True:
     p = P[ix]  <span class="comment"># <span class="lang-zh">获取当前字符的概率分布</span><span class="lang-en">Get probability distribution for current char</span></span>
@@ -872,7 +872,7 @@ loss = loss + 0.01 * (W**2).mean()</code></pre>
         
         <!-- Warning 22: Float conversion before division ~25:31 -->
         <div class="warning-box">
-            <div class="title">22. <span class="lang-zh">除法前必须转换为浮点数</span><span class="lang-en">Must Convert to Float Before Division</span> <a href="https://youtu.be/PaCmpygFfXo?t=1531" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~25:31</a></div>
+            <div class="title">22. <span class="lang-zh">除法前必须转换为浮点数</span><span class="lang-en">Must Convert to Float Before Division</span> <a href="https://youtu.be/PaCmpygFfXo?t=1531" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~25:31</a></div>
             <pre><code><span class="comment"># ❌ <span class="lang-zh">整数除法会丢失精度</span><span class="lang-en">Integer division loses precision</span></span>
 p = N[0] / N[0].sum()  <span class="comment"># <span class="lang-zh">如果 N 是整数类型</span><span class="lang-en">If N is integer type</span></span>
 
@@ -884,7 +884,7 @@ p = p / p.sum()</code></pre>
         
         <!-- Warning 23: Probability vs Log Probability interpretation ~54:00 -->
         <div class="warning-box">
-            <div class="title">23. <span class="lang-zh">概率与对数概率的解释</span><span class="lang-en">Probability vs Log Probability Interpretation</span> <a href="https://youtu.be/PaCmpygFfXo?t=3240" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~54:00</a></div>
+            <div class="title">23. <span class="lang-zh">概率与对数概率的解释</span><span class="lang-en">Probability vs Log Probability Interpretation</span> <a href="https://youtu.be/PaCmpygFfXo?t=3240" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~54:00</a></div>
             <pre><code>prob = 0.5
 log_prob = torch.log(torch.tensor(0.5))  <span class="comment"># -0.6931</span>
 
@@ -898,7 +898,7 @@ log_prob = torch.log(torch.tensor(0.5))  <span class="comment"># -0.6931</span>
         
         <!-- Warning 24: Training set creation for neural net ~1:05:09 -->
         <div class="warning-box">
-            <div class="title">24. <span class="lang-zh">神经网络训练集的创建</span><span class="lang-en">Neural Network Training Set Creation</span> <a href="https://youtu.be/PaCmpygFfXo?t=3909" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:05:09</a></div>
+            <div class="title">24. <span class="lang-zh">神经网络训练集的创建</span><span class="lang-en">Neural Network Training Set Creation</span> <a href="https://youtu.be/PaCmpygFfXo?t=3909" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:05:09</a></div>
             <pre><code>xs, ys = [], []
 <span class="keyword">for</span> w <span class="keyword">in</span> words:
     chs = ['.'] + list(w) + ['.']
@@ -913,7 +913,7 @@ ys = torch.tensor(ys)  <span class="comment"># <span class="lang-zh">形状：(2
         
         <!-- Warning 25: Neuron visualization ~1:18:04 -->
         <div class="warning-box">
-            <div class="title">25. <span class="lang-zh">神经元的可视化理解</span><span class="lang-en">Visualizing Neuron Understanding</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></div>
+            <div class="title">25. <span class="lang-zh">神经元的可视化理解</span><span class="lang-en">Visualizing Neuron Understanding</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></div>
             <pre><code><span class="comment"># W.shape = (27, 27)</span>
 <span class="comment"># <span class="lang-zh">可以看作 27 个神经元，每个有 27 个输入</span><span class="lang-en">Think of it as 27 neurons, each with 27 inputs</span></span>
 
@@ -924,7 +924,7 @@ ys = torch.tensor(ys)  <span class="comment"># <span class="lang-zh">形状：(2
         
         <!-- Warning 26: Why we use mean() instead of sum() ~1:36:08 -->
         <div class="warning-box">
-            <div class="title">26. <span class="lang-zh">为什么用 mean() 而不是 sum()</span><span class="lang-en">Why Use mean() Instead of sum()</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></div>
+            <div class="title">26. <span class="lang-zh">为什么用 mean() 而不是 sum()</span><span class="lang-en">Why Use mean() Instead of sum()</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></div>
             <pre><code><span class="comment"># ❌ <span class="lang-zh">总和会随数据集大小变化</span><span class="lang-en">Sum changes with dataset size</span></span>
 loss = -probs[torch.arange(n), ys].log().sum()
 
@@ -935,7 +935,7 @@ loss = -probs[torch.arange(n), ys].log().mean()</code></pre>
         
         <!-- Warning 27: Scalability limitation of counting method ~1:57:40 -->
         <div class="warning-box">
-            <div class="title">27. <span class="lang-zh">统计方法的可扩展性限制</span><span class="lang-en">Scalability Limitation of Counting Method</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></div>
+            <div class="title">27. <span class="lang-zh">统计方法的可扩展性限制</span><span class="lang-en">Scalability Limitation of Counting Method</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></div>
             <pre><code><span class="comment"># Bigram: 27×27 = 729 <span class="lang-zh">参数</span><span class="lang-en">parameters</span></span>
 <span class="comment"># Trigram: 27×27×27 = 19,683 <span class="lang-zh">参数</span><span class="lang-en">parameters</span></span>
 <span class="comment"># 4-gram: 27^4 = 531,441 <span class="lang-zh">参数</span><span class="lang-en">parameters</span></span>
@@ -945,7 +945,7 @@ loss = -probs[torch.arange(n), ys].log().mean()</code></pre>
         
         <!-- Warning 28: Cross-entropy loss shortcut ~1:34:30 -->
         <div class="warning-box">
-            <div class="title">28. <span class="lang-zh">交叉熵损失的快捷方式</span><span class="lang-en">Cross-Entropy Loss Shortcut</span> <a href="https://youtu.be/PaCmpygFfXo?t=5670" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:34:30</a></div>
+            <div class="title">28. <span class="lang-zh">交叉熵损失的快捷方式</span><span class="lang-en">Cross-Entropy Loss Shortcut</span> <a href="https://youtu.be/PaCmpygFfXo?t=5670" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:34:30</a></div>
             <pre><code><span class="comment"># <span class="lang-zh">手动实现（教学目的）</span><span class="lang-en">Manual implementation (for teaching)</span></span>
 counts = logits.exp()
 probs = counts / counts.sum(1, keepdim=True)
@@ -1064,7 +1064,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 1 -->
         <div class="quiz-question">
-            <h4>Q1. <span class="lang-zh">Makemore 使用的数据集 names.txt 大约包含多少个名字？</span><span class="lang-en">How many names does the names.txt dataset used by Makemore contain approximately?</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h4>
+            <h4>Q1. <span class="lang-zh">Makemore 使用的数据集 names.txt 大约包含多少个名字？</span><span class="lang-en">How many names does the names.txt dataset used by Makemore contain approximately?</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. ~3,200</div>
                 <div class="quiz-option" data-index="1">B. ~10,000</div>
@@ -1076,7 +1076,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 2 -->
         <div class="quiz-question">
-            <h4>Q2. <span class="lang-zh">在 bigram 模型中，"emma" 这个词包含多少个训练样本？</span><span class="lang-en">In a bigram model, how many training examples does the word "emma" contain?</span> <a href="https://youtu.be/PaCmpygFfXo?t=481" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~8:01</a></h4>
+            <h4>Q2. <span class="lang-zh">在 bigram 模型中，"emma" 这个词包含多少个训练样本？</span><span class="lang-en">In a bigram model, how many training examples does the word "emma" contain?</span> <a href="https://youtu.be/PaCmpygFfXo?t=481" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~8:01</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. 3</div>
                 <div class="quiz-option" data-index="1">B. 4</div>
@@ -1088,7 +1088,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 3 -->
         <div class="quiz-question">
-            <h4>Q3. <span class="lang-zh">为什么使用单一特殊标记 "." 而不是分开的 &lt;S&gt; 和 &lt;E&gt;？</span><span class="lang-en">Why use a single special token "." instead of separate &lt;S&gt; and &lt;E&gt;?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1262" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~21:02</a></h4>
+            <h4>Q3. <span class="lang-zh">为什么使用单一特殊标记 "." 而不是分开的 &lt;S&gt; 和 &lt;E&gt;？</span><span class="lang-en">Why use a single special token "." instead of separate &lt;S&gt; and &lt;E&gt;?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1262" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~21:02</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">避免矩阵中出现无用的零行/列</span><span class="lang-en">Avoid useless zero rows/columns in matrix</span></div>
@@ -1100,7 +1100,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 4 -->
         <div class="quiz-question">
-            <h4>Q4. <span class="lang-zh">计数矩阵 N 的形状是什么？</span><span class="lang-en">What is the shape of the count matrix N?</span> <a href="https://youtu.be/PaCmpygFfXo?t=833" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~13:53</a></h4>
+            <h4>Q4. <span class="lang-zh">计数矩阵 N 的形状是什么？</span><span class="lang-en">What is the shape of the count matrix N?</span> <a href="https://youtu.be/PaCmpygFfXo?t=833" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~13:53</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. (26, 26)</div>
                 <div class="quiz-option" data-index="1">B. (27, 27)</div>
@@ -1112,7 +1112,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 5 -->
         <div class="quiz-question">
-            <h4>Q5. <span class="lang-zh"><code>torch.tensor</code> 和 <code>torch.Tensor</code> 的主要区别是什么？</span><span class="lang-en">What is the main difference between <code>torch.tensor</code> and <code>torch.Tensor</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4074" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:07:54</a></h4>
+            <h4>Q5. <span class="lang-zh"><code>torch.tensor</code> 和 <code>torch.Tensor</code> 的主要区别是什么？</span><span class="lang-en">What is the main difference between <code>torch.tensor</code> and <code>torch.Tensor</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4074" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:07:54</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">小写版本自动推断数据类型</span><span class="lang-en">Lowercase auto-infers dtype</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">大写版本更快</span><span class="lang-en">Uppercase is faster</span></div>
@@ -1124,7 +1124,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 6 -->
         <div class="quiz-question">
-            <h4>Q6. <span class="lang-zh"><code>F.one_hot()</code> 返回什么数据类型？</span><span class="lang-en">What dtype does <code>F.one_hot()</code> return?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4375" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:12:55</a></h4>
+            <h4>Q6. <span class="lang-zh"><code>F.one_hot()</code> 返回什么数据类型？</span><span class="lang-en">What dtype does <code>F.one_hot()</code> return?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4375" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:12:55</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. float32</div>
                 <div class="quiz-option" data-index="1">B. float64</div>
@@ -1136,7 +1136,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 7 -->
         <div class="quiz-question">
-            <h4>Q7. <span class="lang-zh">不使用 <code>keepdim=True</code> 会导致什么问题？</span><span class="lang-en">What problem occurs without <code>keepdim=True</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=2665" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~44:25</a></h4>
+            <h4>Q7. <span class="lang-zh">不使用 <code>keepdim=True</code> 会导致什么问题？</span><span class="lang-en">What problem occurs without <code>keepdim=True</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=2665" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~44:25</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">运行时错误</span><span class="lang-en">Runtime error</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">按列归一化而不是按行</span><span class="lang-en">Column normalization instead of row</span></div>
@@ -1148,7 +1148,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 8 -->
         <div class="quiz-question">
-            <h4>Q8. <span class="lang-zh">Softmax 的第一步是什么？</span><span class="lang-en">What is the first step of Softmax?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
+            <h4>Q8. <span class="lang-zh">Softmax 的第一步是什么？</span><span class="lang-en">What is the first step of Softmax?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">对 logits 取指数</span><span class="lang-en">Exponentiate logits</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">对 logits 取对数</span><span class="lang-en">Take log of logits</span></div>
@@ -1160,7 +1160,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 9 -->
         <div class="quiz-question">
-            <h4>Q9. <span class="lang-zh">为什么使用负对数似然作为损失函数？</span><span class="lang-en">Why use negative log likelihood as loss function?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h4>
+            <h4>Q9. <span class="lang-zh">为什么使用负对数似然作为损失函数？</span><span class="lang-en">Why use negative log likelihood as loss function?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster to compute</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">梯度更稳定</span><span class="lang-en">More stable gradients</span></div>
@@ -1172,7 +1172,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 10 -->
         <div class="quiz-question">
-            <h4>Q10. <span class="lang-zh">训练好的 bigram 模型的平均损失大约是多少？</span><span class="lang-en">What is the approximate average loss of a trained bigram model?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3600" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:00</a></h4>
+            <h4>Q10. <span class="lang-zh">训练好的 bigram 模型的平均损失大约是多少？</span><span class="lang-en">What is the approximate average loss of a trained bigram model?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3600" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:00</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. ~0.45</div>
                 <div class="quiz-option" data-index="1">B. ~2.45</div>
@@ -1184,7 +1184,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 11 -->
         <div class="quiz-question">
-            <h4>Q11. <span class="lang-zh"><code>requires_grad=True</code> 的作用是什么？</span><span class="lang-en">What does <code>requires_grad=True</code> do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5954" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:39:14</a></h4>
+            <h4>Q11. <span class="lang-zh"><code>requires_grad=True</code> 的作用是什么？</span><span class="lang-en">What does <code>requires_grad=True</code> do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5954" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:39:14</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">使张量不可变</span><span class="lang-en">Makes tensor immutable</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">告诉 PyTorch 跟踪此张量的梯度</span><span class="lang-en">Tells PyTorch to track gradients for this tensor</span></div>
@@ -1196,7 +1196,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 12 -->
         <div class="quiz-question">
-            <h4>Q12. <span class="lang-zh">为什么每次迭代前要设置 <code>W.grad = None</code>？</span><span class="lang-en">Why set <code>W.grad = None</code> before each iteration?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></h4>
+            <h4>Q12. <span class="lang-zh">为什么每次迭代前要设置 <code>W.grad = None</code>？</span><span class="lang-en">Why set <code>W.grad = None</code> before each iteration?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">PyTorch 默认累积梯度</span><span class="lang-en">PyTorch accumulates gradients by default</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">节省内存</span><span class="lang-en">Save memory</span></div>
@@ -1208,7 +1208,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 13 -->
         <div class="quiz-question">
-            <h4>Q13. <span class="lang-zh">为什么用 <code>W.data += ...</code> 而不是 <code>W += ...</code>？</span><span class="lang-en">Why use <code>W.data += ...</code> instead of <code>W += ...</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6100" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:41:40</a></h4>
+            <h4>Q13. <span class="lang-zh">为什么用 <code>W.data += ...</code> 而不是 <code>W += ...</code>？</span><span class="lang-en">Why use <code>W.data += ...</code> instead of <code>W += ...</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6100" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:41:40</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">更快</span><span class="lang-en">Faster</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">更节省内存</span><span class="lang-en">More memory efficient</span></div>
@@ -1220,7 +1220,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 14 -->
         <div class="quiz-question">
-            <h4>Q14. <span class="lang-zh">one-hot 编码乘以权重矩阵 W 本质上是什么操作？</span><span class="lang-en">What operation is one-hot encoding multiplied by weight matrix W essentially?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
+            <h4>Q14. <span class="lang-zh">one-hot 编码乘以权重矩阵 W 本质上是什么操作？</span><span class="lang-en">What operation is one-hot encoding multiplied by weight matrix W essentially?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">矩阵求逆</span><span class="lang-en">Matrix inversion</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">行查找（索引）</span><span class="lang-en">Row lookup (indexing)</span></div>
@@ -1232,7 +1232,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 15 -->
         <div class="quiz-question">
-            <h4>Q15. <span class="lang-zh">神经网络的 W 矩阵对应统计方法中的什么？</span><span class="lang-en">What does the neural network's W matrix correspond to in the statistical method?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
+            <h4>Q15. <span class="lang-zh">神经网络的 W 矩阵对应统计方法中的什么？</span><span class="lang-en">What does the neural network's W matrix correspond to in the statistical method?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">概率矩阵 P</span><span class="lang-en">Probability matrix P</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">计数矩阵 N</span><span class="lang-en">Count matrix N</span></div>
@@ -1244,7 +1244,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 16 -->
         <div class="quiz-question">
-            <h4>Q16. <span class="lang-zh">正则化项 <code>0.01 * (W**2).mean()</code> 的作用类似于什么？</span><span class="lang-en">What is the regularization term <code>0.01 * (W**2).mean()</code> similar to?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
+            <h4>Q16. <span class="lang-zh">正则化项 <code>0.01 * (W**2).mean()</code> 的作用类似于什么？</span><span class="lang-en">What is the regularization term <code>0.01 * (W**2).mean()</code> similar to?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">统计方法中的平滑</span><span class="lang-en">Smoothing in statistical method</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">学习率调整</span><span class="lang-en">Learning rate adjustment</span></div>
@@ -1256,7 +1256,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 17 -->
         <div class="quiz-question">
-            <h4>Q17. <span class="lang-zh"><code>torch.multinomial</code> 的 <code>replacement</code> 参数默认值是什么？</span><span class="lang-en">What is the default value of <code>replacement</code> in <code>torch.multinomial</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1702" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~28:22</a></h4>
+            <h4>Q17. <span class="lang-zh"><code>torch.multinomial</code> 的 <code>replacement</code> 参数默认值是什么？</span><span class="lang-en">What is the default value of <code>replacement</code> in <code>torch.multinomial</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1702" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~28:22</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. False</div>
                 <div class="quiz-option" data-index="1">B. True</div>
@@ -1268,7 +1268,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 18 -->
         <div class="quiz-question">
-            <h4>Q18. <span class="lang-zh">如果某个 bigram 从未出现过，其概率会导致什么问题？</span><span class="lang-en">If a bigram never appeared, what problem does its probability cause?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3650" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:50</a></h4>
+            <h4>Q18. <span class="lang-zh">如果某个 bigram 从未出现过，其概率会导致什么问题？</span><span class="lang-en">If a bigram never appeared, what problem does its probability cause?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3650" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00:50</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">损失为 0</span><span class="lang-en">Loss is 0</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">损失为无穷大</span><span class="lang-en">Loss is infinity</span></div>
@@ -1280,7 +1280,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 19 -->
         <div class="quiz-question">
-            <h4>Q19. <span class="lang-zh">Karpathy 说统计方法的主要问题是什么？</span><span class="lang-en">What is the main problem with the statistical method according to Karpathy?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
+            <h4>Q19. <span class="lang-zh">Karpathy 说统计方法的主要问题是什么？</span><span class="lang-en">What is the main problem with the statistical method according to Karpathy?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算太慢</span><span class="lang-en">Too slow</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">精度不够</span><span class="lang-en">Not accurate enough</span></div>
@@ -1292,7 +1292,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 20 -->
         <div class="quiz-question">
-            <h4>Q20. <span class="lang-zh"><code>.item()</code> 方法的作用是什么？</span><span class="lang-en">What does the <code>.item()</code> method do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1217" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~20:17</a></h4>
+            <h4>Q20. <span class="lang-zh"><code>.item()</code> 方法的作用是什么？</span><span class="lang-en">What does the <code>.item()</code> method do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1217" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~20:17</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">从单元素张量提取 Python 标量</span><span class="lang-en">Extract Python scalar from single-element tensor</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">获取张量的第一个元素</span><span class="lang-en">Get first element of tensor</span></div>
@@ -1304,7 +1304,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Question 21-30 -->
         <div class="quiz-question">
-            <h4>Q21. <span class="lang-zh"><code>zip(w, w[1:])</code> 产生什么？</span><span class="lang-en">What does <code>zip(w, w[1:])</code> produce?</span> <a href="https://youtu.be/PaCmpygFfXo?t=409" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~6:49</a></h4>
+            <h4>Q21. <span class="lang-zh"><code>zip(w, w[1:])</code> 产生什么？</span><span class="lang-en">What does <code>zip(w, w[1:])</code> produce?</span> <a href="https://youtu.be/PaCmpygFfXo?t=409" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~6:49</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">所有字符对（包括重复）</span><span class="lang-en">All character pairs (including repeats)</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">所有连续字符对</span><span class="lang-en">All consecutive character pairs</span></div>
@@ -1315,7 +1315,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q22. <span class="lang-zh"><code>dict.get(key, default)</code> 的作用是什么？</span><span class="lang-en">What does <code>dict.get(key, default)</code> do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=604" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~10:04</a></h4>
+            <h4>Q22. <span class="lang-zh"><code>dict.get(key, default)</code> 的作用是什么？</span><span class="lang-en">What does <code>dict.get(key, default)</code> do?</span> <a href="https://youtu.be/PaCmpygFfXo?t=604" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~10:04</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">总是返回默认值</span><span class="lang-en">Always returns default</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">如果键存在则返回默认值</span><span class="lang-en">Returns default if key exists</span></div>
@@ -1326,7 +1326,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q23. <span class="lang-zh">按字典值排序需要什么？</span><span class="lang-en">What is needed to sort dictionary by value?</span> <a href="https://youtu.be/PaCmpygFfXo?t=709" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~11:49</a></h4>
+            <h4>Q23. <span class="lang-zh">按字典值排序需要什么？</span><span class="lang-en">What is needed to sort dictionary by value?</span> <a href="https://youtu.be/PaCmpygFfXo?t=709" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~11:49</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh"><code>sorted(d.values())</code></span><span class="lang-en"><code>sorted(d.values())</code></span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh"><code>sorted(d.items(), key=lambda kv: kv[1])</code></span><span class="lang-en"><code>sorted(d.items(), key=lambda kv: kv[1])</code></span></div>
@@ -1337,7 +1337,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q24. <span class="lang-zh">生成器（Generator）的作用是什么？</span><span class="lang-en">What is the purpose of Generator?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1632" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~27:12</a></h4>
+            <h4>Q24. <span class="lang-zh">生成器（Generator）的作用是什么？</span><span class="lang-en">What is the purpose of Generator?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1632" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~27:12</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">加速计算</span><span class="lang-en">Speed up computation</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">节省内存</span><span class="lang-en">Save memory</span></div>
@@ -1348,7 +1348,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q25. <span class="lang-zh">对数似然的取值范围是什么？</span><span class="lang-en">What is the range of log likelihood?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3240" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~54:00</a></h4>
+            <h4>Q25. <span class="lang-zh">对数似然的取值范围是什么？</span><span class="lang-en">What is the range of log likelihood?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3240" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~54:00</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. (-∞, 0]</div>
                 <div class="quiz-option" data-index="1">B. [0, ∞)</div>
@@ -1359,7 +1359,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q26. <span class="lang-zh">为什么用 mean() 而不是 sum() 计算损失？</span><span class="lang-en">Why use mean() instead of sum() for loss?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h4>
+            <h4>Q26. <span class="lang-zh">为什么用 mean() 而不是 sum() 计算损失？</span><span class="lang-en">Why use mean() instead of sum() for loss?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">使损失不依赖于数据集大小</span><span class="lang-en">Makes loss independent of dataset size</span></div>
@@ -1370,7 +1370,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q27. <span class="lang-zh">从 32,000 个名字中提取了多少个 bigram 样本？</span><span class="lang-en">How many bigram samples were extracted from 32,000 names?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3909" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:05:09</a></h4>
+            <h4>Q27. <span class="lang-zh">从 32,000 个名字中提取了多少个 bigram 样本？</span><span class="lang-en">How many bigram samples were extracted from 32,000 names?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3909" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:05:09</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. ~32,000</div>
                 <div class="quiz-option" data-index="1">B. ~128,000</div>
@@ -1381,7 +1381,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q28. <span class="lang-zh">在神经网络中，每个"神经元"计算什么？</span><span class="lang-en">In the neural network, what does each "neuron" compute?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
+            <h4>Q28. <span class="lang-zh">在神经网络中，每个"神经元"计算什么？</span><span class="lang-en">In the neural network, what does each "neuron" compute?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">输入的加权和（点积）</span><span class="lang-en">Weighted sum of inputs (dot product)</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">输入的最大值</span><span class="lang-en">Maximum of inputs</span></div>
@@ -1392,7 +1392,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q29. <span class="lang-zh">Karpathy 演示的最大学习率是多少？</span><span class="lang-en">What was the maximum learning rate Karpathy demonstrated?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6248" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:44:08</a></h4>
+            <h4>Q29. <span class="lang-zh">Karpathy 演示的最大学习率是多少？</span><span class="lang-en">What was the maximum learning rate Karpathy demonstrated?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6248" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:44:08</a></h4>
             <div class="quiz-options" data-correct="3">
                 <div class="quiz-option" data-index="0">A. 0.1</div>
                 <div class="quiz-option" data-index="1">B. 1.0</div>
@@ -1403,7 +1403,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q30. <span class="lang-zh"><code>F.cross_entropy</code> 相比手动实现有什么优势？</span><span class="lang-en">What advantage does <code>F.cross_entropy</code> have over manual implementation?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5670" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:34:30</a></h4>
+            <h4>Q30. <span class="lang-zh"><code>F.cross_entropy</code> 相比手动实现有什么优势？</span><span class="lang-en">What advantage does <code>F.cross_entropy</code> have over manual implementation?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5670" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:34:30</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">代码更短</span><span class="lang-en">Shorter code</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">更容易理解</span><span class="lang-en">Easier to understand</span></div>
@@ -1415,7 +1415,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Questions 31-40 -->
         <div class="quiz-question">
-            <h4>Q31. <span class="lang-zh">在矩阵乘法 (5,27) @ (27,27) 中，输出形状是什么？</span><span class="lang-en">In matrix multiplication (5,27) @ (27,27), what is the output shape?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4510" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:15:10</a></h4>
+            <h4>Q31. <span class="lang-zh">在矩阵乘法 (5,27) @ (27,27) 中，输出形状是什么？</span><span class="lang-en">In matrix multiplication (5,27) @ (27,27), what is the output shape?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4510" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:15:10</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. (5, 27)</div>
                 <div class="quiz-option" data-index="1">B. (27, 5)</div>
@@ -1426,7 +1426,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q32. <span class="lang-zh">数据集中名字的最短长度是多少？</span><span class="lang-en">What is the shortest name length in the dataset?</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h4>
+            <h4>Q32. <span class="lang-zh">数据集中名字的最短长度是多少？</span><span class="lang-en">What is the shortest name length in the dataset?</span> <a href="https://youtu.be/PaCmpygFfXo?t=186" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~3:06</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. 1</div>
                 <div class="quiz-option" data-index="1">B. 2</div>
@@ -1437,7 +1437,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q33. <span class="lang-zh">为什么 Softmax 使用指数函数？</span><span class="lang-en">Why does Softmax use exponential function?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
+            <h4>Q33. <span class="lang-zh">为什么 Softmax 使用指数函数？</span><span class="lang-en">Why does Softmax use exponential function?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">确保所有值为正</span><span class="lang-en">Ensure all values are positive</span></div>
@@ -1448,7 +1448,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q34. <span class="lang-zh">当 W 全为零时，概率分布是什么样的？</span><span class="lang-en">When W is all zeros, what does the probability distribution look like?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
+            <h4>Q34. <span class="lang-zh">当 W 全为零时，概率分布是什么样的？</span><span class="lang-en">When W is all zeros, what does the probability distribution look like?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">均匀分布</span><span class="lang-en">Uniform distribution</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">全为零</span><span class="lang-en">All zeros</span></div>
@@ -1459,7 +1459,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q35. <span class="lang-zh">平滑时添加的假计数通常是多少？</span><span class="lang-en">How many fake counts are typically added for smoothing?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3709" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:01:49</a></h4>
+            <h4>Q35. <span class="lang-zh">平滑时添加的假计数通常是多少？</span><span class="lang-en">How many fake counts are typically added for smoothing?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3709" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:01:49</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. 1</div>
                 <div class="quiz-option" data-index="1">B. 10</div>
@@ -1470,7 +1470,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q36. <span class="lang-zh">梯度的正负号意味着什么？</span><span class="lang-en">What does the sign of gradient mean?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6043" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:40:43</a></h4>
+            <h4>Q36. <span class="lang-zh">梯度的正负号意味着什么？</span><span class="lang-en">What does the sign of gradient mean?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6043" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:40:43</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">正 = 增加参数会减少损失</span><span class="lang-en">Positive = increasing param decreases loss</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">负 = 增加参数会增加损失</span><span class="lang-en">Negative = increasing param increases loss</span></div>
@@ -1481,7 +1481,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q37. <span class="lang-zh"><code>probs[torch.arange(n), ys]</code> 返回什么？</span><span class="lang-en">What does <code>probs[torch.arange(n), ys]</code> return?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h4>
+            <h4>Q37. <span class="lang-zh"><code>probs[torch.arange(n), ys]</code> 返回什么？</span><span class="lang-en">What does <code>probs[torch.arange(n), ys]</code> return?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5768" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:36:08</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">所有概率</span><span class="lang-en">All probabilities</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">每个样本在正确标签处的概率</span><span class="lang-en">Probability at correct label for each sample</span></div>
@@ -1492,7 +1492,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q38. <span class="lang-zh">Bigram 模型为什么被称为"非常简单和弱"？</span><span class="lang-en">Why is the bigram model called "very simple and weak"?</span> <a href="https://youtu.be/PaCmpygFfXo?t=351" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~5:51</a></h4>
+            <h4>Q38. <span class="lang-zh">Bigram 模型为什么被称为"非常简单和弱"？</span><span class="lang-en">Why is the bigram model called "very simple and weak"?</span> <a href="https://youtu.be/PaCmpygFfXo?t=351" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~5:51</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">只考虑前一个字符</span><span class="lang-en">Only considers previous character</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">没有使用神经网络</span><span class="lang-en">Doesn't use neural network</span></div>
@@ -1503,7 +1503,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q39. <span class="lang-zh">正则化强度太大会发生什么？</span><span class="lang-en">What happens if regularization strength is too high?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
+            <h4>Q39. <span class="lang-zh">正则化强度太大会发生什么？</span><span class="lang-en">What happens if regularization strength is too high?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6660" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:51:00</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">过拟合</span><span class="lang-en">Overfitting</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">模型无法学习，预测变成均匀分布</span><span class="lang-en">Model can't learn, predictions become uniform</span></div>
@@ -1514,7 +1514,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q40. <span class="lang-zh">Makemore 系列最终会达到什么级别的模型？</span><span class="lang-en">What level of model will the Makemore series eventually reach?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7200" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~2:00:00</a></h4>
+            <h4>Q40. <span class="lang-zh">Makemore 系列最终会达到什么级别的模型？</span><span class="lang-en">What level of model will the Makemore series eventually reach?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7200" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~2:00:00</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. RNN</div>
                 <div class="quiz-option" data-index="1">B. LSTM</div>
@@ -1526,7 +1526,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <!-- Questions 41-50 -->
         <div class="quiz-question">
-            <h4>Q41. <span class="lang-zh">trigram 模型需要多少参数？</span><span class="lang-en">How many parameters does a trigram model need?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
+            <h4>Q41. <span class="lang-zh">trigram 模型需要多少参数？</span><span class="lang-en">How many parameters does a trigram model need?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. 729</div>
                 <div class="quiz-option" data-index="1">B. 19,683</div>
@@ -1537,7 +1537,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q42. <span class="lang-zh">完美预测时，负对数似然是多少？</span><span class="lang-en">What is the negative log likelihood for a perfect prediction?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h4>
+            <h4>Q42. <span class="lang-zh">完美预测时，负对数似然是多少？</span><span class="lang-en">What is the negative log likelihood for a perfect prediction?</span> <a href="https://youtu.be/PaCmpygFfXo?t=3058" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~50:58</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. 0</div>
                 <div class="quiz-option" data-index="1">B. 1</div>
@@ -1548,7 +1548,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q43. <span class="lang-zh">采样循环何时终止？</span><span class="lang-en">When does the sampling loop terminate?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1960" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~32:40</a></h4>
+            <h4>Q43. <span class="lang-zh">采样循环何时终止？</span><span class="lang-en">When does the sampling loop terminate?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1960" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~32:40</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">生成固定数量的字符后</span><span class="lang-en">After generating fixed number of characters</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">采样到结束标记（索引0）时</span><span class="lang-en">When end token (index 0) is sampled</span></div>
@@ -1559,7 +1559,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q44. <span class="lang-zh">为什么 Karpathy 把 W 的值称为 "log counts"？</span><span class="lang-en">Why does Karpathy call W values "log counts"?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
+            <h4>Q44. <span class="lang-zh">为什么 Karpathy 把 W 的值称为 "log counts"？</span><span class="lang-en">Why does Karpathy call W values "log counts"?</span> <a href="https://youtu.be/PaCmpygFfXo?t=6474" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:47:54</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">因为用 log 初始化</span><span class="lang-en">Because initialized with log</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">因为计算用到 log</span><span class="lang-en">Because computation uses log</span></div>
@@ -1570,7 +1570,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q45. <span class="lang-zh">logits 的取值范围是什么？</span><span class="lang-en">What is the range of logits?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
+            <h4>Q45. <span class="lang-zh">logits 的取值范围是什么？</span><span class="lang-en">What is the range of logits?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4861" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:21:01</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. (-∞, +∞)</div>
                 <div class="quiz-option" data-index="1">B. [0, 1]</div>
@@ -1581,7 +1581,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q46. <span class="lang-zh">进行除法归一化前为什么要转换为浮点数？</span><span class="lang-en">Why convert to float before division normalization?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1531" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~25:31</a></h4>
+            <h4>Q46. <span class="lang-zh">进行除法归一化前为什么要转换为浮点数？</span><span class="lang-en">Why convert to float before division normalization?</span> <a href="https://youtu.be/PaCmpygFfXo?t=1531" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~25:31</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">计算更快</span><span class="lang-en">Faster computation</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">整数除法会丢失小数</span><span class="lang-en">Integer division loses decimals</span></div>
@@ -1592,7 +1592,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q47. <span class="lang-zh">在这个教程中，"神经网络"有多少层？</span><span class="lang-en">How many layers does the "neural network" in this tutorial have?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
+            <h4>Q47. <span class="lang-zh">在这个教程中，"神经网络"有多少层？</span><span class="lang-en">How many layers does the "neural network" in this tutorial have?</span> <a href="https://youtu.be/PaCmpygFfXo?t=4684" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:18:04</a></h4>
             <div class="quiz-options" data-correct="0">
                 <div class="quiz-option" data-index="0">A. 1</div>
                 <div class="quiz-option" data-index="1">B. 2</div>
@@ -1603,7 +1603,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q48. <span class="lang-zh">下列哪个不是本教程提到的 Karpathy 之前的视频？</span><span class="lang-en">Which is NOT a previous Karpathy video mentioned in this tutorial?</span> <a href="https://youtu.be/PaCmpygFfXo?t=60" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00</a></h4>
+            <h4>Q48. <span class="lang-zh">下列哪个不是本教程提到的 Karpathy 之前的视频？</span><span class="lang-en">Which is NOT a previous Karpathy video mentioned in this tutorial?</span> <a href="https://youtu.be/PaCmpygFfXo?t=60" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:00</a></h4>
             <div class="quiz-options" data-correct="2">
                 <div class="quiz-option" data-index="0">A. micrograd</div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">反向传播讲解</span><span class="lang-en">Backpropagation lecture</span></div>
@@ -1614,7 +1614,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q49. <span class="lang-zh"><code>W.grad.zero_()</code> 和 <code>W.grad = None</code> 哪个更高效？</span><span class="lang-en">Which is more efficient: <code>W.grad.zero_()</code> or <code>W.grad = None</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></h4>
+            <h4>Q49. <span class="lang-zh"><code>W.grad.zero_()</code> 和 <code>W.grad = None</code> 哪个更高效？</span><span class="lang-en">Which is more efficient: <code>W.grad.zero_()</code> or <code>W.grad = None</code>?</span> <a href="https://youtu.be/PaCmpygFfXo?t=5928" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:38:48</a></h4>
             <div class="quiz-options" data-correct="1">
                 <div class="quiz-option" data-index="0">A. <code>W.grad.zero_()</code></div>
                 <div class="quiz-option" data-index="1">B. <code>W.grad = None</code></div>
@@ -1625,7 +1625,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         </div>
         
         <div class="quiz-question">
-            <h4>Q50. <span class="lang-zh">这个教程的核心结论是什么？</span><span class="lang-en">What is the core conclusion of this tutorial?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="_blank" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
+            <h4>Q50. <span class="lang-zh">这个教程的核心结论是什么？</span><span class="lang-en">What is the core conclusion of this tutorial?</span> <a href="https://youtu.be/PaCmpygFfXo?t=7060" target="yt-tab" style="color:#888; font-size:0.8em; text-decoration:none;">⏱️ ~1:57:40</a></h4>
             <div class="quiz-options" data-correct="3">
                 <div class="quiz-option" data-index="0">A. <span class="lang-zh">统计方法比神经网络好</span><span class="lang-en">Statistical method is better than neural network</span></div>
                 <div class="quiz-option" data-index="1">B. <span class="lang-zh">神经网络比统计方法好</span><span class="lang-en">Neural network is better than statistical method</span></div>
@@ -1714,7 +1714,7 @@ loss = F.cross_entropy(logits, ys)</code></pre>
         
         <div class="footer">
             <p><span class="lang-zh">基于 Andrej Karpathy 的 Makemore 教程整理</span><span class="lang-en">Based on Andrej Karpathy's Makemore Tutorial</span></p>
-            <p style="margin-top: 10px; font-size: 0.9em; color: #888;"><span class="lang-zh">本文档由 <a href="https://lijianliu.github.io/" target="_blank" style="color: #667eea; text-decoration: none;">Lijian Liu</a> 整理编辑，使用 Claude Opus 4.5 AI 辅助完成</span><span class="lang-en">Document curated and edited by <a href="https://lijianliu.github.io/" target="_blank" style="color: #667eea; text-decoration: none;">Lijian Liu</a> with Claude Opus 4.5 AI assistance</span></p>
+            <p style="margin-top: 10px; font-size: 0.9em; color: #888;"><span class="lang-zh">本文档由 <a href="https://lijianliu.github.io/" target="yt-tab" style="color: #667eea; text-decoration: none;">Lijian Liu</a> 整理编辑，使用 Claude Opus 4.5 AI 辅助完成</span><span class="lang-en">Document curated and edited by <a href="https://lijianliu.github.io/" target="yt-tab" style="color: #667eea; text-decoration: none;">Lijian Liu</a> with Claude Opus 4.5 AI assistance</span></p>
         </div>
     </div>
     
