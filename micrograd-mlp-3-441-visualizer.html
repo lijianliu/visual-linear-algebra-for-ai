@@ -3598,6 +3598,9 @@
                 highlightNetworkFromLabel(info.node.label);
             }
             
+            // Collect all highlighted node IDs for visibility check
+            const highlightedNodeIDs = [nodeID];
+            
             // Highlight incoming edges and input nodes (cyan)
             const inEdges = dagElements.edgesByToID.get(nodeID);
             if (inEdges) {
@@ -3607,6 +3610,7 @@
                     const inputInfo = dagElements.nodesByID.get(edge.fromID);
                     if (inputInfo) {
                         inputInfo.element.classList.add('highlighted-input');
+                        highlightedNodeIDs.push(edge.fromID);
                         // Also highlight in network diagram
                         if (inputInfo.node.label) {
                             highlightNetworkFromLabel(inputInfo.node.label);
@@ -3629,6 +3633,7 @@
                     const outputInfo = dagElements.nodesByID.get(edge.toID);
                     if (outputInfo) {
                         outputInfo.element.classList.add('highlighted-output');
+                        highlightedNodeIDs.push(edge.toID);
                     }
                 });
             }
@@ -3638,6 +3643,59 @@
                 document.querySelectorAll(`.param-item[data-label="${info.node.label}"]`).forEach(el => {
                     el.classList.add('highlighted');
                 });
+            }
+            
+            // Check if most highlighted nodes are visible, if not, recenter
+            checkAndRecenterHighlightedNodes(highlightedNodeIDs, nodeID);
+        }
+        
+        function checkAndRecenterHighlightedNodes(nodeIDs, primaryNodeID) {
+            if (nodeIDs.length === 0) return;
+            
+            const container = document.getElementById('dag-container');
+            const containerRect = container.getBoundingClientRect();
+            
+            let visibleCount = 0;
+            let totalCount = nodeIDs.length;
+            
+            nodeIDs.forEach(id => {
+                const nodeInfo = dagElements.nodesByID.get(id);
+                if (!nodeInfo || !nodeInfo.element) return;
+                
+                const rect = nodeInfo.element.querySelector('rect');
+                if (!rect) return;
+                
+                const nodeX = parseFloat(rect.getAttribute('x'));
+                const nodeY = parseFloat(rect.getAttribute('y'));
+                const nodeWidth = parseFloat(rect.getAttribute('width'));
+                const nodeHeight = parseFloat(rect.getAttribute('height'));
+                
+                // Convert SVG coordinates to screen coordinates
+                const svg = document.getElementById('dag-svg');
+                const svgRect = svg.getBoundingClientRect();
+                const scrollLeft = container.scrollLeft;
+                const scrollTop = container.scrollTop;
+                
+                // Calculate screen position of node
+                const screenX = nodeX - scrollLeft + 20; // 20 is padding
+                const screenY = nodeY - scrollTop + 20;
+                
+                // Check if node center is within container viewport
+                const nodeCenterX = screenX + nodeWidth / 2;
+                const nodeCenterY = screenY + nodeHeight / 2;
+                
+                const isVisible = 
+                    nodeCenterX >= 0 && 
+                    nodeCenterX <= containerRect.width &&
+                    nodeCenterY >= 0 && 
+                    nodeCenterY <= containerRect.height;
+                
+                if (isVisible) visibleCount++;
+            });
+            
+            // If less than 50% of highlighted nodes are visible, recenter on primary node
+            if (visibleCount < totalCount * 0.5) {
+                centerNodeInView(primaryNodeID);
             }
         }
         
@@ -3649,6 +3707,9 @@
             if (op) op.classList.add('highlighted');
             const opEdge = dagElements.opEdgesByNodeID.get(nodeID);
             if (opEdge) opEdge.classList.add('highlighted');
+            
+            // Collect all highlighted node IDs for visibility check
+            const highlightedNodeIDs = [nodeID];
             
             // Highlight the output node (pink)
             const outputInfo = dagElements.nodesByID.get(nodeID);
@@ -3669,6 +3730,7 @@
                     const inputInfo = dagElements.nodesByID.get(edge.fromID);
                     if (inputInfo) {
                         inputInfo.element.classList.add('highlighted-input');
+                        highlightedNodeIDs.push(edge.fromID);
                         // Also highlight in network diagram
                         if (inputInfo.node.label) {
                             highlightNetworkFromLabel(inputInfo.node.label);
@@ -3676,6 +3738,9 @@
                     }
                 });
             }
+            
+            // Check if most highlighted nodes are visible, if not, recenter
+            checkAndRecenterHighlightedNodes(highlightedNodeIDs, nodeID);
         }
 
         function clearHighlights() {
@@ -3709,7 +3774,7 @@
         }
         
         function centerNodeInView(nodeID) {
-            const container = document.querySelector('.right-panel');
+            const container = document.getElementById('dag-container');
             
             // Get node position
             const nodeInfo = dagElements.nodesByID.get(nodeID);
@@ -3736,7 +3801,7 @@
             const containerHeight = container.clientHeight;
             
             const scrollX = nodeCenterX + padding - containerWidth / 2;
-            const scrollY = nodeCenterY + padding + 80 - containerHeight / 2; // 80 for header area
+            const scrollY = nodeCenterY + padding - containerHeight / 2;
             
             // Smooth scroll to position
             container.scrollTo({
@@ -3747,7 +3812,7 @@
         }
         
         function centerOpInView(nodeID) {
-            const container = document.querySelector('.right-panel');
+            const container = document.getElementById('dag-container');
             
             // Get op position from the op element
             const opElement = dagElements.opsByNodeID.get(nodeID);
@@ -3767,7 +3832,7 @@
             const containerHeight = container.clientHeight;
             
             const scrollX = opCenterX + padding - containerWidth / 2;
-            const scrollY = opCenterY + padding + 80 - containerHeight / 2; // 80 for header area
+            const scrollY = opCenterY + padding - containerHeight / 2;
             
             // Smooth scroll to position
             container.scrollTo({
