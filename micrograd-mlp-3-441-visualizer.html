@@ -528,6 +528,62 @@
             overflow: auto;
             scroll-behavior: smooth;
             padding: 20px;
+            position: relative;
+        }
+        
+        .dag-equation-box {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 760px;
+            background: rgba(35, 35, 55, 0.95);
+            border: 2px solid var(--accent-yellow);
+            border-radius: 8px;
+            padding: 12px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .dag-equation-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-yellow);
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(251,191,36,0.3);
+        }
+        
+        .dag-equation-content {
+            font-size: 0.8rem;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+        
+        .dag-equation-content .eq-line {
+            margin: 1px 0;
+            padding: 1px 0;
+            white-space: nowrap;
+        }
+        
+        .dag-equation-content .eq-operation {
+            color: var(--accent-purple);
+            font-weight: 600;
+            margin-bottom: 3px;
+            font-size: 0.85rem;
+        }
+        
+        .dag-equation-content .eq-derivative {
+            color: var(--text-secondary);
+        }
+        
+        .dag-equation-content .eq-result {
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+        
+        .dag-equation-content .eq-value {
+            color: var(--accent-green);
         }
         
         .dag-container-inner {
@@ -1049,12 +1105,14 @@
         
         .backprop-step-info {
             margin: 6px 0;
-            font-size: 0.6rem;
-            color: var(--accent-purple);
-            padding: 6px;
+            font-size: 0.7rem;
+            color: var(--text-primary);
+            padding: 8px;
             background: rgba(167, 139, 250, 0.1);
             border-radius: 4px;
-            line-height: 1.3;
+            line-height: 1.4;
+            max-height: 200px;
+            overflow-y: auto;
         }
         
         .backprop-step-controls {
@@ -1580,6 +1638,10 @@
             </div>
             <div class="dag-container" id="dag-container">
                 <svg class="dag-svg" id="dag-svg"></svg>
+                <div class="dag-equation-box" id="dag-equation-box" style="display:none;">
+                    <div class="dag-equation-title">Gradient Computation</div>
+                    <div class="dag-equation-content" id="dag-equation-content"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -2209,6 +2271,8 @@
             const stepInfo = document.getElementById('backprop-step-info');
             const nextBtn = document.getElementById('backprop-next-btn');
             const completeBtn = document.getElementById('backprop-complete-btn');
+            const dagEquationBox = document.getElementById('dag-equation-box');
+            const dagEquationContent = document.getElementById('dag-equation-content');
             
             if (backpropStepMode) {
                 stepInfo.style.display = 'block';
@@ -2219,9 +2283,19 @@
                     stepInfo.innerHTML = `Backprop complete! (${backpropTopo.length} nodes)`;
                     nextBtn.disabled = true;
                     completeBtn.disabled = true;
+                    dagEquationBox.style.display = 'none';
                 } else {
+                    // Show the node that is about to be processed (current step)
                     const currentNode = backpropTopo[backpropStep];
-                    stepInfo.innerHTML = `Step ${backpropStep + 1}/${backpropTopo.length}: <strong>${currentNode?.label || 'node'}</strong><br><span style="font-size:0.6rem;opacity:0.7;">Press → or Space for next, Enter to complete</span>`;
+                    const equation = getGradientEquation(currentNode, backpropStep);
+                    stepInfo.innerHTML = `
+                        <div style="margin-bottom:4px;">Step ${backpropStep + 1}/${backpropTopo.length}: <strong>${currentNode?.label || 'node'}</strong></div>
+                        <span style="font-size:0.6rem;opacity:0.7;">Press → or Space for next, Enter to complete</span>
+                    `;
+                    // Show equation in DAG area
+                    dagEquationBox.style.display = 'block';
+                    dagEquationContent.innerHTML = equation;
+                    
                     nextBtn.disabled = false;
                     completeBtn.disabled = false;
                 }
@@ -2229,6 +2303,92 @@
                 stepInfo.style.display = 'none';
                 nextBtn.style.display = 'none';
                 completeBtn.style.display = 'none';
+                dagEquationBox.style.display = 'none';
+            }
+        }
+        
+        function getGradientEquation(node, stepIndex) {
+            if (!node) return '';
+            
+            const op = node._op;
+            const children = Array.from(node._prev);
+            const nodeLabel = node.label || 'out';
+            const nodeGrad = node.grad.toFixed(4);
+            
+            // For the loss node (first node), it's just initialized to 1
+            if (stepIndex === 0) {
+                return `
+                    <div class="eq-line eq-operation">Node: ${nodeLabel}</div>
+                    <div class="eq-line eq-result">∂L/∂(${nodeLabel}) = 1.0 (seed gradient for backpropagation)</div>
+                `;
+            }
+            
+            // Generate equation based on operation
+            if (op === '+') {
+                const [a, b] = children;
+                const aLabel = a?.label || 'a';
+                const bLabel = b?.label || 'b';
+                const gradToA = (1 * node.grad).toFixed(4);
+                const gradToB = (1 * node.grad).toFixed(4);
+                return `
+                    <div class="eq-line eq-operation">${nodeLabel} = ${aLabel} + ${bLabel}</div>
+                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${aLabel}) = 1</div>
+                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${bLabel}) = 1</div>
+                    <div class="eq-line eq-result">∂L/∂(${aLabel}) += ∂L/∂(${nodeLabel}) × 1 = ${nodeGrad} × 1 = <span class="eq-value">${gradToA}</span></div>
+                    <div class="eq-line eq-result">∂L/∂(${bLabel}) += ∂L/∂(${nodeLabel}) × 1 = ${nodeGrad} × 1 = <span class="eq-value">${gradToB}</span></div>
+                `;
+            } else if (op === '*') {
+                const [a, b] = children;
+                const aLabel = a?.label || 'a';
+                const bLabel = b?.label || 'b';
+                const aData = a?.data?.toFixed(4) || '?';
+                const bData = b?.data?.toFixed(4) || '?';
+                const gradToA = (b?.data * node.grad).toFixed(4);
+                const gradToB = (a?.data * node.grad).toFixed(4);
+                return `
+                    <div class="eq-line eq-operation">${nodeLabel} = ${aLabel} × ${bLabel}</div>
+                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${aLabel}) = ${bLabel} = ${bData}</div>
+                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${bLabel}) = ${aLabel} = ${aData}</div>
+                    <div class="eq-line eq-result">∂L/∂(${aLabel}) += ∂L/∂(${nodeLabel}) × ${bData} = ${nodeGrad} × ${bData} = <span class="eq-value">${gradToA}</span></div>
+                    <div class="eq-line eq-result">∂L/∂(${bLabel}) += ∂L/∂(${nodeLabel}) × ${aData} = ${nodeGrad} × ${aData} = <span class="eq-value">${gradToB}</span></div>
+                `;
+            } else if (op === 'tanh') {
+                const [x] = children;
+                const xLabel = x?.label || 'x';
+                const outData = node.data;
+                const tanhSq = (outData * outData).toFixed(4);
+                const localGrad = (1 - outData * outData).toFixed(4);
+                const gradToX = ((1 - outData * outData) * node.grad).toFixed(4);
+                return `
+                    <div class="eq-line eq-operation">${nodeLabel} = tanh(${xLabel})</div>
+                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${xLabel}) = 1 - tanh²(${xLabel}) = 1 - (${outData.toFixed(4)})² = 1 - ${tanhSq} = ${localGrad}</div>
+                    <div class="eq-line eq-result">∂L/∂(${xLabel}) += ∂L/∂(${nodeLabel}) × ${localGrad} = ${nodeGrad} × ${localGrad} = <span class="eq-value">${gradToX}</span></div>
+                `;
+            } else if (op.startsWith('**')) {
+                const n = parseFloat(op.slice(2));
+                const [x] = children;
+                const xLabel = x?.label || 'x';
+                const xData = x?.data || 0;
+                const xPowNm1 = Math.pow(xData, n - 1).toFixed(4);
+                const localGrad = (n * Math.pow(xData, n - 1)).toFixed(4);
+                const gradToX = (n * Math.pow(xData, n - 1) * node.grad).toFixed(4);
+                return `
+                    <div class="eq-line eq-operation">${nodeLabel} = (${xLabel})^${n}</div>
+                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${xLabel}) = ${n} × (${xLabel})^${n-1} = ${n} × (${xData.toFixed(4)})^${n-1} = ${n} × ${xPowNm1} = ${localGrad}</div>
+                    <div class="eq-line eq-result">∂L/∂(${xLabel}) += ∂L/∂(${nodeLabel}) × ${localGrad} = ${nodeGrad} × ${localGrad} = <span class="eq-value">${gradToX}</span></div>
+                `;
+            } else {
+                // Unknown or leaf node
+                if (children.length === 0) {
+                    return `
+                        <div class="eq-line eq-operation">${nodeLabel} (leaf node)</div>
+                        <div class="eq-line eq-result">∂L/∂(${nodeLabel}) = <span class="eq-value">${nodeGrad}</span> (input or parameter - gradient accumulates here)</div>
+                    `;
+                }
+                return `
+                    <div class="eq-line eq-operation">Node: ${nodeLabel}</div>
+                    <div class="eq-line eq-result">grad = <span class="eq-value">${nodeGrad}</span></div>
+                `;
             }
         }
 
