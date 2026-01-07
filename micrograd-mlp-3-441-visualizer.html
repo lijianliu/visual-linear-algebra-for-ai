@@ -536,22 +536,65 @@
             top: 10px;
             right: 10px;
             width: 760px;
-            background: rgba(35, 35, 55, 0.95);
-            border: 2px solid var(--accent-yellow);
+            max-height: 80vh;
+            overflow-y: auto;
+            background: rgba(45, 45, 65, 0.98);
+            border: 2px solid rgba(255, 255, 255, 0.8);
             border-radius: 8px;
-            padding: 12px;
+            padding: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
             font-family: 'JetBrains Mono', monospace;
         }
         
-        .dag-equation-title {
-            font-size: 0.75rem;
-            font-weight: 600;
+        .dag-equation-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px 6px 0 0;
+        }
+        
+        .dag-equation-collapse-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--accent-yellow);
             color: var(--accent-yellow);
-            margin-bottom: 10px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid rgba(251,191,36,0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .dag-equation-collapse-btn:hover {
+            background: var(--accent-yellow);
+            color: var(--bg-dark);
+        }
+        
+        .dag-equation-body {
+            padding: 12px;
+        }
+        
+        .dag-equation-box.collapsed .dag-equation-body {
+            display: none;
+        }
+        
+        .dag-equation-box.collapsed {
+            max-height: none;
+            overflow: visible;
+        }
+        
+        .dag-equation-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--bg-dark);
         }
         
         .dag-equation-content {
@@ -563,7 +606,8 @@
         .dag-equation-content .eq-line {
             margin: 1px 0;
             padding: 1px 0;
-            white-space: nowrap;
+            white-space: normal;
+            word-wrap: break-word;
         }
         
         .dag-equation-content .eq-operation {
@@ -1639,8 +1683,13 @@
             <div class="dag-container" id="dag-container">
                 <svg class="dag-svg" id="dag-svg"></svg>
                 <div class="dag-equation-box" id="dag-equation-box" style="display:none;">
-                    <div class="dag-equation-title">Gradient Computation</div>
-                    <div class="dag-equation-content" id="dag-equation-content"></div>
+                    <div class="dag-equation-header" id="dag-equation-header">
+                        <button class="dag-equation-collapse-btn" id="dag-equation-collapse-btn">▽ Collapse</button>
+                        <div class="dag-equation-title">Gradient Computation</div>
+                    </div>
+                    <div class="dag-equation-body" id="dag-equation-body">
+                        <div class="dag-equation-content" id="dag-equation-content"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2315,11 +2364,24 @@
             const nodeLabel = node.label || 'out';
             const nodeGrad = node.grad.toFixed(4);
             
+            // Helper to wrap variable names in styled spans
+            const v = (name, color = 'var(--accent-yellow)') => `<span style="color:${color};font-weight:600;">${name}</span>`;
+            const vBox = (name, color = 'var(--accent-yellow)') => `<span style="color:${color};font-weight:600;border:1px solid ${color};padding:1px 4px;border-radius:3px;">${name}</span>`;
+            const vCyan = (name) => v(name, 'var(--accent-cyan)');
+            const vCyanBox = (name) => vBox(name, 'var(--accent-cyan)');
+            const vPink = (name) => v(name, 'var(--accent-pink)');
+            const vPinkBox = (name) => vBox(name, 'var(--accent-pink)');
+            const vGreen = (name) => v(name, 'var(--accent-green)');
+            const italic = (text) => `<i>${text}</i>`;
+            const section = (title) => `<div class="eq-line" style="margin-top:8px;color:var(--text-secondary);font-size:0.7rem;">${title}</div>`;
+            
             // For the loss node (first node), it's just initialized to 1
             if (stepIndex === 0) {
                 return `
-                    <div class="eq-line eq-operation">Node: ${nodeLabel}</div>
-                    <div class="eq-line eq-result">∂L/∂(${nodeLabel}) = 1.0 (seed gradient for backpropagation)</div>
+                    ${section('Define:')}
+                    <div class="eq-line">${italic('L')} = ${v(nodeLabel)} (total loss)</div>
+                    ${section('Initialize:')}
+                    <div class="eq-line">∂${italic('L')}/∂${italic('L')} = 1.0 (seed gradient for backpropagation)</div>
                 `;
             }
             
@@ -2328,14 +2390,28 @@
                 const [a, b] = children;
                 const aLabel = a?.label || 'a';
                 const bLabel = b?.label || 'b';
+                const aData = a?.data?.toFixed(4) || '?';
+                const bData = b?.data?.toFixed(4) || '?';
                 const gradToA = (1 * node.grad).toFixed(4);
                 const gradToB = (1 * node.grad).toFixed(4);
                 return `
-                    <div class="eq-line eq-operation">${nodeLabel} = ${aLabel} + ${bLabel}</div>
-                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${aLabel}) = 1</div>
-                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${bLabel}) = 1</div>
-                    <div class="eq-line eq-result">∂L/∂(${aLabel}) += ∂L/∂(${nodeLabel}) × 1 = ${nodeGrad} × 1 = <span class="eq-value">${gradToA}</span></div>
-                    <div class="eq-line eq-result">∂L/∂(${bLabel}) += ∂L/∂(${nodeLabel}) × 1 = ${nodeGrad} × 1 = <span class="eq-value">${gradToB}</span></div>
+                    ${section('Define:')}
+                    <div class="eq-line">${italic('a')} = ${vCyan(aLabel)} = ${aData}</div>
+                    <div class="eq-line">${italic('b')} = ${vCyan(bLabel)} = ${bData}</div>
+                    <div class="eq-line">${italic('c')} = ${vPink(nodeLabel)} = ${italic('a')} + ${italic('b')}</div>
+                    ${section('Given:')}
+                    <div class="eq-line">∂${italic('L')}/∂${italic('c')} = ${nodeGrad} (gradient flowing back from later nodes)</div>
+                    ${section('Local derivatives:')}
+                    <div class="eq-line">The derivative of ${vPinkBox(nodeLabel)} with respect to ${vCyanBox(aLabel)} is ∂${italic('c')}/∂${italic('a')} = 1</div>
+                    <div class="eq-line">The derivative of ${vPinkBox(nodeLabel)} with respect to ${vCyanBox(bLabel)} is ∂${italic('c')}/∂${italic('b')} = 1</div>
+                    ${section('Gradients (chain rule):')}
+                    <div class="eq-line">∂${italic('L')}/∂${italic('a')} = ∂${italic('L')}/∂${italic('c')} · ∂${italic('c')}/∂${italic('a')} = (${nodeGrad})(1) = ${vGreen(gradToA)}</div>
+                    <div class="eq-line">∂${italic('L')}/∂${italic('b')} = ∂${italic('L')}/∂${italic('c')} · ∂${italic('c')}/∂${italic('b')} = (${nodeGrad})(1) = ${vGreen(gradToB)}</div>
+                    ${section('Plain English:')}
+                    <div class="eq-line">• ∂${italic('c')}/∂${italic('a')} = 1 — If ${italic('a')} increases by 1, ${italic('c')} increases by 1</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('c')} = ${nodeGrad} — If ${italic('c')} increases by 1, ${italic('L')} ${parseFloat(nodeGrad) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(nodeGrad)).toFixed(4)}</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('a')} = ${gradToA} — If ${italic('a')} increases by 1, ${italic('L')} ${parseFloat(gradToA) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(gradToA)).toFixed(4)}</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('b')} = ${gradToB} — If ${italic('b')} increases by 1, ${italic('L')} ${parseFloat(gradToB) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(gradToB)).toFixed(4)}</div>
                 `;
             } else if (op === '*') {
                 const [a, b] = children;
@@ -2346,23 +2422,47 @@
                 const gradToA = (b?.data * node.grad).toFixed(4);
                 const gradToB = (a?.data * node.grad).toFixed(4);
                 return `
-                    <div class="eq-line eq-operation">${nodeLabel} = ${aLabel} × ${bLabel}</div>
-                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${aLabel}) = ${bLabel} = ${bData}</div>
-                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${bLabel}) = ${aLabel} = ${aData}</div>
-                    <div class="eq-line eq-result">∂L/∂(${aLabel}) += ∂L/∂(${nodeLabel}) × ${bData} = ${nodeGrad} × ${bData} = <span class="eq-value">${gradToA}</span></div>
-                    <div class="eq-line eq-result">∂L/∂(${bLabel}) += ∂L/∂(${nodeLabel}) × ${aData} = ${nodeGrad} × ${aData} = <span class="eq-value">${gradToB}</span></div>
+                    ${section('Define:')}
+                    <div class="eq-line">${italic('w')} = ${vCyan(aLabel)} = ${aData}</div>
+                    <div class="eq-line">${italic('x')} = ${vCyan(bLabel)} = ${bData}</div>
+                    <div class="eq-line">${italic('z')} = ${vPink(nodeLabel)} = ${italic('w')} · ${italic('x')}</div>
+                    ${section('Given:')}
+                    <div class="eq-line">∂${italic('L')}/∂${italic('z')} = ${nodeGrad} (gradient flowing back from later nodes)</div>
+                    ${section('Local derivatives:')}
+                    <div class="eq-line">The derivative of ${vPinkBox(nodeLabel)} with respect to ${vCyanBox(aLabel)} is ∂${italic('z')}/∂${italic('w')} = ${italic('x')} = ${bData}</div>
+                    <div class="eq-line">The derivative of ${vPinkBox(nodeLabel)} with respect to ${vCyanBox(bLabel)} is ∂${italic('z')}/∂${italic('x')} = ${italic('w')} = ${aData}</div>
+                    ${section('Gradients (chain rule):')}
+                    <div class="eq-line">∂${italic('L')}/∂${italic('w')} = ∂${italic('L')}/∂${italic('z')} · ∂${italic('z')}/∂${italic('w')} = (${nodeGrad})(${bData}) = ${vGreen(gradToA)}</div>
+                    <div class="eq-line">∂${italic('L')}/∂${italic('x')} = ∂${italic('L')}/∂${italic('z')} · ∂${italic('z')}/∂${italic('x')} = (${nodeGrad})(${aData}) = ${vGreen(gradToB)}</div>
+                    ${section('Plain English:')}
+                    <div class="eq-line">• ∂${italic('z')}/∂${italic('w')} = ${bData} — If ${italic('w')} increases by 1, ${italic('z')} ${parseFloat(bData) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(bData)).toFixed(4)}</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('z')} = ${nodeGrad} — If ${italic('z')} increases by 1, ${italic('L')} ${parseFloat(nodeGrad) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(nodeGrad)).toFixed(4)}</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('w')} = ${gradToA} — If ${italic('w')} increases by 1, ${italic('L')} ${parseFloat(gradToA) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(gradToA)).toFixed(4)}</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('x')} = ${gradToB} — If ${italic('x')} increases by 1, ${italic('L')} ${parseFloat(gradToB) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(gradToB)).toFixed(4)}</div>
                 `;
             } else if (op === 'tanh') {
                 const [x] = children;
                 const xLabel = x?.label || 'x';
+                const xData = x?.data?.toFixed(4) || '?';
                 const outData = node.data;
                 const tanhSq = (outData * outData).toFixed(4);
                 const localGrad = (1 - outData * outData).toFixed(4);
                 const gradToX = ((1 - outData * outData) * node.grad).toFixed(4);
                 return `
-                    <div class="eq-line eq-operation">${nodeLabel} = tanh(${xLabel})</div>
-                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${xLabel}) = 1 - tanh²(${xLabel}) = 1 - (${outData.toFixed(4)})² = 1 - ${tanhSq} = ${localGrad}</div>
-                    <div class="eq-line eq-result">∂L/∂(${xLabel}) += ∂L/∂(${nodeLabel}) × ${localGrad} = ${nodeGrad} × ${localGrad} = <span class="eq-value">${gradToX}</span></div>
+                    ${section('Define:')}
+                    <div class="eq-line">${italic('x')} = ${vCyan(xLabel)} = ${xData}</div>
+                    <div class="eq-line">${italic('y')} = ${vPink(nodeLabel)} = tanh(${italic('x')})</div>
+                    ${section('Given:')}
+                    <div class="eq-line">∂${italic('L')}/∂${italic('y')} = ${nodeGrad} (gradient flowing back from later nodes)</div>
+                    ${section('Local derivatives:')}
+                    <div class="eq-line">The derivative of ${vPinkBox(nodeLabel)} with respect to ${vCyanBox(xLabel)} is</div>
+                    <div class="eq-line" style="padding-left:20px;">∂${italic('y')}/∂${italic('x')} = 1 - tanh²(${italic('x')}) = 1 - (${outData.toFixed(4)})² = 1 - ${tanhSq} = ${localGrad}</div>
+                    ${section('Gradients (chain rule):')}
+                    <div class="eq-line">∂${italic('L')}/∂${italic('x')} = ∂${italic('L')}/∂${italic('y')} · ∂${italic('y')}/∂${italic('x')} = (${nodeGrad})(${localGrad}) = ${vGreen(gradToX)}</div>
+                    ${section('Plain English:')}
+                    <div class="eq-line">• ∂${italic('y')}/∂${italic('x')} = ${localGrad} — If ${italic('x')} increases by 1, ${italic('y')} ${parseFloat(localGrad) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(localGrad)).toFixed(4)}</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('y')} = ${nodeGrad} — If ${italic('y')} increases by 1, ${italic('L')} ${parseFloat(nodeGrad) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(nodeGrad)).toFixed(4)}</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('x')} = ${gradToX} — If ${italic('x')} increases by 1, ${italic('L')} ${parseFloat(gradToX) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(gradToX)).toFixed(4)}</div>
                 `;
             } else if (op.startsWith('**')) {
                 const n = parseFloat(op.slice(2));
@@ -2373,21 +2473,33 @@
                 const localGrad = (n * Math.pow(xData, n - 1)).toFixed(4);
                 const gradToX = (n * Math.pow(xData, n - 1) * node.grad).toFixed(4);
                 return `
-                    <div class="eq-line eq-operation">${nodeLabel} = (${xLabel})^${n}</div>
-                    <div class="eq-line eq-derivative">∂(${nodeLabel})/∂(${xLabel}) = ${n} × (${xLabel})^${n-1} = ${n} × (${xData.toFixed(4)})^${n-1} = ${n} × ${xPowNm1} = ${localGrad}</div>
-                    <div class="eq-line eq-result">∂L/∂(${xLabel}) += ∂L/∂(${nodeLabel}) × ${localGrad} = ${nodeGrad} × ${localGrad} = <span class="eq-value">${gradToX}</span></div>
+                    ${section('Define:')}
+                    <div class="eq-line">${italic('x')} = ${vCyan(xLabel)} = ${xData.toFixed(4)}</div>
+                    <div class="eq-line">${italic('y')} = ${vPink(nodeLabel)} = ${italic('x')}^${n}</div>
+                    ${section('Given:')}
+                    <div class="eq-line">∂${italic('L')}/∂${italic('y')} = ${nodeGrad} (gradient flowing back from later nodes)</div>
+                    ${section('Local derivatives:')}
+                    <div class="eq-line">The derivative of ${vPinkBox(nodeLabel)} with respect to ${vCyanBox(xLabel)} is</div>
+                    <div class="eq-line" style="padding-left:20px;">∂${italic('y')}/∂${italic('x')} = ${n} · ${italic('x')}^${n-1} = ${n} · (${xData.toFixed(4)})^${n-1} = ${localGrad}</div>
+                    ${section('Gradients (chain rule):')}
+                    <div class="eq-line">∂${italic('L')}/∂${italic('x')} = ∂${italic('L')}/∂${italic('y')} · ∂${italic('y')}/∂${italic('x')} = (${nodeGrad})(${localGrad}) = ${vGreen(gradToX)}</div>
+                    ${section('Plain English:')}
+                    <div class="eq-line">• ∂${italic('y')}/∂${italic('x')} = ${localGrad} — If ${italic('x')} increases by 1, ${italic('y')} ${parseFloat(localGrad) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(localGrad)).toFixed(4)}</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('y')} = ${nodeGrad} — If ${italic('y')} increases by 1, ${italic('L')} ${parseFloat(nodeGrad) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(nodeGrad)).toFixed(4)}</div>
+                    <div class="eq-line">• ∂${italic('L')}/∂${italic('x')} = ${gradToX} — If ${italic('x')} increases by 1, ${italic('L')} ${parseFloat(gradToX) >= 0 ? 'increases' : 'decreases'} by ${Math.abs(parseFloat(gradToX)).toFixed(4)}</div>
                 `;
             } else {
                 // Unknown or leaf node
                 if (children.length === 0) {
                     return `
-                        <div class="eq-line eq-operation">${nodeLabel} (leaf node)</div>
-                        <div class="eq-line eq-result">∂L/∂(${nodeLabel}) = <span class="eq-value">${nodeGrad}</span> (input or parameter - gradient accumulates here)</div>
+                        <div class="eq-line eq-operation">${v(nodeLabel)} (leaf node)</div>
+                        <div class="eq-line eq-result">∂${italic('L')}/∂${v(nodeLabel)} = ${vGreen(nodeGrad)}</div>
+                        <div class="eq-line" style="color:var(--text-secondary);">(input or parameter — gradient accumulates here)</div>
                     `;
                 }
                 return `
-                    <div class="eq-line eq-operation">Node: ${nodeLabel}</div>
-                    <div class="eq-line eq-result">grad = <span class="eq-value">${nodeGrad}</span></div>
+                    <div class="eq-line eq-operation">Node: ${v(nodeLabel)}</div>
+                    <div class="eq-line eq-result">grad = ${vGreen(nodeGrad)}</div>
                 `;
             }
         }
@@ -4322,6 +4434,9 @@
         
         // Keyboard support for stepping
         document.addEventListener('keydown', (e) => {
+            // Ignore keyboard shortcuts with modifier keys (Cmd, Ctrl, Alt)
+            if (e.metaKey || e.ctrlKey || e.altKey) return;
+            
             if (backpropStepMode && backpropStep < backpropTopo.length) {
                 if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'n') {
                     e.preventDefault();
@@ -4347,6 +4462,15 @@
                 document.getElementById('lock-indicator').style.display = 'none';
                 forceClealHighlights();
             }
+        });
+        
+        // Gradient equation box collapse/expand
+        document.getElementById('dag-equation-collapse-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const box = document.getElementById('dag-equation-box');
+            const btn = document.getElementById('dag-equation-collapse-btn');
+            box.classList.toggle('collapsed');
+            btn.textContent = box.classList.contains('collapsed') ? '▷ Expand' : '▽ Collapse';
         });
         
         // Click anywhere to unlock highlights (fallback for areas outside SVGs)
