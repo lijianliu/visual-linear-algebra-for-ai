@@ -15,7 +15,7 @@
         :root {
             --bg-dark: #0a0a0f;
             --bg-panel: #12121a;
-            --bg-node: #1a1a25;
+            --bg-node: #232331;
             --border: #2a2a3a;
             --text: #e0e0e0;
             --text-dim: #888;
@@ -196,18 +196,15 @@
 
         .right-panel {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
             background: var(--bg-dark);
         }
         
         .dag-fixed-header {
-            flex-shrink: 0;
             padding: 15px 20px 10px 20px;
             background: var(--bg-dark);
             border-bottom: 1px solid var(--border);
-            z-index: 10;
         }
 
         .section-title {
@@ -454,6 +451,15 @@
             0%, 100% { stroke-opacity: 1; filter: drop-shadow(0 0 6px var(--highlight)); }
             50% { stroke-opacity: 0.7; filter: drop-shadow(0 0 12px var(--highlight)); }
         }
+        
+        /* Nodes that have completed gradient computation */
+        .dag-node.backprop-done .dag-node-rect {
+            fill: rgba(74, 222, 128, 0.3) !important;
+        }
+        
+        .dag-op.backprop-done .dag-op-circle {
+            fill: rgba(74, 222, 128, 0.3) !important;
+        }
 
         .param-breakdown {
             background: var(--bg-node);
@@ -524,8 +530,8 @@
 
         /* DAG Styles */
         .dag-container {
-            flex: 1;
-            overflow: auto;
+            overflow-x: auto;
+            overflow-y: visible;
             scroll-behavior: smooth;
             padding: 20px;
             position: relative;
@@ -534,7 +540,7 @@
         .dag-equation-box {
             position: fixed;
             top: 10px;
-            right: 10px;
+            left: 10px;
             width: 760px;
             max-height: 80vh;
             overflow-y: auto;
@@ -555,6 +561,34 @@
             background: rgba(255, 255, 255, 0.95);
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 6px 6px 0 0;
+        }
+        
+        .dag-equation-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
+        }
+        
+        .dag-equation-nav-btn {
+            background: var(--bg-node);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .dag-equation-nav-btn:hover:not(:disabled) {
+            background: rgba(34, 211, 238, 0.3);
+        }
+        
+        .dag-equation-nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
         
         .dag-equation-collapse-btn {
@@ -736,17 +770,17 @@
         
         /* Fade intermediate nodes (not w, b, loss, input, output) */
         .dag-node.node-intermediate {
-            opacity: 0.5;
+            opacity: 0.7;
         }
         
         .dag-node.node-intermediate .dag-node-rect {
-            stroke-opacity: 0.5;
+            stroke-opacity: 0.7;
         }
         
         .dag-node.node-intermediate .dag-node-label,
         .dag-node.node-intermediate .dag-node-data,
         .dag-node.node-intermediate .dag-node-grad {
-            opacity: 0.7;
+            opacity: 0.9;
         }
         
         /* Keep important nodes fully visible */
@@ -866,26 +900,26 @@
 
         /* Faded state for non-highlighted elements when highlighting is active */
         .dag-svg.has-highlight .dag-node:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
-            opacity: 0.15;
+            opacity: 0.4;
             transition: opacity 0.2s;
         }
         
         .dag-svg.has-highlight .dag-op:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
-            opacity: 0.15;
+            opacity: 0.4;
             transition: opacity 0.2s;
         }
         
         .dag-svg.has-highlight .dag-edge:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
-            opacity: 0.08;
+            opacity: 0.2;
         }
         
         .network-svg.has-highlight .neuron-circle:not(.highlighted):not(.highlighted-input):not(.highlighted-output) {
-            opacity: 0.2;
+            opacity: 0.4;
             transition: opacity 0.2s;
         }
         
         .network-svg.has-highlight .neuron-text {
-            opacity: 0.2;
+            opacity: 0.4;
             transition: opacity 0.2s;
         }
         
@@ -1042,51 +1076,6 @@
         .training-btn.small {
             padding: 3px 6px;
             font-size: 0.55rem;
-        }
-        
-        .training-btn.step-btn {
-            border-color: var(--accent-purple);
-            color: var(--accent-purple);
-        }
-        
-        .training-btn.step-btn:hover:not(:disabled) {
-            background: rgba(167, 139, 250, 0.2);
-        }
-        
-        .training-btn.next-btn {
-            border-color: var(--accent-green);
-            color: var(--accent-green);
-        }
-        
-        .training-btn.next-btn:hover:not(:disabled) {
-            background: rgba(74, 222, 128, 0.2);
-        }
-        
-        .training-btn.complete-btn {
-            border-color: var(--accent-orange);
-            color: var(--accent-orange);
-        }
-        
-        .training-btn.complete-btn:hover:not(:disabled) {
-            background: rgba(251, 146, 60, 0.2);
-        }
-        
-        .training-btn.update-btn {
-            border-color: var(--accent-pink);
-            color: var(--accent-pink);
-        }
-        
-        .training-btn.update-btn:hover:not(:disabled) {
-            background: rgba(244, 114, 182, 0.2);
-        }
-        
-        .training-btn.auto-btn {
-            border-color: var(--accent-orange);
-            color: var(--accent-orange);
-        }
-        
-        .training-btn.auto-btn:hover:not(:disabled) {
-            background: rgba(251, 146, 60, 0.2);
         }
         
         .sub-step {
@@ -1423,20 +1412,41 @@
             font-size: 0.6rem;
         }
         
+        .dag-training-group .step-btn {
+            margin-left: 8px;
+        }
+        
+        .dag-backprop-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 12px;
+            padding-left: 12px;
+            border-left: 1px solid var(--border);
+        }
+        
+        .backprop-label {
+            font-size: 0.55rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+        
+        .dag-backprop-group .backprop-step-info {
+            font-size: 0.55rem;
+            color: var(--text);
+            background: var(--bg-dark);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        
         .train-label {
             font-size: 0.55rem;
             color: var(--text-dim);
         }
         
         .training-btn.reinit-btn {
-            border-color: var(--accent-purple);
-            color: var(--accent-purple);
             padding: 4px 10px;
             font-size: 0.6rem;
-        }
-        
-        .training-btn.reinit-btn:hover {
-            background: rgba(167, 139, 250, 0.2);
         }
         
         .dag-lr-row {
@@ -1511,71 +1521,6 @@
                     <button class="input-btn active" data-idx="2">x[2]: [0.5, 1.0, 1.0]</button>
                     <button class="input-btn active" data-idx="3">x[3]: [1.0, 1.0, -1.0]</button>
                 </div>
-            </div>
-
-            <div class="training-panel">
-                <div class="section-title">Training Flow</div>
-                
-                <div class="training-step completed" id="step-init">
-                    <div class="step-header">
-                        <span class="step-number">1</span>
-                        <span class="step-name">Parameter Initialization</span>
-                        <span class="step-status" id="init-status">✓ Done</span>
-                    </div>
-                </div>
-                
-                <div class="training-step" id="step-forward">
-                    <div class="step-header">
-                        <span class="step-number">2</span>
-                        <span class="step-name">Forward Propagation</span>
-                        <span class="step-status" id="forward-status">Ready</span>
-                    </div>
-                    <div class="step-content">
-                        <button class="training-btn" id="forward-btn">Compute Predictions</button>
-                        <div class="loss-display-inline" id="loss-display" style="display:none;">
-                            <span class="loss-label">Loss (MSE):</span>
-                            <span class="loss-value" id="loss-value">—</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="training-step" id="step-backward">
-                    <div class="step-header">
-                        <span class="step-number">3</span>
-                        <span class="step-name">Backpropagation</span>
-                        <span class="step-status" id="backward-status">—</span>
-                    </div>
-                    <div class="step-content">
-                        <div class="sub-step">
-                            <button class="training-btn" id="backward-btn" disabled>Compute Gradients</button>
-                            <button class="training-btn step-btn" id="backward-step-btn" disabled>Step-by-Step</button>
-                        </div>
-                        <div class="backprop-step-controls">
-                            <button class="training-btn small next-btn" id="backprop-next-btn" style="display:none;">Next →</button>
-                            <button class="training-btn small complete-btn" id="backprop-complete-btn" style="display:none;">Complete</button>
-                        </div>
-                        <div class="backprop-step-info" id="backprop-step-info" style="display:none;"></div>
-                    </div>
-                </div>
-                
-                <div class="training-step" id="step-update">
-                    <div class="step-header">
-                        <span class="step-number">4</span>
-                        <span class="step-name">Update Parameters</span>
-                        <span class="step-status" id="update-status">—</span>
-                    </div>
-                    <div class="step-content" id="update-content">
-                        <div class="update-row">
-                            <div class="learning-rate-row">
-                                <label>Learning Rate:</label>
-                                <input type="number" id="learning-rate" value="0.01" step="0.01" min="0.001" max="1.0">
-                            </div>
-                            <button class="training-btn update-btn" id="update-params-btn" disabled>Apply & Continue →</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="training-status" id="training-status"></div>
             </div>
 
             <div class="prediction-display">
@@ -1659,10 +1604,15 @@
                             <button class="training-btn" id="train-once-btn" title="Train 1 iteration">1×</button>
                             <button class="training-btn auto-btn" id="auto-train-btn" title="Train 10 iterations">10×</button>
                             <button class="training-btn auto-btn" id="auto-train-100-btn" title="Train 100 iterations">100×</button>
+                            <button class="training-btn step-btn" id="backward-step-btn" title="Step through backpropagation">Step Backprop</button>
                         </div>
                         <div class="dag-lr-row">
                             <label>lr:</label>
                             <input type="number" id="dag-learning-rate" value="0.01" step="0.01" min="0.001" max="1.0">
+                        </div>
+                        <div class="dag-backprop-group" id="dag-backprop-group" style="display:none;">
+                            <span class="backprop-label">Backprop:</span>
+                            <span class="backprop-step-info" id="backprop-step-info"></span>
                         </div>
                     </div>
                     <div class="dag-chart-right">
@@ -1686,6 +1636,10 @@
                     <div class="dag-equation-header" id="dag-equation-header">
                         <button class="dag-equation-collapse-btn" id="dag-equation-collapse-btn">▽ Collapse</button>
                         <div class="dag-equation-title">Gradient Computation</div>
+                        <div class="dag-equation-controls">
+                            <button class="dag-equation-nav-btn" id="backprop-next-btn">Next →</button>
+                            <button class="dag-equation-nav-btn" id="backprop-complete-btn">Complete</button>
+                        </div>
                     </div>
                     <div class="dag-equation-body" id="dag-equation-body">
                         <div class="dag-equation-content" id="dag-equation-content"></div>
@@ -2230,6 +2184,9 @@
             // Temporarily unlock highlights for backprop
             highlightLocked = false;
             
+            // Clear any previous done marks
+            clearBackpropDoneMarks();
+            
             updateBackpropUI();
             drawDAG(lastTotalLoss);
             drawParamsList();
@@ -2239,6 +2196,28 @@
                 highlightBackpropNode(currentBackpropNodeID);
                 centerNodeInView(currentBackpropNodeID);
             }, 50);
+        }
+        
+        function markBackpropDoneNodes() {
+            // Mark all nodes that have been processed (before current step)
+            for (let i = 0; i < backpropStep; i++) {
+                const nodeID = backpropTopo[i].id;
+                const nodeInfo = dagElements.nodesByID.get(nodeID);
+                if (nodeInfo) {
+                    nodeInfo.element.classList.add('backprop-done');
+                }
+                // Also mark the op if it exists
+                const opElement = dagElements.opsByNodeID.get(nodeID);
+                if (opElement) {
+                    opElement.classList.add('backprop-done');
+                }
+            }
+        }
+        
+        function clearBackpropDoneMarks() {
+            document.querySelectorAll('.backprop-done').forEach(el => {
+                el.classList.remove('backprop-done');
+            });
         }
         
         function stepBackprop() {
@@ -2262,8 +2241,9 @@
             drawDAG(lastTotalLoss);
             drawParamsList();
             
-            // Apply highlight after drawing
+            // Apply highlight and done marks after drawing
             setTimeout(() => {
+                markBackpropDoneNodes();
                 highlightBackpropNode(currentBackpropNodeID);
                 if (currentBackpropNodeID) {
                     centerNodeInView(currentBackpropNodeID);
@@ -2286,8 +2266,9 @@
             drawDAG(lastTotalLoss);
             drawParamsList();
             
-            // Clear all highlights
+            // Clear all highlights and done marks
             forceClealHighlights();
+            clearBackpropDoneMarks();
             document.querySelectorAll('.backprop-current').forEach(el => {
                 el.classList.remove('backprop-current');
             });
@@ -2320,27 +2301,50 @@
             const stepInfo = document.getElementById('backprop-step-info');
             const nextBtn = document.getElementById('backprop-next-btn');
             const completeBtn = document.getElementById('backprop-complete-btn');
+            const backpropGroup = document.getElementById('dag-backprop-group');
+            const stepBackpropBtn = document.getElementById('backward-step-btn');
             const dagEquationBox = document.getElementById('dag-equation-box');
             const dagEquationContent = document.getElementById('dag-equation-content');
+            const dagEquationTitle = document.querySelector('.dag-equation-title');
+            
+            // DAG header buttons to disable during backprop
+            const reinitBtn = document.getElementById('reinit-btn');
+            const trainOnceBtn = document.getElementById('train-once-btn');
+            const autoTrainBtn = document.getElementById('auto-train-btn');
+            const autoTrain100Btn = document.getElementById('auto-train-100-btn');
+            const dagLearningRate = document.getElementById('dag-learning-rate');
             
             if (backpropStepMode) {
-                stepInfo.style.display = 'block';
-                nextBtn.style.display = 'inline-block';
-                completeBtn.style.display = 'inline-block';
+                backpropGroup.style.display = 'flex';
+                stepBackpropBtn.style.display = 'none'; // Hide step button during backprop
+                
+                // Disable all DAG header buttons during backprop
+                reinitBtn.disabled = true;
+                trainOnceBtn.disabled = true;
+                autoTrainBtn.disabled = true;
+                autoTrain100Btn.disabled = true;
+                dagLearningRate.disabled = true;
                 
                 if (backpropStep >= backpropTopo.length) {
-                    stepInfo.innerHTML = `Backprop complete! (${backpropTopo.length} nodes)`;
+                    stepInfo.textContent = `Done! (${backpropTopo.length} nodes)`;
+                    dagEquationTitle.textContent = `Gradient Computation — Complete!`;
                     nextBtn.disabled = true;
                     completeBtn.disabled = true;
                     dagEquationBox.style.display = 'none';
+                    
+                    // Re-enable buttons after backprop complete
+                    reinitBtn.disabled = false;
+                    trainOnceBtn.disabled = false;
+                    autoTrainBtn.disabled = false;
+                    autoTrain100Btn.disabled = false;
+                    dagLearningRate.disabled = false;
+                    stepBackpropBtn.style.display = 'inline-block';
                 } else {
                     // Show the node that is about to be processed (current step)
                     const currentNode = backpropTopo[backpropStep];
                     const equation = getGradientEquation(currentNode, backpropStep);
-                    stepInfo.innerHTML = `
-                        <div style="margin-bottom:4px;">Step ${backpropStep + 1}/${backpropTopo.length}: <strong>${currentNode?.label || 'node'}</strong></div>
-                        <span style="font-size:0.6rem;opacity:0.7;">Press → or Space for next, Enter to complete</span>
-                    `;
+                    stepInfo.textContent = `Step ${backpropStep + 1}/${backpropTopo.length}`;
+                    dagEquationTitle.textContent = `Gradient Computation — Step ${backpropStep + 1}/${backpropTopo.length}`;
                     // Show equation in DAG area
                     dagEquationBox.style.display = 'block';
                     dagEquationContent.innerHTML = equation;
@@ -2349,10 +2353,20 @@
                     completeBtn.disabled = false;
                 }
             } else {
-                stepInfo.style.display = 'none';
-                nextBtn.style.display = 'none';
-                completeBtn.style.display = 'none';
+                backpropGroup.style.display = 'none';
+                stepBackpropBtn.style.display = 'inline-block'; // Show step button when not in backprop mode
                 dagEquationBox.style.display = 'none';
+                dagEquationTitle.textContent = 'Gradient Computation';
+                
+                // Clear backprop done marks
+                clearBackpropDoneMarks();
+                
+                // Re-enable all DAG header buttons
+                reinitBtn.disabled = false;
+                trainOnceBtn.disabled = false;
+                autoTrainBtn.disabled = false;
+                autoTrain100Btn.disabled = false;
+                dagLearningRate.disabled = false;
             }
         }
         
@@ -3697,7 +3711,7 @@
             }
         }
 
-        function highlightDAGNode(nodeID) {
+        function highlightDAGNode(nodeID, shouldRecenter = false) {
             setHighlightActive();
             
             // Highlight the main node
@@ -3757,8 +3771,10 @@
                 });
             }
             
-            // Check if most highlighted nodes are visible, if not, recenter
-            checkAndRecenterHighlightedNodes(highlightedNodeIDs, nodeID);
+            // Only recenter if explicitly requested (on click, not mouseover)
+            if (shouldRecenter) {
+                checkAndRecenterHighlightedNodes(highlightedNodeIDs, nodeID);
+            }
         }
         
         function checkAndRecenterHighlightedNodes(nodeIDs, primaryNodeID) {
@@ -3811,7 +3827,7 @@
             }
         }
         
-        function highlightOp(nodeID) {
+        function highlightOp(nodeID, shouldRecenter = false) {
             setHighlightActive();
             
             // Highlight the op circle itself
@@ -3851,8 +3867,10 @@
                 });
             }
             
-            // Check if most highlighted nodes are visible, if not, recenter
-            checkAndRecenterHighlightedNodes(highlightedNodeIDs, nodeID);
+            // Only recenter if explicitly requested (on click, not mouseover)
+            if (shouldRecenter) {
+                checkAndRecenterHighlightedNodes(highlightedNodeIDs, nodeID);
+            }
         }
 
         function clearHighlights() {
@@ -3886,7 +3904,8 @@
         }
         
         function centerNodeInView(nodeID) {
-            const container = document.getElementById('dag-container');
+            const container = document.querySelector('.right-panel');
+            const dagContainer = document.getElementById('dag-container');
             
             // Get node position
             const nodeInfo = dagElements.nodesByID.get(nodeID);
@@ -3905,26 +3924,32 @@
             const nodeCenterX = nodeX + nodeWidth / 2;
             const nodeCenterY = nodeY + nodeHeight / 2;
             
-            // Account for padding
+            // Account for padding and header height
             const padding = 20;
+            const headerHeight = document.querySelector('.dag-fixed-header')?.offsetHeight || 0;
             
             // Calculate scroll position to center the node
             const containerWidth = container.clientWidth;
             const containerHeight = container.clientHeight;
             
+            // Horizontal scroll is on dag-container, vertical on right-panel
             const scrollX = nodeCenterX + padding - containerWidth / 2;
-            const scrollY = nodeCenterY + padding - containerHeight / 2;
+            const scrollY = nodeCenterY + padding + headerHeight - containerHeight / 2;
             
-            // Smooth scroll to position
-            container.scrollTo({
+            // Smooth scroll - horizontal on dag-container, vertical on right-panel
+            dagContainer.scrollTo({
                 left: Math.max(0, scrollX),
+                behavior: 'smooth'
+            });
+            container.scrollTo({
                 top: Math.max(0, scrollY),
                 behavior: 'smooth'
             });
         }
         
         function centerOpInView(nodeID) {
-            const container = document.getElementById('dag-container');
+            const container = document.querySelector('.right-panel');
+            const dagContainer = document.getElementById('dag-container');
             
             // Get op position from the op element
             const opElement = dagElements.opsByNodeID.get(nodeID);
@@ -3936,19 +3961,23 @@
             const opCenterX = parseFloat(circle.getAttribute('cx'));
             const opCenterY = parseFloat(circle.getAttribute('cy'));
             
-            // Account for padding
+            // Account for padding and header height
             const padding = 20;
+            const headerHeight = document.querySelector('.dag-fixed-header')?.offsetHeight || 0;
             
             // Calculate scroll position to center the op
             const containerWidth = container.clientWidth;
             const containerHeight = container.clientHeight;
             
             const scrollX = opCenterX + padding - containerWidth / 2;
-            const scrollY = opCenterY + padding - containerHeight / 2;
+            const scrollY = opCenterY + padding + headerHeight - containerHeight / 2;
             
-            // Smooth scroll to position
-            container.scrollTo({
+            // Smooth scroll - horizontal on dag-container, vertical on right-panel
+            dagContainer.scrollTo({
                 left: Math.max(0, scrollX),
+                behavior: 'smooth'
+            });
+            container.scrollTo({
                 top: Math.max(0, scrollY),
                 behavior: 'smooth'
             });
@@ -4026,26 +4055,13 @@
             if (highlightLocked) return; // Don't change highlight if locked
             if (backpropStepMode && currentBackpropNodeID) return; // Don't change during step-by-step backprop
             
+            // Only highlight on hover, never recenter - recentering only happens on click
             if (type === 'neuron') {
                 highlightNeuron(params.layer, params.idx);
-                // Center on the output node for this neuron
-                let centerLabel;
-                if (params.layer === 0) {
-                    centerLabel = `input: x[${params.idx}]`;
-                } else {
-                    centerLabel = `L${params.layer - 1}.N${params.idx}: out`;
-                }
-                centerOnLabeledNode(centerLabel);
             } else if (type === 'weight') {
                 highlightWeight(params.layerIdx, params.neuronIdx, params.weightIdx);
-                // Center on the weight node
-                const wLabel = `L${params.layerIdx}.N${params.neuronIdx}: w[${params.weightIdx}]`;
-                centerOnLabeledNode(wLabel);
             } else if (type === 'bias') {
                 highlightBias(params.layerIdx, params.neuronIdx);
-                // Center on the bias node
-                const bLabel = `L${params.layerIdx}.N${params.neuronIdx}: b`;
-                centerOnLabeledNode(bLabel);
             } else if (type === 'dag') {
                 highlightDAGNode(params.nodeID);
             } else if (type === 'op') {
@@ -4058,7 +4074,6 @@
         // =============================================
         function updateUI() {
             if (selectedSamples.length === 0) {
-                document.getElementById('loss-value').textContent = '—';
                 document.getElementById('dag-current-loss').textContent = '—';
                 document.getElementById('predictions-list').innerHTML = '<div class="no-samples">No samples selected</div>';
                 return;
@@ -4067,7 +4082,6 @@
             const { results, totalLoss } = computeForward();
             
             const lossStr = totalLoss.data.toFixed(4);
-            document.getElementById('loss-value').textContent = lossStr;
             document.getElementById('dag-current-loss').textContent = lossStr;
             
             // Update predictions list
@@ -4131,54 +4145,14 @@
         
         function setTrainingStep(step) {
             trainingState = step;
-            document.querySelectorAll('.training-step').forEach(el => {
-                el.classList.remove('active', 'completed');
-            });
-            
-            // Mark completed steps based on current state
-            if (step === 'forward' || step === 'backward' || step === 'update') {
-                document.getElementById('step-init').classList.add('completed');
-            }
-            if (step === 'backward' || step === 'update') {
-                document.getElementById('step-forward').classList.add('completed');
-            }
-            if (step === 'update') {
-                document.getElementById('step-backward').classList.add('completed');
-            }
-            
-            // Mark current step active
-            const stepMap = {
-                'init': 'step-init',
-                'forward': 'step-forward',
-                'backward': 'step-backward',
-                'update': 'step-update'
-            };
-            if (stepMap[step]) {
-                document.getElementById(stepMap[step]).classList.add('active');
-            }
         }
         
         function updateTrainingUI() {
-            // Update step statuses
-            document.getElementById('init-status').textContent = '✓ Done';
-            document.getElementById('forward-status').textContent = forwardDone ? '✓ Done' : 'Ready';
-            document.getElementById('backward-status').textContent = backwardDone ? '✓ Done' : (forwardDone ? 'Ready' : '—');
-            document.getElementById('update-status').textContent = backwardDone ? 'Ready' : '—';
-            
             // Update iteration count
             document.getElementById('dag-iteration-count').textContent = iterationCount;
             
-            // Show/hide loss display
-            document.getElementById('loss-display').style.display = forwardDone ? 'flex' : 'none';
-            
-            // Enable/disable buttons based on state
-            document.getElementById('forward-btn').disabled = false;
-            document.getElementById('backward-btn').disabled = !forwardDone;
-            document.getElementById('backward-step-btn').disabled = !forwardDone;
-            document.getElementById('update-params-btn').disabled = !backwardDone;
-            document.getElementById('train-once-btn').disabled = false;
-            document.getElementById('auto-train-btn').disabled = false;
-            document.getElementById('auto-train-100-btn').disabled = false;
+            // Update backprop UI
+            updateBackpropUI();
         }
         
         // Reinitialize network
@@ -4201,37 +4175,7 @@
             updateUI();
             updateTrainingUI();
             
-            document.getElementById('training-status').textContent = 'Network reinitialized → Ready to train';
-        });
-        
-        // Forward pass button
-        document.getElementById('forward-btn').addEventListener('click', () => {
-            forwardDone = true;
-            backwardDone = false;
-            runBackprop = false;
-            backpropStepMode = false;
-            document.body.classList.remove('backprop-active');
             
-            setTrainingStep('forward');
-            updateUI();
-            updateTrainingUI();
-            document.getElementById('training-status').textContent = 'Forward pass complete → Click "Compute Gradients" to continue';
-        });
-        
-        // Backward pass button (run all at once)
-        document.getElementById('backward-btn').addEventListener('click', () => {
-            if (!forwardDone) return;
-            
-            runBackprop = true;
-            backpropStepMode = false;
-            document.body.classList.add('backprop-active');
-            
-            updateUI();
-            backwardDone = true;
-            
-            setTrainingStep('update');
-            updateTrainingUI();
-            document.getElementById('training-status').textContent = 'Gradients computed → Click "Apply & Continue" to update parameters';
         });
         
         // Step-by-step backprop button
@@ -4246,7 +4190,7 @@
             updateUI();
             startStepBackprop();
             updateTrainingUI();
-            document.getElementById('training-status').textContent = 'Stepping through backprop... Use → or Space to advance';
+            
         });
         
         // Next step button
@@ -4257,7 +4201,7 @@
                     backwardDone = true;
                     setTrainingStep('update');
                     updateTrainingUI();
-                    document.getElementById('training-status').textContent = 'Gradients computed → Click "Apply & Continue" to update parameters';
+                    
                 }
             }
         });
@@ -4269,57 +4213,8 @@
                 backwardDone = true;
                 setTrainingStep('update');
                 updateTrainingUI();
-                document.getElementById('training-status').textContent = 'Gradients computed → Click "Apply & Continue" to update parameters';
+                
             }
-        });
-        
-        // Update parameters button
-        document.getElementById('update-params-btn').addEventListener('click', () => {
-            if (!backwardDone) return;
-            
-            const learningRate = parseFloat(document.getElementById('learning-rate').value);
-            
-            if (isNaN(learningRate) || learningRate <= 0) {
-                document.getElementById('training-status').textContent = 'Invalid learning rate!';
-                return;
-            }
-            
-            // Record current loss before updating
-            if (lastTotalLoss) {
-                recordLoss(lastTotalLoss.data);
-                recordAllNodeValues(lastTotalLoss);
-            }
-            
-            // Update all parameters: param = param - learning_rate * grad
-            for (const p of mlp.parameters()) {
-                p.data -= learningRate * p.grad;
-            }
-            
-            // Record parameter values for sparklines
-            recordParameterValues();
-            
-            iterationCount++;
-            
-            // Reset for next iteration
-            backwardDone = false;
-            runBackprop = false;
-            backpropStepMode = false;
-            document.body.classList.remove('backprop-active');
-            currentBackpropNodeID = null;
-            backpropStep = 0;
-            backpropTopo = [];
-            
-            forceClealHighlights();
-            updateBackpropUI();
-            
-            // Run forward pass with new parameters to show updated DAG
-            forwardDone = true;
-            setTrainingStep('forward');
-            updateUI();
-            updateTrainingUI();
-            drawLossChart();
-            
-            document.getElementById('training-status').textContent = `Iteration ${iterationCount} complete → Continue training or explore updated DAG`;
         });
         
         // Train one step button
@@ -4357,9 +4252,6 @@
             updateUI(); // This runs forward pass and draws DAG with new values
             updateTrainingUI();
             drawLossChart();
-            
-            const lossValue = document.getElementById('loss-value').textContent;
-            document.getElementById('training-status').textContent = `Iteration ${iterationCount}: Loss = ${lossValue}`;
         });
         
         // Auto train 10 steps button
@@ -4407,9 +4299,6 @@
             updateUI(); // This runs forward pass and draws DAG with new values
             updateTrainingUI();
             drawLossChart();
-            
-            const lossValue = document.getElementById('loss-value').textContent;
-            document.getElementById('training-status').textContent = `Trained ${numSteps} steps (Total: ${iterationCount} iterations). Loss = ${lossValue}`;
         }
         
         function updatePredictionsDisplay() {
@@ -4444,14 +4333,14 @@
                     if (!hasMore) {
                         backwardDone = true;
                         updateTrainingUI();
-                        document.getElementById('training-status').textContent = 'Gradients computed';
+                        
                     }
                 } else if (e.key === 'Enter' || e.key === 'c') {
                     e.preventDefault();
                     completeBackprop();
                     backwardDone = true;
                     updateTrainingUI();
-                    document.getElementById('training-status').textContent = 'Gradients computed';
+                    
                 }
             }
             
@@ -4528,7 +4417,7 @@
         setTrainingStep('forward');
         updateTrainingUI();
         updateUI(); // This runs forward pass and draws DAG
-        document.getElementById('training-status').textContent = 'Ready → Explore the DAG or continue to Backpropagation';
+        
     </script>
 </body>
 </html>
