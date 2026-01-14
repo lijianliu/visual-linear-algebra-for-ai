@@ -9,3 +9,6 @@ you can play the visulizer at
 * Micrograd Backpropagation Demo: https://lijianliu.github.io/visual-linear-algebra-for-ai/micrograd-backprop-visualizer.html (Added on 2025-12-30)
 * Micrograd Neural Network Training Demo: https://lijianliu.github.io/visual-linear-algebra-for-ai/micrograd-visualizing-3d-neural-network.html (Added on 2025-12-30)
 * Micrograd MLP(3, [4, 4, 1] ) Neural Network DAG: https://lijianliu.github.io/visual-linear-algebra-for-ai/micrograd-mlp-3-441-visualizer.html (Added on 2025-12-31)
+
+
+* $\mathbb{ℝ}^n$ denotes an n-fold Cartesian product, or $\mathbb{ℝ}^n := \{(x_1, x_2, \ldots, x_n) \mid x_i \in \mathbb{ℝ}\}$. $\mathbb{ℝ}^n$ does not denote exponentiation (i.e., it does not mean ℝ to the n-th power). 
